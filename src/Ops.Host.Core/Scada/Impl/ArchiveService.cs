@@ -1,15 +1,7 @@
-﻿using Ops.Exchange.Forwarder;
-using Ops.Host.Core.Const;
-using Ops.Host.Core.Utils;
+﻿namespace Ops.Host.Core.Services;
 
-namespace Ops.Host.Core.Services;
-
-internal sealed class ArchiveService : IArchiveService
+internal sealed class ArchiveService : ScadaDomainService, IArchiveService
 {
-    private readonly IFreeSql _freeSql;
-
-    public ArchiveService(IFreeSql freeSql) => _freeSql = freeSql;
-
     public async Task<ReplyResult> HandleAsync(ForwardData data)
     {
         await Task.Delay(100); // test
@@ -23,7 +15,7 @@ internal sealed class ArchiveService : IArchiveService
 
         if (string.IsNullOrWhiteSpace(sn))
         {
-            return ReplyResultHelper.Ok();
+            return Error();
         }
 
         // 记录进站信息
@@ -41,11 +33,11 @@ internal sealed class ArchiveService : IArchiveService
 
             // 工站状态统计
 
-            return ReplyResultHelper.Ok();
+            return Ok();
         }
         catch(Exception)
         {
-            return ReplyResultHelper.Error();
+            return Error();
         }
     }
 }

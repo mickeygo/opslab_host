@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using Ops.Host.Core.Models;
-using Ops.Host.Core.Services;
+﻿namespace Ops.Host.App.ViewModels;
 
-namespace Ops.Host.App.ViewModels;
-
-public sealed class UserViewModel : SinglePagedViewModelBase<User, UserFilter>
+public sealed class UserViewModel : SinglePagedViewModelBase<SysUser, UserFilter>, IViewModel
 {
     private readonly IUserService _userService;
 
@@ -19,8 +15,8 @@ public sealed class UserViewModel : SinglePagedViewModelBase<User, UserFilter>
         builder.SheetName = "用户测试示例";
         builder.Settings.Excludes = new string[]
         {
-            nameof(User.Id),
-            nameof(User.Password),
+            nameof(SysUser.Id),
+            nameof(SysUser.Password),
         };
 
         //builder.Header = new()
@@ -69,7 +65,7 @@ public sealed class UserViewModel : SinglePagedViewModelBase<User, UserFilter>
         builder.Render = new UserDocumentRender();
     }
 
-    protected override (List<User> items, long pageCount) OnSearch(int pageIndex, int pageSize)
+    protected override PagedList<SysUser> OnSearch(int pageIndex, int pageSize)
     {
         return _userService.GetPaged(QueryFilter, pageIndex, pageSize);
     }

@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
+﻿namespace Ops.Host.Common.IO;
 
-namespace Ops.Host.Common.IO;
-
+/// <summary>
+/// Excel 导出设置。
+/// </summary>
 public sealed class ExcelSettings
 {
     /// <summary>
@@ -38,6 +31,9 @@ public sealed class ExcelSettings
     public string[]? Includes { get; set; }
 }
 
+/// <summary>
+/// 自定义导出行。
+/// </summary>
 public sealed class RowCustom
 {
     /// <summary>
@@ -102,11 +98,14 @@ public sealed class ExcelExportData<T>
     public List<RowCustom>? Footer { get; set; }
 }
 
+/// <summary>
+/// Excel 类。
+/// </summary>
 public sealed class Excel
 {
     static Excel()
     {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // 非商业版
+        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial; // 非商业版
     }
 
     /// <summary>
@@ -131,6 +130,15 @@ public sealed class Excel
         package.Save();
     }
 
+    /// <summary>
+    /// 导出 Excel。
+    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="path">路径</param>
+    /// <param name="sheetName">sheet 名称</param>
+    /// <param name="data">要导出的数据</param>
+    /// <param name="settings">设置</param>
     public static async Task ExportAsync<T>(string path, string sheetName, IEnumerable<T> data, ExcelSettings? settings = default)
     {
         if (File.Exists(path))

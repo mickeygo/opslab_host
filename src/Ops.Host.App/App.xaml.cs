@@ -1,18 +1,12 @@
-﻿using System;
-using System.Windows;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Serilog;
+﻿using Serilog;
 using Ops.Host.App.Config;
 using Ops.Host.App.Extensions;
-using Ops.Exchange.DependencyInjection;
 
 namespace Ops.Host.App;
 
 public partial class App : Application
 {
-    private System.Threading.Mutex? _mutex;
+    private Mutex? _mutex;
     private IHost? _host;
 
     static IHostBuilder CreateHostBuilder(string[]? args) =>
@@ -39,7 +33,7 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         // 只允许开启一个
-        _mutex = new System.Threading.Mutex(true, "Ops.Host.App", out var createdNew);
+        _mutex = new Mutex(true, "Ops.Host.App", out var createdNew);
         if (!createdNew)
         {
             MessageBox.Show("已有一个程序在运行");

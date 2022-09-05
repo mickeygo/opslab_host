@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Ops.Host.Common.Extensions;
+﻿namespace Ops.Host.Common.Extensions;
 
 public static class DateTimeExtensions
 {

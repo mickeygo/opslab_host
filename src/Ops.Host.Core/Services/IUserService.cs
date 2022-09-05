@@ -1,17 +1,17 @@
-﻿using Ops.Host.Common.Domain;
-using Ops.Host.Core.Models;
+﻿namespace Ops.Host.Core.Services;
 
-namespace Ops.Host.Core.Services;
-
+/// <summary>
+/// 用户信息接口
+/// </summary>
 public interface IUserService : IDomainService
 {
-    User GetUserById(int id);
+    SysUser GetUserById(int id);
 
-    User GetUserByName(string userName);
+    SysUser GetUserByName(string userName);
 
-    List<User> GetAllUsers();
+    List<SysUser> GetAllUsers();
 
-    (List<User> items, long count) GetPaged(UserFilter filter, int pageIndex, int pageItems);
+    PagedList<SysUser> GetPaged(UserFilter filter, int pageIndex, int pageItems);
 
-    Task<(List<User> items, long count)> GetPagedAsync(UserFilter filter, int pageIndex, int pageItems);
+    Task<PagedList<SysUser>> GetPagedAsync(UserFilter filter, int pageIndex, int pageItems);
 }

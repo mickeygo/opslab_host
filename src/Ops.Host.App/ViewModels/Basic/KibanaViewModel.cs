@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Ops.Exchange.Management;
-using Ops.Host.App.Models;
+﻿using Ops.Host.App.Models;
 
 namespace Ops.Host.App.ViewModels;
 
-public sealed class KibanaViewModel : ObservableObject, IDisposable
+public sealed class KibanaViewModel : ObservableObject, IViewModel, IDisposable
 {
     private readonly CancellationTokenSource _cts = new();
 

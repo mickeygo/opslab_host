@@ -1,4 +1,4 @@
-﻿namespace Ops.Host.Core.Const;
+﻿namespace Ops.Host.Core;
 
 /// <summary>
 /// 程序常用的信号变量。

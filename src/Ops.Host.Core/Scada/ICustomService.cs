@@ -1,6 +1,4 @@
-﻿using Ops.Exchange.Forwarder;
-
-namespace Ops.Host.Core.Services;
+﻿namespace Ops.Host.Core.Services;
 
 /// <summary>
 /// 自定义服务
@@ -8,9 +6,9 @@ namespace Ops.Host.Core.Services;
 public interface ICustomService
 {
     /// <summary>
-    /// 触发自定义数据。
+    /// 处理自定义数据。
     /// </summary>
     /// <param name="data">数据</param>
     /// <returns></returns>
-    Task<ReplyResult> SaveCustomAsync(ForwardData data);
+    Task<ReplyResult> HandleAsync(ForwardData data);
 }

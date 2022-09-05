@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO.Packaging;
-using System.IO;
-using System.Windows;
-using System.Windows.Documents;
+﻿using System.IO.Packaging;
 using System.Windows.Xps.Packaging;
 using System.Windows.Xps;
 using System.Windows.Threading;
@@ -10,7 +6,7 @@ using System.Windows.Threading;
 namespace Ops.Host.App.Components;
 
 /// <summary>
-/// 打印组件
+/// 打印预览组件。
 /// </summary>
 public partial class PrintPreviewWindow : Window
 {

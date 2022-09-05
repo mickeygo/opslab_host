@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-
-namespace Ops.Host.App.Models;
+﻿namespace Ops.Host.App.Models;
 
 public sealed class KibanaModel : ObservableObject
 {

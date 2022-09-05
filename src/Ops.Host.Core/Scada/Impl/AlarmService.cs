@@ -1,14 +1,7 @@
-﻿using Ops.Exchange.Forwarder;
-using Ops.Exchange.Model;
-
-namespace Ops.Host.Core.Services;
+﻿namespace Ops.Host.Core.Services;
 
 internal sealed class AlarmService : IAlarmService
 {
-    private readonly IFreeSql _freeSql;
-
-    public AlarmService(IFreeSql freeSql) => _freeSql = freeSql;
-
     public Task HandleAsync(ForwardData data)
     {
         if (data.Values.Length == 0)

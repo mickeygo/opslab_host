@@ -1,15 +1,7 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Ops.Exchange;
-using Ops.Exchange.Forwarder;
-using Ops.Host.Core.Services;
-
-namespace Ops.Host.App.Forwarders;
+﻿namespace Ops.Host.App.Forwarders;
 
 /// <summary>
-/// 本地处理请求/响应事件
+/// 本地处理请求/响应事件。
 /// </summary>
 internal sealed class OpsLocalReplyForwarder : IReplyForwarder
 {
@@ -43,7 +35,7 @@ internal sealed class OpsLocalReplyForwarder : IReplyForwarder
                 OpsSymbol.PLC_Sign_Archive => await _archiveService.HandleAsync(data),
                 OpsSymbol.PLC_Sign_Critical_Material => await _materialService.HandleCriticalMaterialAsync(data),
                 OpsSymbol.PLC_Sign_Batch_Material => await _materialService.HandleBactchMaterialAsync(data),
-                _ => await _customService.SaveCustomAsync(data),
+                _ => await _customService.HandleAsync(data),
             };
         }
         catch (Exception ex)

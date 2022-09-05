@@ -1,9 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Text;
-using System.Windows.Data;
-
-namespace Ops.Host.App.Converters;
+﻿namespace Ops.Host.App.Converters;
 
 public class StringRepeatConverter : IValueConverter
 {
@@ -28,6 +23,7 @@ public class StringRepeatConverter : IValueConverter
             {
                 return strValue;
             }
+
             for (var i = 0; i < num; i++)
             {
                 builder.Append(strValue);

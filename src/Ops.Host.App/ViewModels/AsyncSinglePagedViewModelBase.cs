@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using Microsoft.Win32;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
 using HandyControl.Data;
-using Ops.Host.Common.Utils;
 using Ops.Host.App.Components;
 using Ops.Host.Common.IO;
+using Ops.Host.Core;
 
 namespace Ops.Host.App.ViewModels;
 
@@ -133,7 +126,7 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
     /// </summary>
     /// <param name="pageIndex">页数</param>
     /// <param name="pageSize">每页数量</param>
-    protected abstract Task<(List<TDataSource> items, long pageCount)> OnSearchAsync(int pageIndex, int pageSize);
+    protected abstract Task<PagedList<TDataSource>> OnSearchAsync(int pageIndex, int pageSize);
 
     /// <summary>
     /// Excel 下载参数设置。
@@ -210,9 +203,11 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
                 PrintPreviewWindow? previewWnd = null;
                 try
                 {
-                    previewWnd = new(builder.TemplateUrl!, builder.DataContext, builder.Render);
-                    previewWnd.Owner = System.Windows.Application.Current.MainWindow;
-                    previewWnd.ShowInTaskbar = false;
+                    previewWnd = new(builder.TemplateUrl!, builder.DataContext, builder.Render)
+                    {
+                        Owner = System.Windows.Application.Current.MainWindow,
+                        ShowInTaskbar = false
+                    };
                     previewWnd.ShowDialog();
                 }
                 catch
@@ -250,15 +245,15 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
 
     private async Task DoSearchedMaxDataAsync()
     {
-        var (items, _) = await OnSearchAsync(1, short.MaxValue);
-        SearchedAllData = items;
+        var pagedList = await OnSearchAsync(1, short.MaxValue);
+        SearchedAllData = pagedList.Items;
     }
 
     private async Task DoSearchAsync(int pageIndex, int pageSize)
     {
-        var (items, count) = await OnSearchAsync(pageIndex, pageSize);
+        var pagedList = await OnSearchAsync(pageIndex, pageSize);
 
-        PageCount = PageHelper.GetPageCount(count, PageSize);
-        DataSourceList = new ObservableCollection<TDataSource>(items);
+        PageCount = pagedList.Total;
+        DataSourceList = new ObservableCollection<TDataSource>(pagedList.Items);
     }
 }

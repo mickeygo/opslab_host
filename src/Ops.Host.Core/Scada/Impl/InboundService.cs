@@ -1,15 +1,7 @@
-﻿using Ops.Exchange.Forwarder;
-using Ops.Host.Core.Const;
-using Ops.Host.Core.Utils;
+﻿namespace Ops.Host.Core.Services;
 
-namespace Ops.Host.Core.Services;
-
-internal sealed class InboundService : IInboundService
+internal sealed class InboundService : ScadaDomainService, IInboundService
 {
-    private readonly IFreeSql _freeSql;
-
-    public InboundService(IFreeSql freeSql) => _freeSql = freeSql;
-
     public async Task<ReplyResult> HandleAsync(ForwardData data)
     {
         await Task.Delay(100);
@@ -19,21 +11,21 @@ internal sealed class InboundService : IInboundService
         var pallet = data.GetString(PlcSymbolTag.PLC_Inbound_Pallet); // 托盘码
         if (string.IsNullOrWhiteSpace(sn))
         {
-            return ReplyResultHelper.Error();
+            return Error();
         }
         if (formula == 0)
         {
-            return ReplyResultHelper.Error();
+            return Error();
         }
 
         try
         { 
 
-            return ReplyResultHelper.Ok();
+            return Ok();
         }
         catch (Exception)
         {
-            return ReplyResultHelper.Error();
+            return Error();
         }
     }
 }

@@ -1,13 +1,10 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Ops.Host.Core.Models;
+﻿namespace Ops.Host.Core.Entity;
 
 /// <summary>
 /// 用户信息
 /// </summary>
 [Table("User")]
-public sealed class User : Entity
+public sealed class SysUser : BaseEntity
 {
     /// <summary>
     /// 用户名
@@ -30,8 +27,8 @@ public sealed class User : Entity
     public string? DisplayName { get; set; }
 
     /// <summary>
-    /// 创建时间
+    /// 角色
     /// </summary>
-    [DisplayName("创建时间")]
-    public DateTime CreatedAt { get; set; }
+    [DisplayName("角色")]
+    public int Role { get; set; }
 }

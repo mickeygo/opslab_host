@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Ops.Host.Common;
-using Ops.Host.Common.Extensions;
-
-namespace Ops.Host.App.Utils;
+﻿namespace Ops.Host.App.Utils;
 
 public static class DropdownListHelper
 {

@@ -1,9 +1,6 @@
-﻿using System.Reflection;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿namespace Ops.Host.App.ViewModels;
 
-namespace Ops.Host.App.ViewModels;
-
-public sealed class NonClientAreaContentViewModel : ObservableObject
+public sealed class NonClientAreaContentViewModel : ObservableObject, IViewModel
 {
     public NonClientAreaContentViewModel()
     {

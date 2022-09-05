@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Windows.Controls;
-using System.Windows.Documents;
+﻿using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Windows.Input;
 using Microsoft.Win32;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
 using HandyControl.Data;
-using Ops.Host.Common.Utils;
-using Ops.Host.App.Components;
 using Ops.Host.Common.IO;
+using Ops.Host.App.Components;
 
 namespace Ops.Host.App.ViewModels;
 
@@ -203,7 +195,7 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
     /// </summary>
     /// <param name="pageIndex">页数</param>
     /// <param name="pageSize">每页数量</param>
-    protected abstract (List<TDataSource> items, long pageCount) OnSearch(int pageIndex, int pageSize);
+    protected abstract PagedList<TDataSource> OnSearch(int pageIndex, int pageSize);
 
     /// <summary>
     /// Excel 下载参数设置。
@@ -319,15 +311,15 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
 
     private void DoSearchedMaxData()
     {
-        var (items, _) = OnSearch(1, short.MaxValue);
-        SearchedAllData = items;
+        var pagedList = OnSearch(1, short.MaxValue);
+        SearchedAllData = pagedList.Items;
     }
 
     private void DoSearch(int pageIndex, int pageSize)
     {
-        var (items, count) = OnSearch(pageIndex, pageSize);
+        var pagedList = OnSearch(pageIndex, pageSize);
 
-        PageCount = PageHelper.GetPageCount(count, PageSize);
-        DataSourceList = new ObservableCollection<TDataSource>(items);
+        PageCount = pagedList.Total;
+        DataSourceList = new ObservableCollection<TDataSource>(pagedList.Items);
     }
 }

@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Input;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using HandyControl.Controls;
+﻿using HandyControl.Controls;
 using Ops.Exchange.Monitors;
 using Ops.Host.App.Config;
 using Ops.Host.App.Management;
@@ -16,7 +6,7 @@ using Ops.Host.App.Models;
 
 namespace Ops.Host.App.ViewModels;
 
-public sealed class MainWindowViewModel : ObservableObject
+public sealed class MainWindowViewModel : ObservableObject, IViewModel
 {
     private readonly MonitorManager _monitorManager;
     private readonly OpsHostOptions _opsHostOption;

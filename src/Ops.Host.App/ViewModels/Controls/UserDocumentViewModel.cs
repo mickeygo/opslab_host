@@ -1,16 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Documents;
-using Ops.Host.App.Components;
-using Ops.Host.Core.Models;
-
-namespace Ops.Host.App.ViewModels;
+﻿namespace Ops.Host.App.ViewModels;
 
 public sealed class UserDocumentViewModel
 {
     public string? Title { get; set; }
 
-    public List<User>? DataSourceList { get; set; }
+    public List<SysUser>? DataSourceList { get; set; }
 }
 
 public sealed class UserDocumentRender : IDocumentRenderer
@@ -40,7 +34,7 @@ public sealed class UserDocumentRender : IDocumentRenderer
             cell.Style = styleCell;
             row.Cells.Add(cell);
 
-            cell = new(new Paragraph(new Run(item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))));
+            cell = new(new Paragraph(new Run(item.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"))));
             cell.Style = styleCell;
             row.Cells.Add(cell);
 

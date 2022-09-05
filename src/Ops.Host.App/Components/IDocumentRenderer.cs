@@ -1,6 +1,4 @@
-﻿using System.Windows.Documents;
-
-namespace Ops.Host.App.Components;
+﻿namespace Ops.Host.App.Components;
 
 /// <summary>
 /// 文档呈现器。
