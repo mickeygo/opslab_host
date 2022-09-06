@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using HandyControl.Controls;
 using HandyControl.Data;
 using Ops.Host.Common.IO;
+using System.Windows.Markup;
 
 namespace Ops.Host.App.ViewModels;
 
@@ -30,6 +31,7 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
     private TQueryFilter _queryFilter = new();
     private TDataSource? _selectedItem;
     private bool _isOpenSidebar = false;
+    private bool _isAdding = false;
 
     /// <summary>
     /// 每页数量，默认 20 条。
@@ -116,6 +118,15 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
         set => SetProperty(ref _isOpenSidebar, value);
     }
 
+    /// <summary>
+    /// 是否为新增动作，否则为编辑。
+    /// </summary>
+    public bool IsAdding
+    {
+        get => _isAdding;
+        set => SetProperty(ref _isAdding, value);
+    }
+
     #endregion
 
     #region 绑定事件
@@ -173,12 +184,14 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
     {
         SelectedItem = new();
         IsOpenSidebar = true;
+        IsAdding = true;
     }
 
     private void Edit(TDataSource data)
     {
         SelectedItem = data;
         IsOpenSidebar = true;
+        IsAdding = false;
     }
 
     /// <summary>
@@ -186,25 +199,32 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
     /// 根据实体 Id 判断是新增还是更新的数据。
     /// </summary>
     /// <returns></returns>
-    protected virtual Task<bool> SaveAsync(TDataSource data)
+    protected virtual Task<(bool ok, string? err)> SaveAsync(TDataSource data)
     {
-        return Task.FromResult(true);
+        return Task.FromResult((true, (string?)""));
     }
 
     private async Task DoSaveAsync()
     {
-        if (await SaveAsync(SelectedItem!))
+        var (ok, err) = await SaveAsync(SelectedItem!);
+        if (ok)
         {
             Growl.Info(new GrowlInfo
             {
                 Message = "数据更新成功",
                 WaitTime = 1,
             });
+            
+            if (IsAdding)
+            {
+                DataSourceList?.Add(SelectedItem!);
+            }
+
             IsOpenSidebar = false;
         }
         else
         {
-            Growl.Error("数据更新失败");
+            Growl.Error($"更新失败：{err ?? ""}");
         }
     }
 
@@ -212,9 +232,9 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
     /// 删除数据、
     /// </summary>
     /// <param name="data"></param>
-    protected virtual Task<bool> DeleteAsync(TDataSource data)
+    protected virtual Task<(bool ok, string? err)> DeleteAsync(TDataSource data)
     {
-        return Task.FromResult(true);
+        return Task.FromResult((true, (string?)""));
     }
 
     private void DoDelete(TDataSource? data)
@@ -233,7 +253,8 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
         {
             if (isConfirmed)
             {
-                if (DeleteAsync(data).ConfigureAwait(false).GetAwaiter().GetResult()) // Growl 中异步无效
+                var (ok, err) = DeleteAsync(data).ConfigureAwait(false).GetAwaiter().GetResult(); // Growl 中异步无效
+                if (ok)
                 {
                     DataSourceList?.Remove(data);
                     Growl.Info(new GrowlInfo
@@ -244,7 +265,7 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
                 }
                 else
                 {
-                    Growl.Error("数据删除失败");
+                    Growl.Error($"更新失败：{err ?? ""}");
                 }
             }
 
@@ -376,7 +397,7 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
     {
         var pagedList = await OnSearchAsync(pageIndex, pageSize);
 
-        PageCount = pagedList.TotalCount;
+        PageCount = pagedList.TotalPages;
         DataSourceList = new ObservableCollection<TDataSource>(pagedList.Items);
     }
 }

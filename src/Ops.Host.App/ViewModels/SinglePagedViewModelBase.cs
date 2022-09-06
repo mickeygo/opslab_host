@@ -117,6 +117,7 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
     private TQueryFilter _queryFilter = new();
     private TDataSource? _selectedItem;
     private bool _isOpenSidebar = false;
+    private bool _isAdding = false;
 
     /// <summary>
     /// 每页数量，默认 20 条。
@@ -202,6 +203,15 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
         set => SetProperty(ref _isOpenSidebar, value);
     }
 
+    /// <summary>
+    /// 是否为新增动作，否则为编辑。
+    /// </summary>
+    public bool IsAdding
+    {
+        get => _isAdding;
+        set => SetProperty(ref _isAdding, value);
+    }
+
     #endregion
 
     #region 绑定事件
@@ -259,12 +269,14 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
     {
         SelectedItem = new();
         IsOpenSidebar = true;
+        IsAdding = true;
     }
 
     private void Edit(TDataSource data)
     {
         SelectedItem = data;
         IsOpenSidebar = true;
+        IsAdding = false;
     }
 
     /// <summary>
@@ -272,25 +284,32 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
     /// 根据实体 Id 判断是新增还是更新的数据。
     /// </summary>
     /// <returns></returns>
-    protected virtual bool Save(TDataSource data)
+    protected virtual (bool ok, string? err) Save(TDataSource data)
     {
-        return true;
+        return (true, default);
     }
 
     private void DoSave()
     {
-        if (Save(SelectedItem!))
+        var (ok, err) = Save(SelectedItem!);
+        if (ok)
         {
             Growl.Info(new GrowlInfo
             {
                 Message = "数据更新成功",
                 WaitTime = 1,
             });
+
+            if (IsAdding)
+            {
+                DataSourceList?.Add(SelectedItem!);
+            }
+
             IsOpenSidebar = false;
         }
         else
         {
-            Growl.Error("数据更新失败");
+            Growl.Error($"更新失败：{err ?? ""}");
         }
     }
 
@@ -298,9 +317,9 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
     /// 删除数据、
     /// </summary>
     /// <param name="data"></param>
-    protected virtual bool Delete(TDataSource data)
+    protected virtual (bool ok, string? err) Delete(TDataSource data)
     {
-        return true;
+        return (true, default);
     }
 
     private void DoDelete(TDataSource? data)
@@ -319,7 +338,8 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
         {
             if (isConfirmed)
             {
-                if (Delete(data))
+                var (ok, err) = Delete(data);
+                if (ok)
                 {
                     DataSourceList?.Remove(data);
                     Growl.Info(new GrowlInfo
@@ -330,7 +350,7 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
                 }
                 else
                 {
-                    Growl.Error("数据删除失败");
+                    Growl.Error($"删除失败: {err ?? ""}");
                 }
             }
 
@@ -460,7 +480,7 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
     {
         var pagedList = OnSearch(pageIndex, pageSize);
 
-        PageCount = pagedList.TotalCount;
+        PageCount = pagedList.TotalPages;
         DataSourceList = new ObservableCollection<TDataSource>(pagedList.Items);
     }
 }

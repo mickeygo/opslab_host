@@ -36,7 +36,6 @@ public class SysDictData : EntityBase
     /// <summary>
     /// 是否固定，0->不固定，1->固定，固定的字典不提供编辑功能。
     /// </summary>
-    [SugarColumn(ColumnDescription = "排序")]
     public int Fixed { get; set; }
 
     /// <summary>

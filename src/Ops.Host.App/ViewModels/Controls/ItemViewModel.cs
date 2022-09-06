@@ -18,14 +18,34 @@ public sealed class ItemViewModel : AsyncSinglePagedViewModelBase<MdItem, MdItem
         return _itemService.GetPagedListAsync(QueryFilter, pageIndex, pageSize);
     }
 
-    protected override Task<bool> SaveAsync(MdItem data)
+    protected override async Task<(bool ok, string? err)> SaveAsync(MdItem data)
     {
-        return _itemService.InsertOrUpdateAsync(data);
+        if (string.IsNullOrWhiteSpace(data.Code))
+        {
+            return (false, "物料代码s不能为空");
+        }
+        if (string.IsNullOrWhiteSpace(data.Name))
+        {
+            return (false, "物料名称不能为空");
+        }
+        if (string.IsNullOrWhiteSpace(data.BarcodeRule))
+        {
+            return (false, "条码规则不能为空");
+        }
+
+        data.Code = data.Code.Trim();
+        data.Name = data.Name.Trim();
+        data.Spec = data.Spec?.Trim();
+        data.BarcodeRule = data.BarcodeRule?.Trim();
+
+        var ok = await _itemService.InsertOrUpdateAsync(data);
+        return (ok, "");
     }
 
-    protected override Task<bool> DeleteAsync(MdItem data)
+    protected override async Task<(bool ok, string? err)> DeleteAsync(MdItem data)
     {
-        return _itemService.DeleteAsync(data.Id);
+        var ok = await _itemService.DeleteAsync(data.Id);
+        return (ok, "");
     }
 
     protected override void OnExcelCreating(ExcelModelBuilder builder)

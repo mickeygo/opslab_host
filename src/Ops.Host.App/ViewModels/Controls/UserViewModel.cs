@@ -9,14 +9,16 @@ public sealed class UserViewModel : SinglePagedViewModelBase<SysUser, UserFilter
         _userService = userService;
     }
 
-    protected override bool Save(SysUser data)
+    protected override (bool ok, string? err) Save(SysUser data)
     {
-        return _userService.InsertOrUpdateUser(data);
+        var ok = _userService.InsertOrUpdateUser(data);
+        return (ok, "");
     }
 
-    protected override bool Delete(SysUser data)
+    protected override (bool ok, string? err) Delete(SysUser data)
     {
-        return _userService.DeleteUser(data);
+        var ok = _userService.DeleteUser(data);
+        return (ok, "");
     }
 
     protected override void OnExcelCreating(ExcelModelBuilder builder)

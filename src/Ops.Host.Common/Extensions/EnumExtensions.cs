@@ -112,4 +112,17 @@ public static class EnumExtensions
         var attr = fi!.GetCustomAttribute<DescriptionAttribute>(false);
         return attr?.Description;
     }
+
+    /// <summary>
+    /// 获取枚举类型的 <see cref="DescriptionAttribute"/> 描述，没有则为 null。
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="name">枚举名称</param>
+    /// <returns></returns>
+    public static string? GetDesc<T>(string name)
+    {
+        var fi = typeof(T).GetField(name);
+        var attr = fi!.GetCustomAttribute<DescriptionAttribute>(false);
+        return attr?.Description;
+    }
 }

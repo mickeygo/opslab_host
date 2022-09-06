@@ -14,7 +14,8 @@ public sealed class MenuManager
     public static MenuItemModel[] Menus => new[]
     {
         new MenuItemModel("", "设备看板", typeof(Kibana), true),
-        new MenuItemModel("", "用户信息", typeof(User), true),
-        new MenuItemModel("", "物料信息", typeof(ItemCtl), true),
+        new MenuItemModel("", "用户信息", typeof(User), false),
+        new MenuItemModel("", "物料信息", typeof(ItemCtl), false),
+        new MenuItemModel("", "字典数据", typeof(DictData), false),
     };
 }
