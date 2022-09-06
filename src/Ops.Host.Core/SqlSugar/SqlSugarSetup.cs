@@ -83,14 +83,14 @@ public static class SqlSugarSetup
                             }
                         }
 
-                        if (entityInfo.PropertyName == nameof(BaseEntity.CreateTime))
+                        if (entityInfo.PropertyName == nameof(EntityBase.CreateTime))
                             entityInfo.SetValue(DateTime.Now);
                     }
 
                     // 更新操作
                     if (entityInfo.OperationType == DataFilterType.UpdateByObject)
                     {
-                        if (entityInfo.PropertyName == nameof(BaseEntity.UpdateTime))
+                        if (entityInfo.PropertyName == nameof(EntityBase.UpdateTime))
                             entityInfo.SetValue(DateTime.Now);
                     }
                 };

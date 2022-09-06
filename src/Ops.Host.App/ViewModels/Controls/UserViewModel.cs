@@ -2,11 +2,21 @@
 
 public sealed class UserViewModel : SinglePagedViewModelBase<SysUser, UserFilter>, IViewModel
 {
-    private readonly IUserService _userService;
+    private readonly ISysUserService _userService;
 
-    public UserViewModel(IUserService userService)
+    public UserViewModel(ISysUserService userService)
     {
         _userService = userService;
+    }
+
+    protected override bool Save(SysUser data)
+    {
+        return _userService.InsertOrUpdateUser(data);
+    }
+
+    protected override bool Delete(SysUser data)
+    {
+        return _userService.DeleteUser(data);
     }
 
     protected override void OnExcelCreating(ExcelModelBuilder builder)
@@ -67,6 +77,6 @@ public sealed class UserViewModel : SinglePagedViewModelBase<SysUser, UserFilter
 
     protected override PagedList<SysUser> OnSearch(int pageIndex, int pageSize)
     {
-        return _userService.GetPaged(QueryFilter, pageIndex, pageSize);
+        return _userService.GetPagedList(QueryFilter, pageIndex, pageSize);
     }
 }

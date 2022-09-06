@@ -276,7 +276,7 @@ public sealed class Excel
         settings ??= new ExcelSettings();
 
         // 考虑导出功能使用频率低，因此不使用缓存机制。
-        List<(string DisplayName, PropertyInfo PropInfo)> columns = new();
+        List<(string DisplayName, PropertyInfo PropInfo, bool IsEnum)> columns = new();
         var props = typeof(T).GetProperties();
         if (settings.Includes?.Any() == true)
         {
@@ -291,7 +291,11 @@ public sealed class Excel
         foreach (var prop in props)
         {
             var attr = prop.GetCustomAttribute<DisplayAttribute>();
-            columns.Add((attr?.Name ?? prop.Name, prop));
+            var isEnum = prop!.PropertyType.IsEnum 
+                || (prop!.PropertyType.IsConstructedGenericType 
+                    && prop!.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) 
+                    && prop!.PropertyType.GetGenericArguments()[0].IsEnum);
+            columns.Add((attr?.Name ?? prop.Name, prop, isEnum));
         }
 
         // 构建头
@@ -313,10 +317,20 @@ public sealed class Excel
         {
             for (int j = 0; j < columns.Count; j++)
             {
+                var isEnum = columns[j].IsEnum;
                 var propInfo = columns[j].PropInfo;
                 var cell = sheet.Cells[n, j + 1];
 
-                cell.Value = propInfo!.GetValue(item);
+                var v = propInfo!.GetValue(item);
+                if (isEnum)
+                {
+                    // 每条数据都进行反射，后续可提取枚举值。
+                    cell.Value = ((Enum)v!).Desc() ?? v;
+                }
+                else
+                {
+                    cell.Value = v;
+                }
 
                 if (propInfo!.PropertyType == typeof(DateTime)
                     || propInfo!.PropertyType == typeof(DateTime?))

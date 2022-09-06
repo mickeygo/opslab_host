@@ -53,6 +53,33 @@ public partial class App : Application
             Log.Fatal(ex, "Host terminated unexpectedly");
         }
 
+        // UI线程未捕获异常处理事件
+        DispatcherUnhandledException += (s, e) =>
+        {
+            Log.Error(e.Exception, $"UI线程异常: {e.Exception.Message}");
+            // e.Handled = true; // 把 Handled 属性设为true，表示此异常已处理，程序可以继续运行，不会强制退出  
+        };
+
+        // Task线程内未捕获异常处理事件
+        TaskScheduler.UnobservedTaskException += (s, e) =>
+        {
+            Log.Error(e.Exception, $"Task线程异常: {e.Exception.Message}");
+            // e.SetObserved(); // 设置该异常已察觉（这样处理后就不会引起程序崩溃）
+        };
+
+        // 非UI线程未捕获异常处理事件
+        AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+        {
+            if (e.ExceptionObject is Exception ex)
+            {
+                Log.Error(ex, $"非UI线程异常: {ex.Message}");
+            }
+            else
+            {
+                Log.Error($"非UI线程异常: {e.ExceptionObject}");
+            }
+        };
+
         _host.Start();
     }
 

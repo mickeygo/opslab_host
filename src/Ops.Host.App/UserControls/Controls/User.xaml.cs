@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-using Microsoft.Extensions.DependencyInjection;
-using Ops.Host.App.ViewModels;
+﻿using Ops.Host.App.ViewModels;
 
 namespace Ops.Host.App.UserControls;
 

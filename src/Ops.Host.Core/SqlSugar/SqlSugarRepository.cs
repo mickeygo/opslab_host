@@ -6,8 +6,11 @@
 /// <typeparam name="T"></typeparam>
 public class SqlSugarRepository<T> : SimpleClient<T> where T : class, new()
 {
+    protected ITenant? Tenant = null;
+
     public SqlSugarRepository(ISqlSugarClient? context = null) : base(context) // 默认值等于null不能少
     {
-        base.Context = context; // ioc注入的对象
+        Tenant = ((SqlSugarScope)context).AsTenant(); // 采用租户策略
+        base.Context = Tenant.GetConnectionWithAttr<T>(); // 根据实体配置的 <TenantAttribute> 切换租户
     }
 }

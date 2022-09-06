@@ -6,5 +6,7 @@
     <converter:String2BrushConverter x:Key="String2BrushConverter"/>
     <converter:HatchBrushConverter x:Key="HatchBrushConverter"/>
     <converter:Boolean2ResourceConverter x:Key="Boolean2ResourceConverter"/>
-
+    <converter:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
+    <converter:EnumDropdownListConverter x:Key="EnumDropdownListConverter"/>
+    
 </ResourceDictionary>

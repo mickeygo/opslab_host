@@ -1,14 +1,14 @@
-﻿using System.Windows.Controls;
-using System.Windows.Threading;
-using System.Windows.Input;
+﻿using System.Windows.Threading;
 using Microsoft.Win32;
 using HandyControl.Controls;
 using HandyControl.Data;
 using Ops.Host.Common.IO;
-using Ops.Host.App.Components;
 
 namespace Ops.Host.App.ViewModels;
 
+/// <summary>
+/// 导出的 Excel 模型构建器。
+/// </summary>
 public sealed class ExcelModelBuilder
 {
     /// <summary>
@@ -23,13 +23,22 @@ public sealed class ExcelModelBuilder
 
     public ExcelSettings Settings { get; } = new();
 
+    /// <summary>
+    /// 导出的 Excel 头部。
+    /// </summary>
     public List<RowCustom>? Header { get; set; }
 
+    /// <summary>
+    /// 导出的 Excel 尾部。
+    /// </summary>
     public List<RowCustom>? Footer { get; set; }
 }
 
 public delegate void DoPrintDelegate(PrintDialog pdlg, DocumentPaginator paginator);
 
+/// <summary>
+/// 打印模型构建器。
+/// </summary>
 public sealed class PrintModelBuilder
 {
     /// <summary>
@@ -57,6 +66,9 @@ public sealed class PrintModelBuilder
     /// </summary>
     public IDocumentRenderer? Render { get; set; }
 
+    /// <summary>
+    /// 打印模式。
+    /// </summary>
     public enum PrintMode
     {
         /// <summary>
@@ -102,7 +114,9 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
 {
     private long _pageCount;
     private ObservableCollection<TDataSource>? _dataSourceList;
-    public TQueryFilter _queryFilter = new();
+    private TQueryFilter _queryFilter = new();
+    private TDataSource? _selectedItem;
+    private bool _isOpenSidebar = false;
 
     /// <summary>
     /// 每页数量，默认 20 条。
@@ -123,6 +137,12 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
     {
         QueryCommand = new RelayCommand(() => DoSearch(1, PageSize));
         PageUpdatedCommand = new RelayCommand<FunctionEventArgs<int>>((e) => PageUpdated(e!));
+
+        AddCommand = new RelayCommand(Add);
+        EditCommand = new RelayCommand<TDataSource>(Edit!);
+        SaveCommand = new RelayCommand(DoSave);
+        DeleteCommand = new RelayCommand<TDataSource>(DoDelete);
+       
         DownloadCommand = new RelayCommand(Download);
         PrintCommand = new RelayCommand(Print);
     }
@@ -164,6 +184,24 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
         set => SetProperty(ref _queryFilter, value);
     }
 
+    /// <summary>
+    /// 选中的数据行
+    /// </summary>
+    public TDataSource? SelectedItem
+    {
+        get => _selectedItem;
+        set => SetProperty(ref _selectedItem, value);
+    }
+
+    /// <summary>
+    /// 是否开启侧边编辑栏
+    /// </summary>
+    public bool IsOpenSidebar
+    {
+        get => _isOpenSidebar;
+        set => SetProperty(ref _isOpenSidebar, value);
+    }
+
     #endregion
 
     #region 绑定事件
@@ -172,6 +210,26 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
     /// 数据查询事件。
     /// </summary>
     public ICommand QueryCommand { get; }
+
+    /// <summary>
+    /// 新增
+    /// </summary>
+    public ICommand AddCommand { get; }
+
+    /// <summary>
+    /// 编辑
+    /// </summary>
+    public ICommand EditCommand { get; }
+
+    /// <summary>
+    /// 保存（新增/更新）的数据
+    /// </summary>
+    public ICommand SaveCommand { get; }
+
+    /// <summary>
+    /// 删除
+    /// </summary>
+    public ICommand DeleteCommand { get; }
 
     /// <summary>
     /// 数据查询分页事件。
@@ -196,6 +254,89 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
     /// <param name="pageIndex">页数</param>
     /// <param name="pageSize">每页数量</param>
     protected abstract PagedList<TDataSource> OnSearch(int pageIndex, int pageSize);
+
+    private void Add()
+    {
+        SelectedItem = new();
+        IsOpenSidebar = true;
+    }
+
+    private void Edit(TDataSource data)
+    {
+        SelectedItem = data;
+        IsOpenSidebar = true;
+    }
+
+    /// <summary>
+    /// 更新/新增数据。
+    /// 根据实体 Id 判断是新增还是更新的数据。
+    /// </summary>
+    /// <returns></returns>
+    protected virtual bool Save(TDataSource data)
+    {
+        return true;
+    }
+
+    private void DoSave()
+    {
+        if (Save(SelectedItem!))
+        {
+            Growl.Info(new GrowlInfo
+            {
+                Message = "数据更新成功",
+                WaitTime = 1,
+            });
+            IsOpenSidebar = false;
+        }
+        else
+        {
+            Growl.Error("数据更新失败");
+        }
+    }
+
+    /// <summary>
+    /// 删除数据、
+    /// </summary>
+    /// <param name="data"></param>
+    protected virtual bool Delete(TDataSource data)
+    {
+        return true;
+    }
+
+    private void DoDelete(TDataSource? data)
+    {
+        if (data == null)
+        {
+            Growl.Info(new GrowlInfo
+            {
+                Message = "没有选择要删除的数据",
+                WaitTime = 1,
+            });
+            return;
+        }
+
+        Growl.Ask("确定要删除？", isConfirmed =>
+        {
+            if (isConfirmed)
+            {
+                if (Delete(data))
+                {
+                    DataSourceList?.Remove(data);
+                    Growl.Info(new GrowlInfo
+                    {
+                        Message = "数据删除成功",
+                        WaitTime = 1,
+                    });
+                }
+                else
+                {
+                    Growl.Error("数据删除失败");
+                }
+            }
+
+            return true;
+        });
+    }
 
     /// <summary>
     /// Excel 下载参数设置。
@@ -272,7 +413,7 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
                 try
                 {
                     previewWnd = new(builder.TemplateUrl!, builder.DataContext, builder.Render);
-                    previewWnd.Owner = System.Windows.Application.Current.MainWindow;
+                    previewWnd.Owner = Application.Current.MainWindow;
                     previewWnd.ShowInTaskbar = false;
                     previewWnd.ShowDialog();
                 }
@@ -319,7 +460,7 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
     {
         var pagedList = OnSearch(pageIndex, pageSize);
 
-        PageCount = pagedList.Total;
+        PageCount = pagedList.TotalCount;
         DataSourceList = new ObservableCollection<TDataSource>(pagedList.Items);
     }
 }

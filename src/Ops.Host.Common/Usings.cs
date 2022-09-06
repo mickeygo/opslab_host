@@ -9,3 +9,5 @@ global using System.Reflection;
 global using System.Threading.Tasks;
 global using OfficeOpenXml;
 global using OfficeOpenXml.Style;
+
+global using Ops.Host.Common.Extensions;

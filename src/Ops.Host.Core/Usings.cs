@@ -14,6 +14,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Logging;
 
+global using Mapster;
 global using SqlSugar;
 
 global using Ops.Exchange.Forwarder;

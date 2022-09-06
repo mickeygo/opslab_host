@@ -1,9 +1,9 @@
 ﻿namespace Ops.Host.Core.Entity;
 
 /// <summary>
-/// 实体基类。
+/// 实体Id基类。
 /// </summary>
-public abstract class BaseEntity
+public abstract class EntityBaseId
 {
     /// <summary>
     /// 主键。
@@ -12,6 +12,21 @@ public abstract class BaseEntity
     [SugarColumn(IsPrimaryKey = true, IsIdentity = false)]
     public long Id { get; set; }
 
+    /// <summary>
+    /// 实体是否是临时创建的。
+    /// </summary>
+    /// <returns></returns>
+    public bool IsTransient()
+    {
+        return Id <= 0;
+    }
+}
+
+/// <summary>
+/// 实体基类。
+/// </summary>
+public abstract class EntityBase : EntityBaseId
+{
     /// <summary>
     /// 创建时间
     /// </summary>
@@ -23,9 +38,4 @@ public abstract class BaseEntity
     /// </summary>
     [DisplayName("更新时间")]
     public DateTime? UpdateTime { get; set; }
-
-    public bool IsTransient()
-    {
-        return Id <= 0;
-    }
 }

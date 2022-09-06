@@ -3,21 +3,21 @@
 /// <summary>
 /// 用户信息
 /// </summary>
-[Table("User")]
-public sealed class SysUser : BaseEntity
+[SugarTable("sys_user")]
+public sealed class SysUser : EntityBase
 {
     /// <summary>
     /// 用户名
     /// </summary>
-    [NotNull]
     [DisplayName("用户名")]
+    [NotNull]
     public string? UserName { get; set; }
 
     /// <summary>
     /// 密码
     /// </summary>
-    [NotNull]
     [DisplayName("密码")]
+    [NotNull]
     public string? Password { get; set; }
 
     /// <summary>
