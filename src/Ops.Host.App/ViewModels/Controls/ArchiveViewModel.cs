@@ -3,11 +3,15 @@
 public sealed class ArchiveViewModel : AsyncSinglePagedViewModelBase<PtArchive, PtArchiveFilter>, IViewModel
 {
     private readonly IPtArchiveService _archiveService;
+    private readonly StationCacheManager _stationManager;
 
-    public ArchiveViewModel(IPtArchiveService archiveService)
+    public ArchiveViewModel(IPtArchiveService archiveService, StationCacheManager stationManager)
     {
         _archiveService = archiveService;
+        _stationManager = stationManager;
     }
+
+    public List<NameValue> StationDropdownList => _stationManager.Stations;
 
     protected override async Task<PagedList<PtArchive>> OnSearchAsync(int pageIndex, int pageSize)
     {

@@ -3,11 +3,15 @@
 public sealed class InboundViewModel : AsyncSinglePagedViewModelBase<PtInbound, PtInboundFilter>, IViewModel
 {
     private readonly IPtInboundService _inboundService;
+    private readonly StationCacheManager _stationManager;
 
-    public InboundViewModel(IPtInboundService inboundService)
+    public InboundViewModel(IPtInboundService inboundService, StationCacheManager stationManager)
     {
         _inboundService = inboundService;
+        _stationManager = stationManager;
     }
+
+    public List<NameValue> StationDropdownList => _stationManager.Stations;
 
     protected override async Task<PagedList<PtInbound>> OnSearchAsync(int pageIndex, int pageSize)
     {

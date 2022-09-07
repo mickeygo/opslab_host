@@ -5,10 +5,23 @@ namespace Ops.Host.Core.Extensions;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// 添加领域服务对象
+    /// 注册
     /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddHostCore(this IServiceCollection services)
+    {
+        services.AddSqlSugarSetup();
+        services.AddHostCoreServices();
+        services.AddHostCoreManagement();
 
-    public static IServiceCollection AddHostAppServices(this IServiceCollection services)
+        return services;
+    }
+
+    /// <summary>
+    /// 注册领域服务对象。
+    /// </summary>
+    private static IServiceCollection AddHostCoreServices(this IServiceCollection services)
     {
         // 添加 SCADA 服务
         services.AddSingleton<IAlarmService, AlarmService>();
@@ -29,6 +42,21 @@ public static class ServiceCollectionExtensions
             {
                 services.AddTransient(interfaceType, type);
             }
+        }
+
+        return services;
+    }
+
+    /// <summary>
+    /// 注册管理对象。
+    /// </summary>s
+    private static IServiceCollection AddHostCoreManagement(this IServiceCollection services)
+    {
+        var types = typeof(IManager).Assembly.GetTypes()
+            .Where(t => t.IsClass && !t.IsAbstract && !t.IsInterface && typeof(IManager).IsAssignableFrom(t));
+        foreach (var type in types)
+        {
+            services.AddSingleton(type);
         }
 
         return services;

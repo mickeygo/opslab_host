@@ -11,11 +11,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<INoticeForwarder, OpsLocalNoticeForwarder>();
         services.AddSingleton<IReplyForwarder, OpsLocalReplyForwarder>();
 
-        // services
-        services.AddSqlSugarSetup();
-        services.AddHostAppServices();
+        // 注册 Host.Core 服务。
+        services.AddHostCore();
 
-        // viewmodels
+        // 注册 ViewModels
         services.AddViewModel();
 
         return services;

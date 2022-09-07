@@ -25,12 +25,18 @@ public sealed class MdStation : EntityBase
     /// </summary>
     [Required, MaxLength(64)]
     [NotNull]
-    public string? Code { get; set; }
+    public string? StationCode { get; set; }
 
     /// <summary>
     /// 工站名称
     /// </summary>
     [Required, MaxLength(64)]
     [NotNull]
-    public string? Name { get; set; }
+    public string? StationName { get; set; }
+
+    /// <summary>
+    /// 设备信息，会序列化为 Json 存储。
+    /// </summary>
+    [SugarColumn(IsJson = true)]
+    public DeviceInfo? DeviceInfoExt { get; set; }
 }

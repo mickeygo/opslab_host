@@ -1,6 +1,4 @@
-﻿using System.Threading.Channels;
-
-namespace Ops.Host.Core.Management;
+﻿namespace Ops.Host.Core.Management;
 
 /// <summary>
 /// 队列消息

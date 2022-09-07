@@ -25,7 +25,7 @@ internal sealed class MaterialTraceService : IMaterialTraceService
         // 标记物料已解绑
         input.BindingStatus = BindingEnum.Unbind;
         await _materialRep.AsUpdateable(input).UpdateColumns(s => new { s.BindingStatus, s.UpdateTime }).ExecuteCommandAsync();
-
+        
         // 删除关键物料
         await _traceRep.DeleteAsync(s => s.SN == input.SN && s.Barcode == input.Barcode);
     }
