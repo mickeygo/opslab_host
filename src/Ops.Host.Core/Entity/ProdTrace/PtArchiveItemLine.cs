@@ -38,4 +38,11 @@ public class PtArchiveItemLine : EntityBaseId
     /// </summary>
     [SugarColumn(ColumnDescription = "下限值", Length = 12, DecimalDigits = 2)]
     public decimal? Lower { get; set; }
+
+    /// <summary>
+    /// 是否合格。
+    /// </summary>
+    /// <remarks>当有设置上限或下限且在相应范围内时合格</remarks>
+    [SugarColumn(ColumnDescription = "是否合格")]
+    public bool IsPass { get; set; }
 }

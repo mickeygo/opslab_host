@@ -1,6 +1,5 @@
 ﻿using Ops.Host.App.Forwarders;
 using Ops.Host.App.ViewModels;
-using Yitter.IdGenerator;
 
 namespace Ops.Host.App.Extensions;
 
@@ -18,9 +17,6 @@ public static class ServiceCollectionExtensions
 
         // viewmodels
         services.AddViewModel();
-
-        // 设置雪花Id算法机器码
-        YitIdHelper.SetIdGenerator(new IdGeneratorOptions(5));
 
         return services;
     }

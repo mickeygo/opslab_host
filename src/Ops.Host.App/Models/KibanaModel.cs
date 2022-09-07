@@ -16,8 +16,9 @@ public sealed class KibanaModel : ObservableObject
 
     private bool _connectedState;
     /// <summary>
-    /// 设备连接状态
+    /// 设备连接状态。
     /// </summary>
+    /// <remarks>用此方法设置，UI 才能随着数据通过后台更改而同步更新。</remarks>
     public bool ConnectedState
     {
         get => _connectedState;

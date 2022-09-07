@@ -14,6 +14,6 @@ public enum BindingEnum
     /// <summary>
     /// 解绑
     /// </summary>
-    [Description("解绑")]
+    [Description("已解绑")]
     Unbind = 2,
 }

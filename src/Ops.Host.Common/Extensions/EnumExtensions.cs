@@ -125,4 +125,14 @@ public static class EnumExtensions
         var attr = fi!.GetCustomAttribute<DescriptionAttribute>(false);
         return attr?.Description;
     }
+
+    /// <summary>
+    /// 校验类型是否为枚举类型
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static bool IsEnum(Type type)
+    {
+        return type.IsEnum || (type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>) && type.GetGenericArguments()[0].IsEnum);
+    }
 }

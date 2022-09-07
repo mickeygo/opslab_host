@@ -24,6 +24,14 @@ public sealed class PtInbound : EntityBaseId
     public string? StationCode { get; set; }
 
     /// <summary>
+    /// 产品
+    /// </summary>
+    [SugarColumn(ColumnDescription = "产品", Length = 64)]
+    [Description("产品")]
+    [MaxLength(64)]
+    public string? ProductCode { get; set; }
+
+    /// <summary>
     /// 工单号
     /// <para>工单可以不存在。</para>
     /// </summary>

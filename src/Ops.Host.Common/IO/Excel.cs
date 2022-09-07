@@ -291,10 +291,7 @@ public sealed class Excel
         foreach (var prop in props)
         {
             var attr = prop.GetCustomAttribute<DisplayAttribute>();
-            var isEnum = prop!.PropertyType.IsEnum 
-                || (prop!.PropertyType.IsConstructedGenericType 
-                    && prop!.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) 
-                    && prop!.PropertyType.GetGenericArguments()[0].IsEnum);
+            var isEnum = EnumExtensions.IsEnum(prop!.PropertyType);
             columns.Add((attr?.Name ?? prop.Name, prop, isEnum));
         }
 
