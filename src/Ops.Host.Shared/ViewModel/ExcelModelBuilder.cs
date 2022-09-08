@@ -8,13 +8,18 @@ public sealed class ExcelModelBuilder
     /// <summary>
     /// 保存的 Excel 默认名称。
     /// </summary>
+    /// <remarks>默认使用 yyyyMMddHHmmss 格式。</remarks>
     public string? ExcelName { get; set; }
 
     /// <summary>
     /// Excel Sheet 名称。
     /// </summary>
+    /// <remarks>默认使用 ExcelName 名称。</remarks>
     public string? SheetName { get; set; }
 
+    /// <summary>
+    /// Excel 设置。
+    /// </summary>
     public ExcelSettings Settings { get; } = new();
 
     /// <summary>

@@ -135,4 +135,43 @@ public static class EnumExtensions
     {
         return type.IsEnum || (type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>) && type.GetGenericArguments()[0].IsEnum);
     }
+
+    /// <summary>
+    /// 通过值（如 int）转换为枚举类型。
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="InvalidCastException"></exception>
+    public static T Parse<T>(object value)
+        where T : Enum
+    {
+        return (T)Parse(typeof(T), value);
+    }
+
+    /// <summary>
+    /// 通过值（如 int）转换为枚举类型。
+    /// </summary>
+    /// <param name="enumType">类型</param>
+    /// <param name="value">值</param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="InvalidCastException"></exception>
+    public static object Parse(Type enumType, object value)
+    {
+        if (!IsEnum(enumType))
+        {
+            throw new InvalidOperationException($"'{enumType.FullName}' 不是枚举类型");
+        }
+
+        // 注：枚举类型字段必须筛选出字面量（有隐藏字段），且 object 类型之间不能直接进行比较。
+        var name = enumType.GetFields().FirstOrDefault(s => s.IsLiteral && s.GetRawConstantValue()?.ToString() == value.ToString())?.Name;
+        if (name == null)
+        {
+            throw new InvalidCastException($"枚举类型 '{enumType.FullName}' 中没有指定的值 '{value}'");
+        }
+
+        return Enum.Parse(enumType, name);
+    }
 }

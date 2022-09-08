@@ -33,6 +33,7 @@ public sealed class ProcProcessSop : EntityBase
     /// <summary>
     /// SOP 标题
     /// </summary>
+    [DisplayName("标题")]
     [Required, MaxLength(128)]
     [NotNull]
     public string? Title { get; set; }
@@ -40,6 +41,7 @@ public sealed class ProcProcessSop : EntityBase
     /// <summary>
     /// SOP 描述
     /// </summary>
+    [DisplayName("描述")]
     [Required, MaxLength(255)]
     [NotNull]
     public string? Description { get; set; }
@@ -47,6 +49,7 @@ public sealed class ProcProcessSop : EntityBase
     /// <summary>
     /// SOP 资源地址
     /// </summary>
+    [DisplayName("资源地址")]
     [Required, MaxLength(255)]
     [NotNull]
     public string? Url { get; set; }

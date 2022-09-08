@@ -10,6 +10,7 @@ public sealed class SysUser : EntityBase
     /// 用户名
     /// </summary>
     [DisplayName("用户名")]
+    [Required, MaxLength(32)]
     [NotNull]
     public string? UserName { get; set; }
 
@@ -17,6 +18,7 @@ public sealed class SysUser : EntityBase
     /// 密码
     /// </summary>
     [DisplayName("密码")]
+    [Required, MaxLength(32)]
     [NotNull]
     public string? Password { get; set; }
 
@@ -24,6 +26,7 @@ public sealed class SysUser : EntityBase
     /// 显示名
     /// </summary>
     [DisplayName("显示名")]
+    [MaxLength(64)]
     public string? DisplayName { get; set; }
 
     /// <summary>

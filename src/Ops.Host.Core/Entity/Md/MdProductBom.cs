@@ -20,16 +20,18 @@ public sealed class MdProductBom : EntityBase
     /// <summary>
     /// 产线
     /// </summary>
+    [DisplayName("产线")]
     [Required, MaxLength(64)]
     [NotNull]
-    public string? Line { get; set; }
+    public string? LineCode { get; set; }
 
     /// <summary>
     /// 工站
     /// </summary>
+    [DisplayName("工站")]
     [Required, MaxLength(64)]
     [NotNull]
-    public string? Station { get; set; }
+    public string? StationCode { get; set; }
 
     /// <summary>
     /// BOM 详细

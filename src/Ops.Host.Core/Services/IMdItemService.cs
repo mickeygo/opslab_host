@@ -9,7 +9,7 @@ public interface IMdItemService : IDomainService
 
     Task<PagedList<MdItem>> GetPagedListAsync(MdItemFilter filter, int pageIndex, int pageSize);
 
-    Task<bool> InsertOrUpdateAsync(MdItem input);
+    Task<(bool ok, string err)> InsertOrUpdateAsync(MdItem input);
 
     Task<bool> DeleteAsync(long id);
 }

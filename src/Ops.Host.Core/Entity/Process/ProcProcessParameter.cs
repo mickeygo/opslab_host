@@ -21,6 +21,7 @@ public sealed class ProcProcessParameter : EntityBase
     /// 标签。
     /// <para>若源于 PLC，需与 PLC Tag 一致。对于数组可重复。</para>
     /// </summary>
+    [DisplayName("标签")]
     [Required, MaxLength(64)]
     [NotNull]
     public string? Tag { get; set; }
@@ -29,6 +30,7 @@ public sealed class ProcProcessParameter : EntityBase
     /// 参数名称。
     /// <para>对于数组可重复。</para>
     /// </summary>
+    [DisplayName("参数名称")]
     [Required, MaxLength(64)]
     [NotNull]
     public string? Name { get; set; }
@@ -49,12 +51,14 @@ public sealed class ProcProcessParameter : EntityBase
     /// <summary>
     /// 上限值
     /// </summary>
+    [DisplayName("上限值")]
     [SugarColumn(ColumnDescription = "上限值", Length = 12, DecimalDigits = 2)]
     public decimal? Higher { get; set; }
 
     /// <summary>
     /// 下限值
     /// </summary>
+    [DisplayName("下限值")]
     [SugarColumn(ColumnDescription = "下限值", Length = 12, DecimalDigits = 2)]
     public decimal? Lower { get; set; }
 }

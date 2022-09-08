@@ -9,13 +9,12 @@ public sealed class UserViewModel : SinglePagedViewModelBase<SysUser, UserFilter
         _userService = userService;
     }
 
-    protected override (bool ok, string? err) Save(SysUser data)
+    protected override (bool ok, string? err) OnSave(SysUser data)
     {
-        var ok = _userService.InsertOrUpdateUser(data);
-        return (ok, "");
+        return _userService.InsertOrUpdateUser(data);
     }
 
-    protected override (bool ok, string? err) Delete(SysUser data)
+    protected override (bool ok, string? err) OnDelete(SysUser data)
     {
         var ok = _userService.DeleteUser(data);
         return (ok, "");
@@ -23,13 +22,9 @@ public sealed class UserViewModel : SinglePagedViewModelBase<SysUser, UserFilter
 
     protected override void OnExcelCreating(ExcelModelBuilder builder)
     {
-        builder.ExcelName = "用户测试示例";
-        builder.SheetName = "用户测试示例";
-        builder.Settings.Excludes = new string[]
-        {
-            nameof(SysUser.Id),
-            nameof(SysUser.Password),
-        };
+        builder.ExcelName = "用户信息";
+        builder.SheetName = "用户";
+        builder.Settings.Excludes.Add(nameof(SysUser.Password));
 
         //builder.Header = new()
         //{
@@ -68,7 +63,7 @@ public sealed class UserViewModel : SinglePagedViewModelBase<SysUser, UserFilter
 
     protected override void OnPrintCreating(PrintModelBuilder builder)
     {
-        builder.TemplateUrl = "./UserControls/Controls/UserDocument.xaml";
+        builder.TemplateUrl = "./UserControls/Document/UserDocument.xaml";
         builder.DataContext = new UserDocumentViewModel
         {
             Title = "用户测试示例",

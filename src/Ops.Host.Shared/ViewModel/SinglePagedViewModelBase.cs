@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using HandyControl.Controls;
+﻿using HandyControl.Controls;
 using HandyControl.Data;
 
 namespace Ops.Host.Shared.ViewModel;
@@ -19,42 +18,18 @@ public abstract class SinglePagedViewModelBase<TDataSource> : SinglePagedViewMod
 /// </summary>
 /// <typeparam name="TDataSource">数据源类型</typeparam>
 /// <typeparam name="TQueryFilter">数据查询筛选类型</typeparam>
-public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : ObservableObject
+public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : PagedViewModelBase<TDataSource, TQueryFilter>
     where TDataSource : class, new()
     where TQueryFilter : class, new()
 {
-    private long _pageCount;
-    private ObservableCollection<TDataSource>? _dataSourceList;
-    private TQueryFilter _queryFilter = new();
-    private TDataSource? _selectedItem;
-    private bool _isOpenSidebar = false;
-    private bool _isAdding = false;
-
-    /// <summary>
-    /// 每页数量，默认 20 条。
-    /// </summary>
-    public int PageSize { get; set; } = 20;
-
-    /// <summary>
-    /// 获取或设置控件来源
-    /// </summary>
-    public Control? Owner { get; set; }
-
-    /// <summary>
-    /// 已根据筛选条件查询的所有数据。
-    /// </summary>
-    protected List<TDataSource> SearchedAllData { get; private set; } = new();
-
     protected SinglePagedViewModelBase()
     {
         QueryCommand = new RelayCommand(() => DoSearch(1, PageSize));
         PageUpdatedCommand = new RelayCommand<FunctionEventArgs<int>>((e) => PageUpdated(e!));
 
-        AddCommand = new RelayCommand(Add);
-        EditCommand = new RelayCommand<TDataSource>(Edit!);
         SaveCommand = new RelayCommand(DoSave);
         DeleteCommand = new RelayCommand<TDataSource>(DoDelete);
-       
+
         DownloadCommand = new RelayCommand(Download);
         PrintCommand = new RelayCommand(Print);
     }
@@ -67,108 +42,6 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
         DoSearch(1, PageSize);
     }
 
-    #region 绑定属性
-
-    /// <summary>
-    /// 总页数。
-    /// </summary>
-    public long PageCount
-    {
-        get => _pageCount;
-        set => SetProperty(ref _pageCount, value);
-    }
-
-    /// <summary>
-    /// 数据源。
-    /// </summary>
-    public ObservableCollection<TDataSource>? DataSourceList
-    {
-        get => _dataSourceList;
-        set => SetProperty(ref _dataSourceList, value);
-    }
-
-    /// <summary>
-    /// 查询筛选器。
-    /// </summary>
-    public TQueryFilter QueryFilter
-    {
-        get => _queryFilter;
-        set => SetProperty(ref _queryFilter, value);
-    }
-
-    /// <summary>
-    /// 选中的数据行
-    /// </summary>
-    public TDataSource? SelectedItem
-    {
-        get => _selectedItem;
-        set => SetProperty(ref _selectedItem, value);
-    }
-
-    /// <summary>
-    /// 是否开启侧边编辑栏
-    /// </summary>
-    public bool IsOpenSidebar
-    {
-        get => _isOpenSidebar;
-        set => SetProperty(ref _isOpenSidebar, value);
-    }
-
-    /// <summary>
-    /// 是否为新增动作，否则为编辑。
-    /// </summary>
-    public bool IsAdding
-    {
-        get => _isAdding;
-        set => SetProperty(ref _isAdding, value);
-    }
-
-    #endregion
-
-    #region 绑定事件
-
-    /// <summary>
-    /// 数据查询事件。
-    /// </summary>
-    public ICommand QueryCommand { get; }
-
-    /// <summary>
-    /// 新增
-    /// </summary>
-    public ICommand AddCommand { get; }
-
-    /// <summary>
-    /// 编辑
-    /// </summary>
-    public ICommand EditCommand { get; }
-
-    /// <summary>
-    /// 保存（新增/更新）的数据
-    /// </summary>
-    public ICommand SaveCommand { get; }
-
-    /// <summary>
-    /// 删除
-    /// </summary>
-    public ICommand DeleteCommand { get; }
-
-    /// <summary>
-    /// 数据查询分页事件。
-    /// </summary>
-    public ICommand PageUpdatedCommand { get; }
-
-    /// <summary>
-    /// 导出查询的数据。
-    /// </summary>
-    public ICommand DownloadCommand { get; }
-
-    /// <summary>
-    /// 打印查询出的数据。
-    /// </summary>
-    public ICommand PrintCommand { get; }
-
-    #endregion
-
     /// <summary>
     /// 查询数据。
     /// </summary>
@@ -176,114 +49,45 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
     /// <param name="pageSize">每页数量</param>
     protected abstract PagedList<TDataSource> OnSearch(int pageIndex, int pageSize);
 
-    private void Add()
-    {
-        SelectedItem = new();
-        IsOpenSidebar = true;
-        IsAdding = true;
-    }
-
-    private void Edit(TDataSource data)
-    {
-        SelectedItem = data;
-        IsOpenSidebar = true;
-        IsAdding = false;
-    }
-
     /// <summary>
     /// 更新/新增数据。
     /// 根据实体 Id 判断是新增还是更新的数据。
     /// </summary>
     /// <returns></returns>
-    protected virtual (bool ok, string? err) Save(TDataSource data)
+    protected virtual (bool ok, string? err) OnSave(TDataSource data)
     {
         return (true, default);
     }
 
     private void DoSave()
     {
-        var (ok, err) = Save(SelectedItem!);
+        OnBeforeSave(SelectedItem!);
+
+        bool ok;
+        string? err;
+        (ok, err) = OnValidateModel(SelectedItem!);
         if (ok)
         {
-            Growl.Info(new GrowlInfo
-            {
-                Message = "数据更新成功",
-                WaitTime = 1,
-            });
-
-            if (IsAdding)
-            {
-                DataSourceList?.Add(SelectedItem!);
-            }
-
-            IsOpenSidebar = false;
+            (ok, err) = OnSave(SelectedItem!);
         }
-        else
-        {
-            Growl.Error($"更新失败：{err ?? ""}");
-        }
+
+        InnerAfterSave(ok, err);
+
+        OnAfterSave(SelectedItem!);
     }
 
     /// <summary>
     /// 删除数据、
     /// </summary>
     /// <param name="data"></param>
-    protected virtual (bool ok, string? err) Delete(TDataSource data)
+    protected virtual (bool ok, string? err) OnDelete(TDataSource data)
     {
         return (true, default);
     }
 
     private void DoDelete(TDataSource? data)
     {
-        if (data == null)
-        {
-            Growl.Info(new GrowlInfo
-            {
-                Message = "没有选择要删除的数据",
-                WaitTime = 1,
-            });
-            return;
-        }
-
-        Growl.Ask("确定要删除？", isConfirmed =>
-        {
-            if (isConfirmed)
-            {
-                var (ok, err) = Delete(data);
-                if (ok)
-                {
-                    DataSourceList?.Remove(data);
-                    Growl.Info(new GrowlInfo
-                    {
-                        Message = "数据删除成功",
-                        WaitTime = 1,
-                    });
-                }
-                else
-                {
-                    Growl.Error($"删除失败: {err ?? ""}");
-                }
-            }
-
-            return true;
-        });
-    }
-
-    /// <summary>
-    /// Excel 下载参数设置。
-    /// </summary>
-    /// <param name="builder"></param>
-    protected virtual void OnExcelCreating(ExcelModelBuilder builder)
-    {
-
-    }
-
-    /// <summary>
-    /// 打印参数设置。
-    /// </summary>
-    protected virtual void OnPrintCreating(PrintModelBuilder builder)
-    {
-
+        InnerDelete(data, OnDelete!);
     }
 
     private void PageUpdated(FunctionEventArgs<int> e)
@@ -296,32 +100,11 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
         try
         {
             DoSearchedMaxData();
-
-            ExcelModelBuilder builder = new();
-            OnExcelCreating(builder);
-            builder.ExcelName ??= DateTime.Now.ToString("yyyyMMddHHmmss");
-            builder.SheetName ??= Path.GetFileNameWithoutExtension(builder.ExcelName);
-
-            SaveFileDialog saveFile = new()
+            var (confirm, filename, exportData, builder) = InnerDownload();
+            if (confirm)
             {
-                Filter = "导出文件 （*.xlsx）|*.xlsx",
-                FilterIndex = 0,
-                FileName = builder.ExcelName!,
-            };
-
-            if (saveFile.ShowDialog() != true)
-            {
-                return;
+                Excel.Export(filename!, builder.SheetName!, exportData!, builder.Settings);
             }
-
-            var fileName = saveFile.FileName; 
-            ExcelExportData<TDataSource> exportData = new()
-            {
-                Header = builder.Header,
-                Body = SearchedAllData,
-                Footer = builder.Footer,
-            };
-            Excel.Export(fileName, builder.SheetName, exportData, builder.Settings);
         }
         catch (Exception ex)
         {
@@ -331,63 +114,14 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
 
     private void Print()
     {
-        PrintModelBuilder builder = new();
         try
         {
             DoSearchedMaxData();
-            OnPrintCreating(builder);
-
-            if (builder.Mode == PrintModelBuilder.PrintMode.Preview)
-            {
-                // TODO：若是打开失败后，关闭主窗体应用程序依旧存在的 bug。
-                PrintPreviewWindow? previewWnd = null;
-                try
-                {
-                    previewWnd = new(builder.TemplateUrl!, builder.DataContext, builder.Render)
-                    {
-                        Owner = Application.Current.MainWindow,
-                        ShowInTaskbar = false
-                    };
-                    previewWnd.ShowDialog();
-                }
-                catch
-                {
-                    previewWnd?.Close();
-                    throw;
-                }
-            }
-            else if (builder.Mode == PrintModelBuilder.PrintMode.Dialog)
-            {
-                PrintDialog pdlg = new();
-                if (pdlg.ShowDialog() == true)
-                {
-                    FlowDocument doc = PrintPreviewWindow.LoadDocument(builder.TemplateUrl!, builder.DataContext, builder.Render);
-                    (Owner ?? Application.Current.MainWindow).Dispatcher.BeginInvoke(
-                        new PrintDelegate(DoPrint), 
-                        DispatcherPriority.ApplicationIdle, 
-                        pdlg, 
-                        ((IDocumentPaginatorSource)doc).DocumentPaginator);
-                }
-            }
-            else if (builder.Mode == PrintModelBuilder.PrintMode.Direct)
-            {
-                PrintDialog pdlg = new();
-                FlowDocument doc = PrintPreviewWindow.LoadDocument(builder.TemplateUrl!, builder.DataContext, builder.Render);
-                (Owner ?? Application.Current.MainWindow)?.Dispatcher.BeginInvoke(
-                    new PrintDelegate(DoPrint), 
-                    DispatcherPriority.ApplicationIdle, 
-                    pdlg, 
-                    ((IDocumentPaginatorSource)doc).DocumentPaginator);
-            }
+            InnerPrint();
         }
         catch (Exception ex)
         {
             Growl.Error($"数据打印失败, 错误：{ex.Message}");
-        }
-
-        void DoPrint(PrintDialog pdlg, DocumentPaginator paginator)
-        {
-            pdlg.PrintDocument(paginator, builder.DocumentDescription);
         }
     }
 

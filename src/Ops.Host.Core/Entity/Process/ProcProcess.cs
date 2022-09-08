@@ -9,6 +9,7 @@ public sealed class ProcProcess : EntityBase
     /// <summary>
     /// 工序编码
     /// </summary>
+    [DisplayName("工序编码")]
     [Required, MaxLength(64)]
     [NotNull]
     public string? Code { get; set; }
@@ -16,6 +17,7 @@ public sealed class ProcProcess : EntityBase
     /// <summary>
     /// 工序名称
     /// </summary>
+    [DisplayName("工序名称")]
     [Required, MaxLength(64)]
     [NotNull]
     public string? Name { get; set; }
@@ -23,6 +25,7 @@ public sealed class ProcProcess : EntityBase
     /// <summary>
     /// 备注
     /// </summary>
+    [DisplayName("备注")]
     [MaxLength(255)]
     public string? Remark { get; set; }
 

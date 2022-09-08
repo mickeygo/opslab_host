@@ -23,9 +23,16 @@ internal sealed class MdItemService : IMdItemService
             .ToPagedListAsync(pageIndex, pageSize);
     }
    
-    public async Task<bool> InsertOrUpdateAsync(MdItem input)
+    public async Task<(bool ok, string err)> InsertOrUpdateAsync(MdItem input)
     {
-        return await _itemRep.InsertOrUpdateAsync(input);
+        // 新增数据，检查用户是否已存在
+        if (input.IsTransient() && _itemRep.IsAny(s => s.Code == input.Code))
+        {
+            return (false, $"物料代码 '{input.Code}' 已存在");
+        }
+
+        var ok = await _itemRep.InsertOrUpdateAsync(input);
+        return (ok, "");
     }
 
     public async Task<bool> DeleteAsync(long id)

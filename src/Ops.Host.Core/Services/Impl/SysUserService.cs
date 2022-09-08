@@ -42,9 +42,16 @@ internal sealed class SysUserService : ISysUserService
            .ToPagedListAsync(pageIndex, pageSize);
     }
 
-    public bool InsertOrUpdateUser(SysUser input)
+    public (bool ok, string err) InsertOrUpdateUser(SysUser input)
     {
-        return _userRep.InsertOrUpdate(input);
+        // 新增数据，检查用户是否已存在
+        if (input.IsTransient() && _userRep.IsAny(s => s.UserName == input.UserName))
+        {
+            return (false, $"{input.UserName} 已存在");
+        }
+
+        var ok = _userRep.InsertOrUpdate(input);
+        return (ok, "");
     }
 
     public bool DeleteUser(SysUser input)

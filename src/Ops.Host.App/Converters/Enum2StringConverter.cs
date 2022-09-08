@@ -28,6 +28,22 @@ public sealed class Enum2StringConverter : IValueConverter
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        throw new NotImplementedException();
+        if (targetType.IsEnum && parameter is string text)
+        {
+            string[] array = text.Split(';');
+            int n = -1;
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i].Equals(value.ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    n = i;
+                    break;
+                }
+            }
+
+            return EnumExtensions.Parse(targetType, n);
+        }
+
+        return value;
     }
 }

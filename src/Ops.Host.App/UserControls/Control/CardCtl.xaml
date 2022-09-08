@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Ops.Host.App.UserControls.UserCtl"
+﻿<UserControl x:Class="Ops.Host.App.UserControls.CardCtl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -22,26 +22,25 @@
                             <TextBox Width="160" 
                                      hc:InfoElement.TitleWidth="50"
                                      hc:InfoElement.TitlePlacement="Left" 
-                                     hc:InfoElement.Title="用户名"
+                                     hc:InfoElement.Title="卡号"
                                      Style="{StaticResource TextBoxExtend}"
-                                     Text="{Binding QueryFilter.UserName}"/>
-                            <hc:DatePicker ShowClearButton="True" 
-                                           Width="200" 
-                                           hc:InfoElement.TitleWidth="32" 
-                                           hc:InfoElement.TitlePlacement="Left" 
-                                           hc:InfoElement.Title="时间"
-                                           Style="{StaticResource DatePickerExtend}"
-                                           SelectedDate="{Binding QueryFilter.CreateTimeStart}"/>
-                            <hc:DatePicker ShowClearButton="True" 
-                                           Width="200" 
-                                           hc:InfoElement.TitleWidth="20" 
-                                           hc:InfoElement.TitlePlacement="Left" 
-                                           hc:InfoElement.Title="~"
-                                           Style="{StaticResource DatePickerExtend}"
-                                           SelectedDate="{Binding QueryFilter.CreateTimeEnd}"/>
+                                     Text="{Binding QueryFilter.CardNo}"/>
+                            <TextBox Width="160" 
+                                     hc:InfoElement.TitleWidth="50"
+                                     hc:InfoElement.TitlePlacement="Left" 
+                                     hc:InfoElement.Title="持卡人"
+                                     Style="{StaticResource TextBoxExtend}"
+                                     Text="{Binding QueryFilter.Owner}"/>
+                            <ComboBox Width="180" 
+                                      ItemsSource="{Binding QueryLevelDropdownList}"
+                                      hc:InfoElement.TitleWidth="60" 
+                                      hc:InfoElement.TitlePlacement="Left"
+                                      hc:InfoElement.Title="卡号等级"
+                                      SelectedValuePath="Value"
+                                      DisplayMemberPath="Name"
+                                      Style="{StaticResource ComboBoxExtend}"
+                                      SelectedValue="{Binding QueryFilter.CardLevel}"/>
                             <Button Content="查询" Command="{Binding QueryCommand}"/>
-                            <Button Content="导出" Command="{Binding DownloadCommand}"/>
-                            <Button Content="打印" Command="{Binding PrintCommand}"/>
                         </hc:UniformSpacingPanel>
                     </StackPanel>
                 </ToolBar>
@@ -58,9 +57,12 @@
                           IsReadOnly="True"
                           ItemsSource="{Binding DataSourceList}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding UserName}" Width="120" Header="用户名"/>
-                        <DataGridTextColumn Binding="{Binding DisplayName}" Width="180" Header="显示名"/>
-                        <DataGridTextColumn Binding="{Binding CreateTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="*" Header="创建时间"/>
+                        <DataGridTextColumn Binding="{Binding CardNo}" Width="120" Header="卡号"/>
+                        <DataGridTextColumn Binding="{Binding CardLevel, Converter={StaticResource EnumDescriptionConverter}}" Width="160" Header="等级"/>
+                        <DataGridTextColumn Binding="{Binding Owner}" Width="120" Header="持卡人"/>
+                        <DataGridTextColumn Binding="{Binding Remark}" Width="180" Header="备注"/>
+                        <DataGridTextColumn Binding="{Binding Status, Converter={StaticResource EnumDescriptionConverter}}" Width="80" Header="状态"/>
+                        <DataGridTextColumn Binding="{Binding UpdateTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="*" Header="更新时间"/>
                         <DataGridTemplateColumn Width="120" Header="操作">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -101,15 +103,43 @@
                                         <TextBox Width="340"
                                                  hc:InfoElement.TitleWidth="60" 
                                                  hc:InfoElement.TitlePlacement="Left"
-                                                 hc:InfoElement.Title="用户名"
+                                                 hc:InfoElement.Title="卡号"
+                                                 hc:InfoElement.Necessary="True"
+                                                 IsEnabled="{Binding IsAdding}"
                                                  Style="{StaticResource TextBoxExtend}"
-                                                 Text="{Binding SelectedItem.UserName}"/>
+                                                 Text="{Binding SelectedItem.CardNo}"/>
+                                        <ComboBox Width="340" 
+                                                  Margin="0,10,0,0"
+                                                  ItemsSource="{Binding LevelDropdownList}"
+                                                  hc:InfoElement.TitleWidth="60" 
+                                                  hc:InfoElement.TitlePlacement="Left"
+                                                  hc:InfoElement.Title="等级"
+                                                  hc:InfoElement.Necessary="True"
+                                                  SelectedValuePath="Value"
+                                                  DisplayMemberPath="Name"
+                                                  Style="{StaticResource ComboBoxExtend}"
+                                                  SelectedValue="{Binding SelectedItem.CardLevel}"/>
                                         <TextBox Width="340" Margin="0,10,0,0"
                                                  hc:InfoElement.TitleWidth="60" 
                                                  hc:InfoElement.TitlePlacement="Left"
-                                                 hc:InfoElement.Title="显示名"
+                                                 hc:InfoElement.Title="持卡人"
                                                  Style="{StaticResource TextBoxExtend}"
-                                                 Text="{Binding SelectedItem.DisplayName}"/>
+                                                 Text="{Binding SelectedItem.Owner}"/>
+                                        <TextBox Width="340" Margin="0,10,0,0"
+                                                 hc:InfoElement.TitleWidth="60" 
+                                                 hc:InfoElement.TitlePlacement="Left"
+                                                 hc:InfoElement.Title="备注"
+                                                 Style="{StaticResource TextBoxExtend}"
+                                                 Text="{Binding SelectedItem.Remark}"/>
+                                        <GroupBox Width="340" Margin="0,10,0,0"
+                                                  hc:InfoElement.TitleWidth="60" 
+                                                  hc:InfoElement.TitlePlacement="Left" 
+                                                  Style="{StaticResource GroupBoxOriginal}" 
+                                                  Header="状态">
+                                            <ToggleButton HorizontalAlignment="Left" 
+                                                          Style="{StaticResource ToggleButtonSwitch}"
+                                                          IsChecked="{Binding SelectedItem.Status,Converter={StaticResource Enum2StringConverter},ConverterParameter=';True;False'}"/>
+                                        </GroupBox>
                                     </hc:SimpleStackPanel>
                                 </hc:UniformSpacingPanel>
                             </hc:SimpleStackPanel>

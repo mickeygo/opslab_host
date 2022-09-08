@@ -9,6 +9,7 @@ public class SysDictData : EntityBase
     /// <summary>
     /// 分类编码
     /// </summary>
+    [DisplayName("分类编码")]
     [Required, MaxLength(64)]
     [NotNull]
     public string? Code { get; set; }
@@ -16,12 +17,14 @@ public class SysDictData : EntityBase
     /// <summary>
     /// 类型描述
     /// </summary>
+    [DisplayName("类型描述")]
     [Required, MaxLength(64)]
     public string? CodeDesc { get; set; }
 
     /// <summary>
     /// 字典名称
     /// </summary>
+    [DisplayName("字典名称")]
     [Required, MaxLength(64)]
     [NotNull]
     public string? Name { get; set; }
@@ -29,6 +32,7 @@ public class SysDictData : EntityBase
     /// <summary>
     /// 字典使用值
     /// </summary>
+    [DisplayName("字典值")]
     [Required, MaxLength(128)]
     [NotNull]
     public string? Value { get; set; }
@@ -41,6 +45,7 @@ public class SysDictData : EntityBase
     /// <summary>
     /// 备注
     /// </summary>
+    [DisplayName("备注")]
     [MaxLength(128)]
     public string? Remark { get; set; }
 

@@ -15,7 +15,7 @@ public interface ISysUserService : IDomainService
 
     Task<PagedList<SysUser>> GetPagedListAsync(UserFilter filter, int pageIndex, int pageSize);
 
-    bool InsertOrUpdateUser(SysUser input);
+    (bool ok, string err) InsertOrUpdateUser(SysUser input);
 
     bool DeleteUser(SysUser input);
 }

@@ -21,6 +21,7 @@ public sealed class ProcProcessRoute : EntityBase
     /// <summary>
     /// 工艺路线代码
     /// </summary>
+    [DisplayName("工艺路线代码")]
     [SugarColumn(ColumnDescription = "工艺路线代码", Length = 64)]
     [Required, MaxLength(64)]
     [NotNull]
@@ -29,6 +30,7 @@ public sealed class ProcProcessRoute : EntityBase
     /// <summary>
     /// 工艺路线名称
     /// </summary>
+    [DisplayName("工艺路线名称")]
     [SugarColumn(ColumnDescription = "工艺路线名称", Length = 64)]
     [Required, MaxLength(64)]
     [NotNull]

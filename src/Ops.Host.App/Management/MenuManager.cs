@@ -20,5 +20,7 @@ public sealed class MenuManager
         new MenuItemModel("", "进站记录", typeof(InboundCtl), false),
         new MenuItemModel("", "过站记录", typeof(ArchiveCtl), false),
         new MenuItemModel("", "物料追溯", typeof(MaterialTraceCtl), false),
+        new MenuItemModel("", "卡号管理", typeof(CardCtl), false),
+        new MenuItemModel("", "刷卡记录", typeof(CardRecordCtl), false),
     };
 }

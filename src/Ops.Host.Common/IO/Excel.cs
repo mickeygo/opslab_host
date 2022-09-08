@@ -21,14 +21,15 @@ public sealed class ExcelSettings
     public bool IstBorderStyleTine { get; set; } = true;
 
     /// <summary>
-    /// 要排除的列名，列名与类型的属性名一致，若 includes 不为 null，会在其基础上再进行排除。
+    /// 添加要排除的列名，列名与类型的属性名一致，若 includes 不为 Empty，会在其基础上再进行排除。
     /// </summary>
-    public string[]? Excludes { get; set; }
+    /// <remarks>其中默认包含 Id 字段。</remarks>
+    public List<string> Excludes { get; } = new() { "Id" };
 
     /// <summary>
-    /// 要包含的列名，列名与类型的属性名一致，若不为 null，会优先使用该选项进行筛选。
+    /// 添加要包含的列名，列名与类型的属性名一致，若不为 Empty，会优先使用该选项进行筛选。
     /// </summary>
-    public string[]? Includes { get; set; }
+    public List<string> Includes { get; } = new(0);
 }
 
 /// <summary>
@@ -110,7 +111,7 @@ public sealed class Excel
 
     /// <summary>
     /// 导出 Excel。
-    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
+    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayNameAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="path">路径</param>
@@ -132,7 +133,7 @@ public sealed class Excel
 
     /// <summary>
     /// 导出 Excel。
-    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
+    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayNameAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="path">路径</param>
@@ -154,7 +155,7 @@ public sealed class Excel
 
     /// <summary>
     /// 导出 Excel。
-    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
+    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayNameAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="fileStream">文件流</param>
@@ -171,7 +172,7 @@ public sealed class Excel
 
     /// <summary>
     /// 导出 Excel。
-    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
+    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayNameAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
     /// </summary>
     public static async Task ExportAsync<T>(Stream fileStream, string sheetName, IEnumerable<T> data, ExcelSettings? settings = default)
     {
@@ -183,7 +184,7 @@ public sealed class Excel
 
     /// <summary>
     /// 导出 Excel。
-    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
+    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayNameAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
     /// </summary>
     public static void Export<T>(string path, string sheetName, ExcelExportData<T> data, ExcelSettings? settings = default)
     {
@@ -200,7 +201,7 @@ public sealed class Excel
 
     /// <summary>
     /// 导出 Excel。
-    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
+    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayNameAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
     /// </summary>
     public static async Task ExportAsync<T>(string path, string sheetName, ExcelExportData<T> data, ExcelSettings? settings = default)
     {
@@ -278,21 +279,21 @@ public sealed class Excel
         // 考虑导出功能使用频率低，因此不使用缓存机制。
         List<(string DisplayName, PropertyInfo PropInfo, bool IsEnum)> columns = new();
         var props = typeof(T).GetProperties();
-        if (settings.Includes?.Any() == true)
+        if (settings.Includes.Any())
         {
             props = props.Where(s => settings.Includes.Contains(s.Name)).ToArray();
         }
 
-        if (settings.Excludes?.Any() == true)
+        if (settings.Excludes.Any())
         {
             props = props.Where(s => !settings.Excludes.Contains(s.Name)).ToArray();
         }
 
         foreach (var prop in props)
         {
-            var attr = prop.GetCustomAttribute<DisplayAttribute>();
+            var attr = prop.GetCustomAttribute<DisplayNameAttribute>();
             var isEnum = EnumExtensions.IsEnum(prop!.PropertyType);
-            columns.Add((attr?.Name ?? prop.Name, prop, isEnum));
+            columns.Add((attr?.DisplayName ?? prop.Name, prop, isEnum));
         }
 
         // 构建头

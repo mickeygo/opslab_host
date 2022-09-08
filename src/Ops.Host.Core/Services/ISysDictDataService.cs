@@ -9,7 +9,7 @@ public interface ISysDictDataService : IDomainService
 
     Task<PagedList<SysDictData>> GetPagedListAsync(SysDictDataFilter filter, int pageIndex, int pageSize);
 
-    Task<bool> InsertOrUpdateDictAsync(SysDictData input);
+    Task<(bool ok, string err)> InsertOrUpdateDictAsync(SysDictData input);
 
     Task<bool> DeleteDictAsync(long id);
 }
