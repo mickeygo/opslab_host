@@ -1,4 +1,4 @@
-﻿namespace Ops.Host.App.Config;
+﻿namespace Ops.Host.Shared.Options;
 
 public sealed class OpsHostOptions
 {

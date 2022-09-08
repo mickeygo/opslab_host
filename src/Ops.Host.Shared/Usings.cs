@@ -19,6 +19,11 @@ global using System.Windows.Data;
 global using System.Windows.Media;
 global using System.Windows.Input;
 
+global using System.IO.Packaging;
+global using System.Windows.Xps.Packaging;
+global using System.Windows.Xps;
+global using System.Windows.Threading;
+
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
@@ -28,22 +33,9 @@ global using Microsoft.Extensions.Options;
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
 
-global using Ops.Exchange;
-global using Ops.Exchange.DependencyInjection;
-global using Ops.Exchange.Forwarder;
-global using Ops.Exchange.Management;
-global using Ops.Exchange.Model;
-
 global using Ops.Host.Common;
 global using Ops.Host.Common.Extensions;
-
-global using Ops.Host.Core;
-global using Ops.Host.Core.Dtos;
-global using Ops.Host.Core.Extensions;
-global using Ops.Host.Core.Entity;
-global using Ops.Host.Core.Management;
-global using Ops.Host.Core.Services;
+global using Ops.Host.Common.IO;
 
 global using Ops.Host.Shared.Component;
-global using Ops.Host.Shared.Options;
-global using Ops.Host.Shared.ViewModel;
+

@@ -2,7 +2,7 @@
 
 namespace Ops.Host.App.Converters;
 
-public class String2BrushConverter : IValueConverter
+public sealed class String2BrushConverter : IValueConverter
 {
     public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {

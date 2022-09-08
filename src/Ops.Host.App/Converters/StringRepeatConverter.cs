@@ -1,6 +1,6 @@
 ﻿namespace Ops.Host.App.Converters;
 
-public class StringRepeatConverter : IValueConverter
+public sealed class StringRepeatConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {

@@ -29,7 +29,7 @@ public sealed class MdItem : EntityBase
     /// <summary>
     /// 物料属性。
     /// </summary>
-    public MaterialAttrEnum Attr { get; set; }
+    public MaterialAttrEnum Attr { get; set; } = MaterialAttrEnum.Critical;
 
     /// <summary>
     /// 条码规则，多个以逗号分隔。

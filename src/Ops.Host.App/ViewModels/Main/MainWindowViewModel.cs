@@ -1,6 +1,5 @@
 ﻿using HandyControl.Controls;
 using Ops.Exchange.Monitors;
-using Ops.Host.App.Config;
 using Ops.Host.App.Management;
 using Ops.Host.App.Models;
 

@@ -1,5 +1,4 @@
 ﻿using Serilog;
-using Ops.Host.App.Config;
 using Ops.Host.App.Extensions;
 
 namespace Ops.Host.App;

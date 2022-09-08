@@ -2,9 +2,9 @@
 
 namespace Ops.Host.App.UserControls;
 
-public partial class MaterialTrace : UserControl
+public partial class MaterialTraceCtl : UserControl
 {
-    public MaterialTrace()
+    public MaterialTraceCtl()
     {
         InitializeComponent();
         DataContext = App.Current.Services.GetRequiredService<MaterialTraceViewModel>();

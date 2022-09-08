@@ -1,4 +1,4 @@
-﻿namespace Ops.Host.App.Components;
+﻿namespace Ops.Host.Shared.Component;
 
 /// <summary>
 /// 文档呈现器。

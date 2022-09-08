@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Ops.Host.App.UserControls.User"
+﻿<UserControl x:Class="Ops.Host.App.UserControls.DictDataCtl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -19,29 +19,16 @@
                     <Separator Margin="10,0,0,0"/>
                     <StackPanel Orientation="Horizontal" Margin="20,2,0,0">
                         <hc:UniformSpacingPanel Spacing="10">
-                            <TextBox Width="160" 
-                                     hc:InfoElement.TitleWidth="50"
-                                     hc:InfoElement.TitlePlacement="Left" 
-                                     hc:InfoElement.Title="用户名"
-                                     Style="{StaticResource TextBoxExtend}"
-                                     Text="{Binding QueryFilter.UserName}"/>
-                            <hc:DatePicker ShowClearButton="True" 
-                                           Width="200" 
-                                           hc:InfoElement.TitleWidth="32" 
-                                           hc:InfoElement.TitlePlacement="Left" 
-                                           hc:InfoElement.Title="时间"
-                                           Style="{StaticResource DatePickerExtend}"
-                                           SelectedDate="{Binding QueryFilter.CreateTimeStart}"/>
-                            <hc:DatePicker ShowClearButton="True" 
-                                           Width="200" 
-                                           hc:InfoElement.TitleWidth="20" 
-                                           hc:InfoElement.TitlePlacement="Left" 
-                                           hc:InfoElement.Title="~"
-                                           Style="{StaticResource DatePickerExtend}"
-                                           SelectedDate="{Binding QueryFilter.CreateTimeEnd}"/>
+                            <ComboBox Width="180" 
+                                      ItemsSource="{Binding QueryDictCodeDropdownList}"
+                                      hc:InfoElement.TitleWidth="60" 
+                                      hc:InfoElement.TitlePlacement="Left"
+                                      hc:InfoElement.Title="字典代码"
+                                      SelectedValuePath="Value"
+                                      DisplayMemberPath="Name"
+                                      Style="{StaticResource ComboBoxExtend}"
+                                      SelectedValue="{Binding QueryFilter.Code}"/>
                             <Button Content="查询" Command="{Binding QueryCommand}"/>
-                            <Button Content="导出" Command="{Binding DownloadCommand}"/>
-                            <Button Content="打印" Command="{Binding PrintCommand}"/>
                         </hc:UniformSpacingPanel>
                     </StackPanel>
                 </ToolBar>
@@ -58,9 +45,12 @@
                           IsReadOnly="True"
                           ItemsSource="{Binding DataSourceList}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding UserName}" Width="120" Header="用户名"/>
-                        <DataGridTextColumn Binding="{Binding DisplayName}" Width="180" Header="显示名"/>
-                        <DataGridTextColumn Binding="{Binding CreateTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="*" Header="创建时间"/>
+                        <DataGridTextColumn Binding="{Binding Code}" Width="100" Header="编码"/>
+                        <DataGridTextColumn Binding="{Binding CodeDesc}" Width="100" Header="描述"/>
+                        <DataGridTextColumn Binding="{Binding Name}" Width="180" Header="字典名称"/>
+                        <DataGridTextColumn Binding="{Binding Value}" Width="80" Header="字典值"/>
+                        <DataGridTextColumn Binding="{Binding Remark}" Width="*" Header="备注"/>
+                        <DataGridTextColumn Binding="{Binding Status, Converter={StaticResource EnumDescriptionConverter}}" Width="80" Header="状态"/>
                         <DataGridTemplateColumn Width="120" Header="操作">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -98,18 +88,38 @@
                             <hc:SimpleStackPanel Margin="12">
                                 <hc:UniformSpacingPanel Spacing="8">
                                     <hc:SimpleStackPanel>
+                                        <ComboBox Width="340" 
+                                                  ItemsSource="{Binding DictCodeDropdownList}"
+                                                  hc:InfoElement.TitleWidth="80" 
+                                                  hc:InfoElement.TitlePlacement="Left"
+                                                  hc:InfoElement.Title="字典代码"
+                                                  hc:InfoElement.Necessary="True"
+                                                  IsEnabled="{Binding IsAdding}"
+                                                  SelectedValuePath="Value"
+                                                  DisplayMemberPath="Name"
+                                                  Style="{StaticResource ComboBoxExtend}"
+                                                  SelectedValue="{Binding SelectedItem.Code}"/>
                                         <TextBox Width="340"
-                                                 hc:InfoElement.TitleWidth="60" 
+                                                 Margin="0,10,0,0"
+                                                 hc:InfoElement.TitleWidth="80" 
                                                  hc:InfoElement.TitlePlacement="Left"
-                                                 hc:InfoElement.Title="用户名"
+                                                 hc:InfoElement.Title="字典名称"
+                                                 hc:InfoElement.Necessary="True"
                                                  Style="{StaticResource TextBoxExtend}"
-                                                 Text="{Binding SelectedItem.UserName}"/>
+                                                 Text="{Binding SelectedItem.Name}"/>
                                         <TextBox Width="340" Margin="0,10,0,0"
-                                                 hc:InfoElement.TitleWidth="60" 
+                                                 hc:InfoElement.TitleWidth="80" 
                                                  hc:InfoElement.TitlePlacement="Left"
-                                                 hc:InfoElement.Title="显示名"
+                                                 hc:InfoElement.Title="字典值"
+                                                 hc:InfoElement.Necessary="True"
                                                  Style="{StaticResource TextBoxExtend}"
-                                                 Text="{Binding SelectedItem.DisplayName}"/>
+                                                 Text="{Binding SelectedItem.Value}"/>
+                                        <TextBox Width="340" Margin="0,10,0,0"
+                                                 hc:InfoElement.TitleWidth="80" 
+                                                 hc:InfoElement.TitlePlacement="Left"
+                                                 hc:InfoElement.Title="备注"
+                                                 Style="{StaticResource TextBoxExtend}"
+                                                 Text="{Binding SelectedItem.Remark}"/>
                                     </hc:SimpleStackPanel>
                                 </hc:UniformSpacingPanel>
                             </hc:SimpleStackPanel>

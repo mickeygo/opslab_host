@@ -8,7 +8,7 @@ public sealed class Enum2StringConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is Enum @enum)
+        if (value is Enum)
         {
             int v = (int)value;
             if (parameter is string text)

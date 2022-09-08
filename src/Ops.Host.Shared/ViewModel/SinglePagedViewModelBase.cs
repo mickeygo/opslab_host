@@ -1,97 +1,8 @@
-﻿using System.Windows.Threading;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using HandyControl.Controls;
 using HandyControl.Data;
-using Ops.Host.Common.IO;
 
-namespace Ops.Host.App.ViewModels;
-
-/// <summary>
-/// 导出的 Excel 模型构建器。
-/// </summary>
-public sealed class ExcelModelBuilder
-{
-    /// <summary>
-    /// 保存的 Excel 默认名称。
-    /// </summary>
-    public string? ExcelName { get; set; }
-
-    /// <summary>
-    /// Excel Sheet 名称。
-    /// </summary>
-    public string? SheetName { get; set; }
-
-    public ExcelSettings Settings { get; } = new();
-
-    /// <summary>
-    /// 导出的 Excel 头部。
-    /// </summary>
-    public List<RowCustom>? Header { get; set; }
-
-    /// <summary>
-    /// 导出的 Excel 尾部。
-    /// </summary>
-    public List<RowCustom>? Footer { get; set; }
-}
-
-public delegate void DoPrintDelegate(PrintDialog pdlg, DocumentPaginator paginator);
-
-/// <summary>
-/// 打印模型构建器。
-/// </summary>
-public sealed class PrintModelBuilder
-{
-    /// <summary>
-    /// 打印模式。
-    /// </summary>
-    public PrintMode Mode { get; set; } = PrintMode.Preview;
-
-    /// <summary>
-    /// 要打印的模板路径。
-    /// </summary>
-    public string? TemplateUrl { get; set; }
-
-    /// <summary>
-    /// 文档描述
-    /// </summary>
-    public string DocumentDescription { get; set; } = "Document";
-
-    /// <summary>
-    /// 数据上下文
-    /// </summary>
-    public object? DataContext { get; set; }
-
-    /// <summary>
-    /// 文档呈现器。
-    /// </summary>
-    public IDocumentRenderer? Render { get; set; }
-
-    /// <summary>
-    /// 打印模式。
-    /// </summary>
-    public enum PrintMode
-    {
-        /// <summary>
-        /// 打印预览。
-        /// </summary>
-        Preview,
-
-        /// <summary>
-        /// 弹出打印框。
-        /// </summary>
-        Dialog,
-
-        /// <summary>
-        /// 直接打印。
-        /// </summary>
-        Direct,
-    }
-}
-
-/// <summary>
-/// 空查询筛选器。
-/// </summary>
-public class NullQueryFilter { }
+namespace Ops.Host.Shared.ViewModel;
 
 /// <summary>
 /// 单数据源分页 ViewModel 基类。
@@ -432,9 +343,11 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
                 PrintPreviewWindow? previewWnd = null;
                 try
                 {
-                    previewWnd = new(builder.TemplateUrl!, builder.DataContext, builder.Render);
-                    previewWnd.Owner = Application.Current.MainWindow;
-                    previewWnd.ShowInTaskbar = false;
+                    previewWnd = new(builder.TemplateUrl!, builder.DataContext, builder.Render)
+                    {
+                        Owner = Application.Current.MainWindow,
+                        ShowInTaskbar = false
+                    };
                     previewWnd.ShowDialog();
                 }
                 catch
@@ -449,14 +362,22 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Obse
                 if (pdlg.ShowDialog() == true)
                 {
                     FlowDocument doc = PrintPreviewWindow.LoadDocument(builder.TemplateUrl!, builder.DataContext, builder.Render);
-                    Owner?.Dispatcher.BeginInvoke(new DoPrintDelegate(DoPrint), DispatcherPriority.ApplicationIdle, pdlg, ((IDocumentPaginatorSource)doc).DocumentPaginator);
+                    (Owner ?? Application.Current.MainWindow).Dispatcher.BeginInvoke(
+                        new PrintDelegate(DoPrint), 
+                        DispatcherPriority.ApplicationIdle, 
+                        pdlg, 
+                        ((IDocumentPaginatorSource)doc).DocumentPaginator);
                 }
             }
             else if (builder.Mode == PrintModelBuilder.PrintMode.Direct)
             {
                 PrintDialog pdlg = new();
                 FlowDocument doc = PrintPreviewWindow.LoadDocument(builder.TemplateUrl!, builder.DataContext, builder.Render);
-                Owner?.Dispatcher.BeginInvoke(new DoPrintDelegate(DoPrint), DispatcherPriority.ApplicationIdle, pdlg, ((IDocumentPaginatorSource)doc).DocumentPaginator);
+                (Owner ?? Application.Current.MainWindow)?.Dispatcher.BeginInvoke(
+                    new PrintDelegate(DoPrint), 
+                    DispatcherPriority.ApplicationIdle, 
+                    pdlg, 
+                    ((IDocumentPaginatorSource)doc).DocumentPaginator);
             }
         }
         catch (Exception ex)

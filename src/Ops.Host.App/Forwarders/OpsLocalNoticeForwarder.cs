@@ -28,7 +28,7 @@ internal sealed class OpsLocalNoticeForwarder : INoticeForwarder
         {
             // 警报信息，采用 bool 数组，可以自定义长度。
             // 警报消息，所有都为 false 表示无任何异常，不用处理。
-            if (data.Tag == OpsSymbol.PLC_Sys_Alarm)
+            if (data.Tag == PlcSymbolTag.PLC_Sys_Alarm)
             {
                 var arr = data.Values[0].GetBitArray();
                 if (arr!.All(s => !s))
@@ -39,7 +39,7 @@ internal sealed class OpsLocalNoticeForwarder : INoticeForwarder
                 await _alarmService.HandleAsync(data);
                 return;
             }
-            else if (data.Tag == OpsSymbol.PLC_Sys_Andon) // 安灯信息，逻辑同警报
+            else if (data.Tag == PlcSymbolTag.PLC_Sys_Andon) // 安灯信息，逻辑同警报
             {
                 var arr = data.Values[0].GetBitArray();
                 if (arr!.All(s => !s))

@@ -2,9 +2,9 @@
 
 namespace Ops.Host.App.UserControls;
 
-public partial class DictData : UserControl
+public partial class DictDataCtl : UserControl
 {
-    public DictData()
+    public DictDataCtl()
     {
         InitializeComponent();
         DataContext = App.Current.Services.GetRequiredService<DictDataViewModel>();

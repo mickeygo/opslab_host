@@ -2,9 +2,9 @@
 
 namespace Ops.Host.App.UserControls;
 
-public partial class User : UserControl
+public partial class UserCtl : UserControl
 {
-    public User()
+    public UserCtl()
     {
         InitializeComponent();
         DataContext = App.Current.Services.GetRequiredService<UserViewModel>();

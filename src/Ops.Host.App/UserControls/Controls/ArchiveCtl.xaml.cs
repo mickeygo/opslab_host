@@ -2,9 +2,9 @@
 
 namespace Ops.Host.App.UserControls;
 
-public partial class Archive : UserControl
+public partial class ArchiveCtl : UserControl
 {
-    public Archive()
+    public ArchiveCtl()
     {
         InitializeComponent();
         DataContext = App.Current.Services.GetRequiredService<ArchiveViewModel>();

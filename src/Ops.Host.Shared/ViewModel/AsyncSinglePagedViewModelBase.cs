@@ -1,11 +1,8 @@
-﻿using System.Windows.Threading;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using HandyControl.Controls;
 using HandyControl.Data;
-using Ops.Host.Common.IO;
-using System.Windows.Markup;
 
-namespace Ops.Host.App.ViewModels;
+namespace Ops.Host.Shared.ViewModel;
 
 /// <summary>
 /// 单数据源分页 ViewModel 基类。
@@ -366,14 +363,22 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
                 if (pdlg.ShowDialog() == true)
                 {
                     FlowDocument doc = PrintPreviewWindow.LoadDocument(builder.TemplateUrl!, builder.DataContext, builder.Render);
-                    Owner?.Dispatcher.BeginInvoke(new DoPrintDelegate(DoPrint), DispatcherPriority.ApplicationIdle, pdlg, ((IDocumentPaginatorSource)doc).DocumentPaginator);
+                    (Owner ?? Application.Current.MainWindow)?.Dispatcher.BeginInvoke(
+                        new PrintDelegate(DoPrint), 
+                        DispatcherPriority.ApplicationIdle, 
+                        pdlg, 
+                        ((IDocumentPaginatorSource)doc).DocumentPaginator);
                 }
             }
             else if (builder.Mode == PrintModelBuilder.PrintMode.Direct)
             {
                 PrintDialog pdlg = new();
                 FlowDocument doc = PrintPreviewWindow.LoadDocument(builder.TemplateUrl!, builder.DataContext, builder.Render);
-                Owner?.Dispatcher.BeginInvoke(new DoPrintDelegate(DoPrint), DispatcherPriority.ApplicationIdle, pdlg, ((IDocumentPaginatorSource)doc).DocumentPaginator);
+                (Owner ?? Application.Current.MainWindow)?.Dispatcher.BeginInvoke(
+                    new PrintDelegate(DoPrint), 
+                    DispatcherPriority.ApplicationIdle, 
+                    pdlg, 
+                    ((IDocumentPaginatorSource)doc).DocumentPaginator);
             }
         }
         catch (Exception ex)

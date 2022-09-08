@@ -23,11 +23,23 @@
             <TextBlock FontWeight="Bold" Text="{Binding AppVersion}" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryTextBrush}"/>
         </Border>
     </StackPanel>
-    <Button Grid.Column="1" Style="{StaticResource ButtonIcon}" hc:IconElement.Geometry="{StaticResource ConfigGeometry}"/>
+    
+    <Button Grid.Column="1" 
+            Name="ButtonConfig" 
+            Style="{StaticResource ButtonIcon}" 
+            hc:IconElement.Geometry="{StaticResource ConfigGeometry}"
+            Click="ButtonConfig_OnClick"/>
     <Popup AllowsTransparency="True" Grid.Column="1" PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="-28" Name="PopupConfig" VerticalOffset="6" StaysOpen="False">
-        <Border Background="{DynamicResource SecondaryRegionBrush}" CornerRadius="4" Margin="16" Effect="{StaticResource EffectShadow2}">
+        <Border Background="{DynamicResource SecondaryRegionBrush}" CornerRadius="4" Margin="16" Effect="{StaticResource EffectShadow2}" Width="110">
             <StackPanel Orientation="Horizontal">
-                <hc:UniformSpacingPanel Orientation="Vertical" Margin="10" Spacing="10" ChildWrapping="Wrap" MaxHeight="134">
+                <hc:UniformSpacingPanel Orientation="Vertical" Margin="10" Spacing="10" ChildWrapping="Wrap">
+                    <hc:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="重新加载" />
+                        <Button Margin="10,0,0,0"
+                                Style="{StaticResource ButtonSuccess.Small}" 
+                                hc:IconElement.Geometry="{StaticResource RotateRightGeometry}"
+                                Command="{Binding RefreshStationCacheCommand}"/>
+                    </hc:SimpleStackPanel>
                 </hc:UniformSpacingPanel>
                 <hc:Divider LineStrokeDashArray="2,2" Orientation="Vertical" Margin="0,20" LineStrokeThickness="2"/>
                 <StackPanel  Margin="10,10,10,10">

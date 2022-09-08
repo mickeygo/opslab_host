@@ -45,7 +45,7 @@ public sealed class StationCacheManager : IManager
     /// 刷新数据。
     /// </summary>
     /// <returns></returns>
-    public async Task Refresh()
+    public async Task RefreshAsync()
     {
         var devInfos = await _deviceInfoManager.GetAllAsync();
         await _stationService.InsertOrUpdateAsync(devInfos);

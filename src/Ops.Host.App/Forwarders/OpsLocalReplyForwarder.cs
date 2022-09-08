@@ -31,10 +31,10 @@ internal sealed class OpsLocalReplyForwarder : IReplyForwarder
         {
             return data.Tag switch
             {
-                OpsSymbol.PLC_Sign_Inbound => await _inboundService.HandleAsync(data),
-                OpsSymbol.PLC_Sign_Archive => await _archiveService.HandleAsync(data),
-                OpsSymbol.PLC_Sign_Critical_Material => await _materialService.HandleCriticalMaterialAsync(data),
-                OpsSymbol.PLC_Sign_Batch_Material => await _materialService.HandleBactchMaterialAsync(data),
+                PlcSymbolTag.PLC_Sign_Inbound => await _inboundService.HandleAsync(data),
+                PlcSymbolTag.PLC_Sign_Archive => await _archiveService.HandleAsync(data),
+                PlcSymbolTag.PLC_Sign_Critical_Material => await _materialService.HandleCriticalMaterialAsync(data),
+                PlcSymbolTag.PLC_Sign_Batch_Material => await _materialService.HandleBactchMaterialAsync(data),
                 _ => await _customService.HandleAsync(data),
             };
         }

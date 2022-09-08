@@ -2,5 +2,4 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <FontFamily x:Key="FabricIcons">pack://application:,,,/Resources/fabric-icons.ttf#Fabric MDL2 Assets</FontFamily>
-
 </ResourceDictionary>

@@ -13,21 +13,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="CommunityToolkit.Diagnostics" Version="8.0.0" />
-	<PackageReference Include="CommunityToolkit.HighPerformance" Version="8.0.0" />
-	<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
-	<PackageReference Include="HandyControl" Version="3.3.0" />
-	<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-	<PackageReference Include="OxyPlot.Wpf" Version="2.1.0" />
-	<PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
-	<PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
-	<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-	<PackageReference Include="Serilog.Sinks.Seq" Version="5.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
 	<ProjectReference Include="..\Ops.Host.Common\Ops.Host.Common.csproj" />
 	<ProjectReference Include="..\Ops.Host.Core\Ops.Host.Core.csproj" />
+	<ProjectReference Include="..\Ops.Host.Shared\Ops.Host.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

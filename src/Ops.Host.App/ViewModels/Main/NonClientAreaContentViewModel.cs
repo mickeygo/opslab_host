@@ -1,11 +1,23 @@
-﻿namespace Ops.Host.App.ViewModels;
+﻿using HandyControl.Controls;
+using HandyControl.Data;
+
+namespace Ops.Host.App.ViewModels;
 
 public sealed class NonClientAreaContentViewModel : ObservableObject, IViewModel
 {
-    public NonClientAreaContentViewModel()
-    {
+    private readonly StationCacheManager _stationManager;
 
+    public NonClientAreaContentViewModel(StationCacheManager stationManager)
+    {
+        _stationManager = stationManager;
+
+        RefreshStationCacheCommand = new AsyncRelayCommand(RefreshStationCacheAsync);
     }
+
+    /// <summary>
+    /// 刷新工站缓存信息。
+    /// </summary>
+    public ICommand RefreshStationCacheCommand { get; }
 
     #region 属性绑定
 
@@ -17,4 +29,14 @@ public sealed class NonClientAreaContentViewModel : ObservableObject, IViewModel
     }
 
     #endregion
+
+    private async Task RefreshStationCacheAsync()
+    {
+        await _stationManager.RefreshAsync();
+        Growl.Info(new GrowlInfo
+        {
+            Message = "数据加载完成",
+            WaitTime = 1,
+        });
+    }
 }

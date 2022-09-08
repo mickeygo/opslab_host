@@ -1,10 +1,10 @@
-﻿namespace Ops.Host.App.Forwarders;
+﻿namespace Ops.Host.Common;
 
 /// <summary>
 /// 主要变量地址符号定义。
 /// 其中 PLC 触发信号都需要以 "PLC_Sign_" 为前缀。 
 /// </summary>
-public static class OpsSymbol
+public static class PlcSymbolTag
 {
     #region PLC To MES
 
@@ -87,17 +87,17 @@ public static class OpsSymbol
     /// <summary>
     /// 操作人员， String[20] 类型。
     /// </summary>
-    public const string PlC_Archive_Operator = nameof(PlC_Archive_Operator);
+    public const string PLC_Archive_Operator = nameof(PLC_Archive_Operator);
 
     /// <summary>
     /// 班次，int 类型。
     /// </summary>
-    public const string PlC_Archive_Shift = nameof(PlC_Archive_Shift);
+    public const string PLC_Archive_Shift = nameof(PLC_Archive_Shift);
 
     /// <summary>
     /// 托盘号, String[40] 类型。
     /// </summary>
-    public const string PlC_Archive_Pallet = nameof(PlC_Archive_Pallet);
+    public const string PLC_Archive_Pallet = nameof(PLC_Archive_Pallet);
 
     #endregion
 

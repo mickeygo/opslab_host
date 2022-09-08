@@ -3,7 +3,7 @@ using HandyControl.Tools;
 
 namespace Ops.Host.App.Converters;
 
-public class HatchBrushConverter : IValueConverter
+public sealed class HatchBrushConverter : IValueConverter
 {
     private readonly HatchBrushGenerator _brushGenerator;
 

@@ -1,9 +1,4 @@
-﻿using System.IO.Packaging;
-using System.Windows.Xps.Packaging;
-using System.Windows.Xps;
-using System.Windows.Threading;
-
-namespace Ops.Host.App.Components;
+﻿namespace Ops.Host.Shared.Component;
 
 /// <summary>
 /// 打印预览组件。

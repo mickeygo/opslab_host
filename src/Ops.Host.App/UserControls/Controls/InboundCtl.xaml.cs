@@ -2,9 +2,9 @@
 
 namespace Ops.Host.App.UserControls;
 
-public partial class Inbound : UserControl
+public partial class InboundCtl : UserControl
 {
-    public Inbound()
+    public InboundCtl()
     {
         InitializeComponent();
         DataContext = App.Current.Services.GetRequiredService<InboundViewModel>();
