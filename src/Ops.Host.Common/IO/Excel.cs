@@ -21,15 +21,10 @@ public sealed class ExcelSettings
     public bool IstBorderStyleTine { get; set; } = true;
 
     /// <summary>
-    /// 添加要排除的列名，列名与类型的属性名一致，若 includes 不为 Empty，会在其基础上再进行排除。
+    /// 添加要排除的列名，列名与类型的属性名一致；若数据源是 DataTable，需与列名一致。
     /// </summary>
     /// <remarks>其中默认包含 Id 字段。</remarks>
     public List<string> Excludes { get; } = new() { "Id" };
-
-    /// <summary>
-    /// 添加要包含的列名，列名与类型的属性名一致，若不为 Empty，会优先使用该选项进行筛选。
-    /// </summary>
-    public List<string> Includes { get; } = new(0);
 }
 
 /// <summary>
@@ -216,6 +211,66 @@ public sealed class Excel
         await package.SaveAsync();
     }
 
+    /// <summary>
+    /// 导出 Excel。
+    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayNameAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="fileStream">文件流</param>
+    /// <param name="sheetName">sheet 名称</param>
+    /// <param name="data">要导出的数据</param>
+    /// <param name="settings">设置</param>
+    public static void Export(Stream fileStream, string sheetName, DataTable dataTable, ExcelSettings? settings = default)
+    {
+        using var package = new ExcelPackage(fileStream);
+        var sheet = package.Workbook.Worksheets.Add(sheetName);
+        ExportToSheet(sheet, dataTable, 1, settings);
+        package.Save();
+    }
+
+    /// <summary>
+    /// 导出 Excel。
+    /// </summary>
+    public static async Task ExportAsync<T>(Stream fileStream, string sheetName, DataTable dataTable, ExcelSettings? settings = default)
+    {
+        using var package = new ExcelPackage(fileStream);
+        var sheet = package.Workbook.Worksheets.Add(sheetName);
+        ExportToSheet(sheet, dataTable, 1, settings);
+        await package.SaveAsync();
+    }
+
+    /// <summary>
+    /// 导出 Excel。
+    /// </summary>
+    public static void Export(string path, string sheetName, DataTable dataTable, ExcelSettings? settings = default)
+    {
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+
+        using var package = new ExcelPackage(path);
+        var sheet = package.Workbook.Worksheets.Add(sheetName);
+        SetMainData(sheet, dataTable, settings);
+        package.Save();
+    }
+
+    /// <summary>
+    /// 导出 Excel。
+    /// </summary>
+    public static async Task ExportAsync(string path, string sheetName, DataTable dataTable, ExcelSettings? settings = default)
+    {
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+
+        using var package = new ExcelPackage(path);
+        var sheet = package.Workbook.Worksheets.Add(sheetName);
+        SetMainData(sheet, dataTable, settings);
+        await package.SaveAsync();
+    }
+
     private static void SetMainData<T>(ExcelWorksheet sheet, ExcelExportData<T> data, ExcelSettings? settings = default)
     {
         int rowIndex = 0; // Row/Col 起始为 1。
@@ -237,6 +292,11 @@ public sealed class Excel
         {
             SetCustomRow(sheet, rowIndex, data.Footer);
         }
+    }
+
+    private static void SetMainData(ExcelWorksheet sheet, DataTable dataTable, ExcelSettings? settings = default)
+    {
+        ExportToSheet(sheet, dataTable, 1, settings);
     }
 
     private static int SetCustomRow(ExcelWorksheet sheet, int rowIndex, IEnumerable<RowCustom> rows)
@@ -279,11 +339,6 @@ public sealed class Excel
         // 考虑导出功能使用频率低，因此不使用缓存机制。
         List<(string DisplayName, PropertyInfo PropInfo, bool IsEnum)> columns = new();
         var props = typeof(T).GetProperties();
-        if (settings.Includes.Any())
-        {
-            props = props.Where(s => settings.Includes.Contains(s.Name)).ToArray();
-        }
-
         if (settings.Excludes.Any())
         {
             props = props.Where(s => !settings.Excludes.Contains(s.Name)).ToArray();
@@ -338,6 +393,69 @@ public sealed class Excel
                 else if (propInfo!.PropertyType == typeof(decimal) || propInfo!.PropertyType == typeof(decimal?)
                     || propInfo!.PropertyType == typeof(double) || propInfo!.PropertyType == typeof(double?)
                     || propInfo!.PropertyType == typeof(float?) || propInfo!.PropertyType == typeof(float?))
+                {
+                    cell.Style.Numberformat.Format = settings.RealFormat;
+                }
+
+                if (settings.IstBorderStyleTine)
+                {
+                    cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                }
+
+                cell.AutoFitColumns();
+            }
+
+            n++;
+        }
+    }
+
+    private static void ExportToSheet(ExcelWorksheet sheet, DataTable dataTable, int startRow, ExcelSettings? settings = default)
+    {
+        settings ??= new ExcelSettings();
+
+        List<(string Name, Type DataType)> columns = new();
+        foreach (DataColumn col in dataTable.Columns)
+        {
+            if (settings.Excludes.Contains(col.ColumnName))
+            {
+                continue;
+            }
+
+            columns.Add((col.ColumnName, col.DataType));
+        }
+
+        // 构建头
+        for (int i = 0; i < columns.Count; i++)
+        {
+            var cell = sheet.Cells[startRow, i + 1];
+            cell.Value = columns[i].Name;
+            cell.Style.Font.Bold = true;
+            if (settings.IstBorderStyleTine)
+            {
+                cell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+            }
+            cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        }
+
+        int n = startRow + 1;
+        // 构建主体内容
+        foreach (DataRow row in dataTable.Rows)
+        {
+            for (int j = 0; j < columns.Count; j++)
+            {
+                var name = columns[j].Name;
+                var dataType = columns[j].DataType;
+
+                var cell = sheet.Cells[n, j + 1];
+                cell.Value = row[name];
+
+                if (dataType == typeof(DateTime) || dataType == typeof(DateTime?))
+                {
+                    cell.Style.Numberformat.Format = settings.DateTimeFormat;
+                }
+                else if (dataType == typeof(decimal) || dataType == typeof(decimal?)
+                    || dataType == typeof(double) || dataType == typeof(double?)
+                    || dataType == typeof(float?) || dataType == typeof(float?))
                 {
                     cell.Style.Numberformat.Format = settings.RealFormat;
                 }

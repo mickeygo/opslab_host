@@ -56,7 +56,7 @@ public static class ServiceCollectionExtensions
             .Where(t => t.IsClass && !t.IsAbstract && !t.IsInterface && typeof(IManager).IsAssignableFrom(t));
         foreach (var type in types)
         {
-            services.AddSingleton(type);
+            services.AddSingleton(type); // 必须为单例模式
         }
 
         return services;

@@ -26,14 +26,14 @@
                                      Style="{StaticResource TextBoxExtend}"
                                      Text="{Binding QueryFilter.UserName}"/>
                             <hc:DatePicker ShowClearButton="True" 
-                                           Width="200" 
+                                           Width="160" 
                                            hc:InfoElement.TitleWidth="32" 
                                            hc:InfoElement.TitlePlacement="Left" 
                                            hc:InfoElement.Title="时间"
                                            Style="{StaticResource DatePickerExtend}"
                                            SelectedDate="{Binding QueryFilter.CreateTimeStart}"/>
                             <hc:DatePicker ShowClearButton="True" 
-                                           Width="200" 
+                                           Width="160" 
                                            hc:InfoElement.TitleWidth="20" 
                                            hc:InfoElement.TitlePlacement="Left" 
                                            hc:InfoElement.Title="~"

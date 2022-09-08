@@ -44,7 +44,7 @@ public class PtArchiveItem : EntityBaseId
     public string? Value { get; set; }
 
     /// <summary>
-    /// 值是否是数组
+    /// 值是否是数组（非字符串类型）
     /// </summary>
     [SugarColumn(ColumnDescription = "值是否是数组")]
     public bool IsArray { get; set; }

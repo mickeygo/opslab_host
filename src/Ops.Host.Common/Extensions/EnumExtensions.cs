@@ -1,12 +1,15 @@
 ﻿namespace Ops.Host.Common.Extensions;
 
+/// <summary>
+/// 枚举类型扩展。
+/// </summary>
 public static class EnumExtensions
 {
     /// <summary>
     /// 获取指定类型的枚举字段列表。
     /// </summary>
     /// <remarks>
-    /// Name 显示 <see cref="DisplayNameAttribute"/> 描述，若没有，这显示 <see cref="DescriptionAttribute"/>，再没有则显示字段名称；Value 为字段值（int 类型）。
+    /// Name 显示 <see cref="DisplayAttribute"/> 描述，若没有，这显示 <see cref="DescriptionAttribute"/>，再没有则显示字段名称；Value 为字段值（int 类型）。
     /// </remarks>
     /// <returns></returns>
     public static List<NameValue<string, int>> ToNameValueList<T>()
@@ -17,10 +20,10 @@ public static class EnumExtensions
 
         foreach (var field in fields)
         {
-            var attr0 = field.GetCustomAttribute<DisplayNameAttribute>(false);
+            var attr0 = field.GetCustomAttribute<DisplayAttribute>(false);
             if (attr0 != null)
             {
-                list.Add(new NameValue<string, int>(attr0!.DisplayName, (int)field.GetRawConstantValue()!));
+                list.Add(new NameValue<string, int>(attr0!.GetName() ?? "", (int)field.GetRawConstantValue()!));
                 continue;
             }
 
@@ -35,7 +38,7 @@ public static class EnumExtensions
     /// 获取指定类型的枚举字段列表。
     /// </summary>
     /// <remarks>
-    /// Name 显示 <see cref="DisplayNameAttribute"/> 描述，若没有，这显示 <see cref="DescriptionAttribute"/>，再没有则显示字段名称；Value 为字段名称。
+    /// Name 显示 <see cref="DisplayAttribute"/> 描述，若没有，这显示 <see cref="DescriptionAttribute"/>，再没有则显示字段名称；Value 为字段名称。
     /// </remarks>
     /// <returns></returns>
     public static List<NameValue> ToNameValueList2<T>()
@@ -49,7 +52,7 @@ public static class EnumExtensions
     /// </summary>
     /// <param name="enumType">枚举类型</param>
     /// <remarks>
-    /// Name 显示 <see cref="DisplayNameAttribute"/> 描述，若没有，这显示 <see cref="DescriptionAttribute"/>，再没有则显示字段名称；Value 为字段名称。
+    /// Name 显示 <see cref="DisplayAttribute"/> 描述，若没有，这显示 <see cref="DescriptionAttribute"/>，再没有则显示字段名称；Value 为字段名称。
     /// </remarks>
     /// <returns></returns>
     public static List<NameValue> ToNameValueList2(Type enumType)
@@ -59,10 +62,10 @@ public static class EnumExtensions
 
         foreach (var field in fields)
         {
-            var attr0 = field.GetCustomAttribute<DisplayNameAttribute>(false);
+            var attr0 = field.GetCustomAttribute<DisplayAttribute>(false);
             if (attr0 != null)
             {
-                list.Add(new NameValue(attr0!.DisplayName, field.Name));
+                list.Add(new NameValue(attr0!.GetName() ?? "", field.Name));
                 continue;
             }
 
@@ -114,6 +117,18 @@ public static class EnumExtensions
     }
 
     /// <summary>
+    /// 获取枚举类型的 <see cref="DisplayAttribute"/> 描述，没有则为 null。
+    /// </summary>
+    /// <param name="source"></param>
+    /// <returns></returns>
+    public static string? DisplayName(this Enum source)
+    {
+        var fi = source.GetType().GetField(source.ToString());
+        var attr = fi!.GetCustomAttribute<DisplayAttribute>(false);
+        return attr?.GetName();
+    }
+
+    /// <summary>
     /// 获取枚举类型的 <see cref="DescriptionAttribute"/> 描述，没有则为 null。
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -124,6 +139,19 @@ public static class EnumExtensions
         var fi = typeof(T).GetField(name);
         var attr = fi!.GetCustomAttribute<DescriptionAttribute>(false);
         return attr?.Description;
+    }
+
+    /// <summary>
+    /// 获取枚举类型的 <see cref="DisplayAttribute"/> 描述，没有则为 null。
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="name">枚举名称</param>
+    /// <returns></returns>
+    public static string? GetDisplayName<T>(string name)
+    {
+        var fi = typeof(T).GetField(name);
+        var attr = fi!.GetCustomAttribute<DisplayAttribute>(false);
+        return attr?.GetName();
     }
 
     /// <summary>

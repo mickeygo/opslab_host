@@ -29,7 +29,7 @@ public sealed class ItemViewModel : AsyncSinglePagedViewModelBase<MdItem, MdItem
         return (ok, "");
     }
 
-    protected override void OnExcelCreating(ExcelModelBuilder builder)
+    protected override void OnExcelModelCreating(ExcelModelBuilder builder)
     {
         builder.ExcelName = "物料主数据";
         builder.SheetName = "物料";

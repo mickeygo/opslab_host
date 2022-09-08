@@ -20,7 +20,7 @@ public sealed class UserViewModel : SinglePagedViewModelBase<SysUser, UserFilter
         return (ok, "");
     }
 
-    protected override void OnExcelCreating(ExcelModelBuilder builder)
+    protected override void OnExcelModelCreating(ExcelModelBuilder builder)
     {
         builder.ExcelName = "用户信息";
         builder.SheetName = "用户";
@@ -61,7 +61,7 @@ public sealed class UserViewModel : SinglePagedViewModelBase<SysUser, UserFilter
         //};
     }
 
-    protected override void OnPrintCreating(PrintModelBuilder builder)
+    protected override void OnPrintModelCreating(PrintModelBuilder builder)
     {
         builder.TemplateUrl = "./UserControls/Document/UserDocument.xaml";
         builder.DataContext = new UserDocumentViewModel

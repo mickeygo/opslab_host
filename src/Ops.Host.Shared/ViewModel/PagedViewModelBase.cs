@@ -142,19 +142,19 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
     #endregion
 
     /// <summary>
-    /// Excel 下载参数设置。
+    /// 构建Excel参数模型。
     /// </summary>
     /// <param name="builder"></param>
     /// <remarks>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayNameAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</remarks>
-    protected virtual void OnExcelCreating(ExcelModelBuilder builder)
+    protected virtual void OnExcelModelCreating(ExcelModelBuilder builder)
     {
 
     }
 
     /// <summary>
-    /// 打印参数设置。
+    /// 构建打印参数模型。
     /// </summary>
-    protected virtual void OnPrintCreating(PrintModelBuilder builder)
+    protected virtual void OnPrintModelCreating(PrintModelBuilder builder)
     {
     }
 
@@ -279,7 +279,7 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
     internal protected (bool, string?, ExcelExportData<TDataSource>?, ExcelModelBuilder) InnerDownload()
     {
         ExcelModelBuilder builder = new();
-        OnExcelCreating(builder);
+        OnExcelModelCreating(builder);
         builder.ExcelName ??= DateTime.Now.ToString("yyyyMMddHHmmss");
         builder.SheetName ??= builder.ExcelName;
 
@@ -310,7 +310,7 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
     {
         PrintModelBuilder builder = new();
 
-        OnPrintCreating(builder);
+        OnPrintModelCreating(builder);
 
         if (builder.Mode == PrintModelBuilder.PrintMode.Preview)
         {

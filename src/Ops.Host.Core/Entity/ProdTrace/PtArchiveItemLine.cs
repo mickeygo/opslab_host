@@ -14,7 +14,7 @@ public class PtArchiveItemLine : EntityBaseId
     public long ArchiveItemId { get; set; }
 
     /// <summary>
-    /// 序号
+    /// 序号，从 1 开始
     /// </summary>
     [SugarColumn(ColumnDescription = "序号")]
     public int Seq { get; set; }

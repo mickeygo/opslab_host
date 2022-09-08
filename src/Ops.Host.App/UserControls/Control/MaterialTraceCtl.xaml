@@ -17,13 +17,13 @@
                 <ToolBar>
                     <StackPanel Orientation="Horizontal" Margin="20,2,0,0">
                         <hc:UniformSpacingPanel Spacing="10">
-                            <TextBox Width="160" 
+                            <TextBox Width="220" 
                                      hc:InfoElement.TitleWidth="30"
                                      hc:InfoElement.TitlePlacement="Left" 
                                      hc:InfoElement.Title="SN"
                                      Style="{StaticResource TextBoxExtend}"
                                      Text="{Binding QueryFilter.SN}"/>
-                            <TextBox Width="180" 
+                            <TextBox Width="220" 
                                      hc:InfoElement.TitleWidth="60"
                                      hc:InfoElement.TitlePlacement="Left" 
                                      hc:InfoElement.Title="Barcode"

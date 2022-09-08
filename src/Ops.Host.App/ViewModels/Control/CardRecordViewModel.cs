@@ -9,7 +9,7 @@ public sealed class CardRecordViewModel : AsyncSinglePagedViewModelBase<SysCardR
         _cardRecordService = cardRecordService;
     }
 
-    protected override void OnExcelCreating(ExcelModelBuilder builder)
+    protected override void OnExcelModelCreating(ExcelModelBuilder builder)
     {
         builder.ExcelName = "刷卡记录";
     }
