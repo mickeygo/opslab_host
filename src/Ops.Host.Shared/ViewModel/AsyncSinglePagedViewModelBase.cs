@@ -106,10 +106,11 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
     {
         try
         {
-            await DoSearchedMaxDataAsync();
             var (confirm, filename, exportData, builder) = InnerDownload();
             if (confirm)
             {
+                await DoSearchedMaxDataAsync();
+                exportData!.Body = SearchedAllData;
                 await Excel.ExportAsync(filename!, builder.SheetName!, exportData!, builder.Settings);
             }
         }

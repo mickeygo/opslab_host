@@ -29,9 +29,9 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
     public Control? Owner { get; set; }
 
     /// <summary>
-    /// 已根据筛选条件查询的所有数据。
+    /// 已根据筛选条件查询的所有数据（用于导出和打印）。
     /// </summary>
-    internal protected List<TDataSource> SearchedAllData { get; set; } = new();
+    protected List<TDataSource> SearchedAllData { get; set; } = new();
 
     public PagedViewModelBase()
     {
@@ -268,7 +268,7 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
                 }
                 else
                 {
-                    Growl.Error($"删除失败: {err ?? ""}");
+                    Growl.Error($"删除失败: {err}");
                 }
             }
 
@@ -280,9 +280,22 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
     {
         ExcelModelBuilder builder = new();
         OnExcelModelCreating(builder);
-        builder.ExcelName ??= DateTime.Now.ToString("yyyyMMddHHmmss");
-        builder.SheetName ??= builder.ExcelName;
 
+        if (!string.IsNullOrEmpty(builder.ExcelName))
+        {
+            builder.SheetName ??= builder.ExcelName;
+            if (builder.HasExcelNameDatePostfix)
+            {
+                builder.ExcelName += DateTime.Now.ToString("yyyyMMdd");
+            }
+        }
+        else
+        {
+            builder.ExcelName ??= DateTime.Now.ToString("yyyyMMddHHmm");
+            builder.SheetName ??= "Sheet1";
+        }
+
+        // 弹出保存对话框
         SaveFileDialog saveFile = new()
         {
             Filter = "导出文件 （*.xlsx）|*.xlsx",
@@ -295,7 +308,19 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
             return (false, default, default, builder);
         }
 
-        var fileName = saveFile.FileName;
+        // 设置要排除的列名
+        if (builder.IsOnlyDisplayNameColomn)
+        {
+            foreach (var prop in typeof(TDataSource).GetProperties())
+            {
+                if (prop.GetCustomAttribute<DisplayNameAttribute>() == null 
+                    && !builder.Settings.Excludes.Contains(prop.Name))
+                {
+                    builder.Settings.Excludes.Add(prop.Name);
+                }
+            }
+        }
+
         ExcelExportData<TDataSource> exportData = new()
         {
             Header = builder.Header,

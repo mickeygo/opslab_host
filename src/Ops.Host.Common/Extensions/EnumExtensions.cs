@@ -9,7 +9,7 @@ public static class EnumExtensions
     /// 获取指定类型的枚举字段列表。
     /// </summary>
     /// <remarks>
-    /// Name 显示 <see cref="DisplayAttribute"/> 描述，若没有，这显示 <see cref="DescriptionAttribute"/>，再没有则显示字段名称；Value 为字段值（int 类型）。
+    /// Name 显示 <see cref="DisplayAttribute"/> 描述，若没有，这显示 <see cref="DescriptionAttribute"/>，再没有则显示字段名称；返回对象 Value 为字段值（int 类型）。
     /// </remarks>
     /// <returns></returns>
     public static List<NameValue<string, int>> ToNameValueList<T>()
@@ -38,7 +38,7 @@ public static class EnumExtensions
     /// 获取指定类型的枚举字段列表。
     /// </summary>
     /// <remarks>
-    /// Name 显示 <see cref="DisplayAttribute"/> 描述，若没有，这显示 <see cref="DescriptionAttribute"/>，再没有则显示字段名称；Value 为字段名称。
+    /// Name 显示 <see cref="DisplayAttribute"/> 描述，若没有，这显示 <see cref="DescriptionAttribute"/>，再没有则显示字段名称；返回对象 Value 为字段名称。
     /// </remarks>
     /// <returns></returns>
     public static List<NameValue> ToNameValueList2<T>()
@@ -52,7 +52,7 @@ public static class EnumExtensions
     /// </summary>
     /// <param name="enumType">枚举类型</param>
     /// <remarks>
-    /// Name 显示 <see cref="DisplayAttribute"/> 描述，若没有，这显示 <see cref="DescriptionAttribute"/>，再没有则显示字段名称；Value 为字段名称。
+    /// Name 显示 <see cref="DisplayAttribute"/> 的 Name 值，若没有，则显示 <see cref="DescriptionAttribute"/>，再没有则显示字段名称；返回对象 Value 为字段名称。
     /// </remarks>
     /// <returns></returns>
     public static List<NameValue> ToNameValueList2(Type enumType)
@@ -117,7 +117,7 @@ public static class EnumExtensions
     }
 
     /// <summary>
-    /// 获取枚举类型的 <see cref="DisplayAttribute"/> 描述，没有则为 null。
+    /// 获取枚举类型的 <see cref="DisplayAttribute"/> 的 Name 值，没有则为 null。
     /// </summary>
     /// <param name="source"></param>
     /// <returns></returns>
@@ -142,7 +142,7 @@ public static class EnumExtensions
     }
 
     /// <summary>
-    /// 获取枚举类型的 <see cref="DisplayAttribute"/> 描述，没有则为 null。
+    /// 获取枚举类型的 <see cref="DisplayAttribute"/> 的 Name 值，没有则为 null。
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="name">枚举名称</param>
@@ -155,7 +155,7 @@ public static class EnumExtensions
     }
 
     /// <summary>
-    /// 校验类型是否为枚举类型
+    /// 校验类型是否为枚举类型，包括可空类型的泛型。
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>

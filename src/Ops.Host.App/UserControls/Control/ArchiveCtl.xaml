@@ -45,6 +45,7 @@
                                            Style="{StaticResource DatePickerExtend}"
                                            SelectedDate="{Binding QueryFilter.CreateTimeEnd}"/>
                             <Button Content="查询" Command="{Binding QueryCommand}"/>
+                            <Button Content="导出" Command="{Binding DownloadCommand}"/>
                         </hc:UniformSpacingPanel>
                     </StackPanel>
                 </ToolBar>

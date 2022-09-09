@@ -99,10 +99,11 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Page
     {
         try
         {
-            DoSearchedMaxData();
-            var (confirm, filename, exportData, builder) = InnerDownload();
+            var (confirm, filename, exportData, builder) = InnerDownload(); // 确认导出后再查询数据
             if (confirm)
             {
+                DoSearchedMaxData();
+                exportData!.Body = SearchedAllData;
                 Excel.Export(filename!, builder.SheetName!, exportData!, builder.Settings);
             }
         }

@@ -21,10 +21,9 @@ public sealed class ExcelSettings
     public bool IstBorderStyleTine { get; set; } = true;
 
     /// <summary>
-    /// 添加要排除的列名，列名与类型的属性名一致；若数据源是 DataTable，需与列名一致。
+    /// 排除据源中要导出的列名，列名与类型的属性名一致；若数据源是 DataTable，需与列名一致。
     /// </summary>
-    /// <remarks>其中默认包含 Id 字段。</remarks>
-    public List<string> Excludes { get; } = new() { "Id" };
+    public List<string> Excludes { get; } = new(0);
 }
 
 /// <summary>
@@ -218,7 +217,7 @@ public sealed class Excel
     /// <typeparam name="T"></typeparam>
     /// <param name="fileStream">文件流</param>
     /// <param name="sheetName">sheet 名称</param>
-    /// <param name="data">要导出的数据</param>
+    /// <param name="dataTable">要导出的数据</param>
     /// <param name="settings">设置</param>
     public static void Export(Stream fileStream, string sheetName, DataTable dataTable, ExcelSettings? settings = default)
     {
@@ -230,7 +229,12 @@ public sealed class Excel
 
     /// <summary>
     /// 导出 Excel。
+    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayNameAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
     /// </summary>
+    /// <param name="fileStream">文件流</param>
+    /// <param name="sheetName">sheet 名称</param>
+    /// <param name="dataTable">要导出的数据</param>
+    /// <param name="settings">设置</param>
     public static async Task ExportAsync<T>(Stream fileStream, string sheetName, DataTable dataTable, ExcelSettings? settings = default)
     {
         using var package = new ExcelPackage(fileStream);
@@ -241,7 +245,12 @@ public sealed class Excel
 
     /// <summary>
     /// 导出 Excel。
+    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayNameAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
     /// </summary>
+    /// <param name="path">路径</param>
+    /// <param name="sheetName">sheet 名称</param>
+    /// <param name="dataTable">要导出的数据</param>
+    /// <param name="settings">设置</param>
     public static void Export(string path, string sheetName, DataTable dataTable, ExcelSettings? settings = default)
     {
         if (File.Exists(path))
@@ -257,7 +266,12 @@ public sealed class Excel
 
     /// <summary>
     /// 导出 Excel。
+    /// <para>导出 Excel 的 Header 优先使用导出类型的 <see cref="DisplayNameAttribute"/> 名称，若没有会使用类型的属性名。Excel 列顺序与属性顺序一致。</para>
     /// </summary>
+    /// <param name="path">路径</param>
+    /// <param name="sheetName">sheet 名称</param>
+    /// <param name="dataTable">要导出的数据</param>
+    /// <param name="settings">设置</param>
     public static async Task ExportAsync(string path, string sheetName, DataTable dataTable, ExcelSettings? settings = default)
     {
         if (File.Exists(path))

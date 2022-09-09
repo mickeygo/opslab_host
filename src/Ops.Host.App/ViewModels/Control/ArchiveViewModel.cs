@@ -17,4 +17,11 @@ public sealed class ArchiveViewModel : AsyncSinglePagedViewModelBase<PtArchive, 
     {
         return await _archiveService.GetPagedListAsync(QueryFilter, pageIndex, pageSize);
     }
+
+    protected override void OnExcelModelCreating(ExcelModelBuilder builder)
+    {
+        builder.ExcelName = $"{QueryFilter.LineCode}-{QueryFilter.StationCode}过站信息";
+
+        // TODO: 存档数据导出复杂的 DataTable 数据。
+    }
 }
