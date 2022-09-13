@@ -24,6 +24,14 @@ public sealed class PtSnMaterial : EntityBase
     public string? Barcode { get; set; }
 
     /// <summary>
+    /// 物料编码
+    /// </summary>
+    [SugarColumn(ColumnDescription = "ItemCode", Length = 64)]
+    [Required, MaxLength(64)]
+    [NotNull]
+    public string? ItemCode { get; set; }
+
+    /// <summary>
     /// 产线代码
     /// </summary>
     [SugarColumn(ColumnDescription = "产线代码", Length = 64)]

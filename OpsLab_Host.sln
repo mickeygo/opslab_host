@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ops.Host.Core", "src\Ops.Ho
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ops.Host.App", "src\Ops.Host.App\Ops.Host.App.csproj", "{2E3EF99E-0F74-4DEA-BBBA-8764668F0E6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ops.Host.Shared", "src\Ops.Host.Shared\Ops.Host.Shared.csproj", "{D1566159-B940-4DC5-9E76-14B470136186}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ops.Host.Shared", "src\Ops.Host.Shared\Ops.Host.Shared.csproj", "{D1566159-B940-4DC5-9E76-14B470136186}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ops.Host.Common.Test", "test\Ops.Host.Common.Test\Ops.Host.Common.Test.csproj", "{01D4B2E1-7C68-4056-B9B2-A47FFCC20750}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{D1566159-B940-4DC5-9E76-14B470136186}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1566159-B940-4DC5-9E76-14B470136186}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1566159-B940-4DC5-9E76-14B470136186}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01D4B2E1-7C68-4056-B9B2-A47FFCC20750}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01D4B2E1-7C68-4056-B9B2-A47FFCC20750}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01D4B2E1-7C68-4056-B9B2-A47FFCC20750}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01D4B2E1-7C68-4056-B9B2-A47FFCC20750}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{568ED3C0-94A8-420F-90FB-0604412BCD49} = {74431BB2-786E-45D2-978B-E8B6241CB8DD}
 		{2E3EF99E-0F74-4DEA-BBBA-8764668F0E6F} = {74431BB2-786E-45D2-978B-E8B6241CB8DD}
 		{D1566159-B940-4DC5-9E76-14B470136186} = {74431BB2-786E-45D2-978B-E8B6241CB8DD}
+		{01D4B2E1-7C68-4056-B9B2-A47FFCC20750} = {8155F4B5-1815-4CA2-854D-210F58D9FC73}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72F7A1F7-4858-4E9D-8C47-C923E9499849}

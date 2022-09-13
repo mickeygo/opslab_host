@@ -70,6 +70,11 @@ public static class PlcSymbolTag
     public const string PLC_Sign_Archive = nameof(PLC_Sign_Archive);
 
     /// <summary>
+    /// 配方号, int 类型。
+    /// </summary>
+    public const string PLC_Archive_Formula = nameof(PLC_Archive_Formula);
+
+    /// <summary>
     /// 出站的产品码, String[40] 类型。
     /// </summary>
     public const string PLC_Archive_SN = nameof(PLC_Archive_SN);

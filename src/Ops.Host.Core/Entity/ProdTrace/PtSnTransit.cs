@@ -1,8 +1,9 @@
 ﻿namespace Ops.Host.Core.Entity;
 
 /// <summary>
-/// SN 当前过站状态。
+/// SN 当前过站状态信息。
 /// </summary>
+/// <remarks>此表中 SN 数据应该唯一。</remarks>
 [SugarTable("pt_sn_transit", "SN当前过站状态表")]
 public sealed class PtSnTransit : EntityBaseId
 {
@@ -13,6 +14,14 @@ public sealed class PtSnTransit : EntityBaseId
     [Required, MaxLength(64)]
     [NotNull]
     public string? SN { get; set; }
+
+    /// <summary>
+    /// 产品
+    /// </summary>
+    [SugarColumn(ColumnDescription = "产品", Length = 64)]
+    [Description("产品")]
+    [MaxLength(64)]
+    public string? ProductCode { get; set; }
 
     /// <summary>
     /// 工单号
@@ -41,12 +50,24 @@ public sealed class PtSnTransit : EntityBaseId
     /// <summary>
     /// 过站状态
     /// </summary>
-    [SugarColumn(ColumnDescription = "过站状态")]
-    public PassEnum Pass { get; set; }
+    [DisplayName("过站状态")]
+    public TransitModeEnum TransitMode { get; set; }
 
     /// <summary>
-    /// 记录时间
+    /// 过站状态
     /// </summary>
-    [SugarColumn(ColumnDescription = "记录时间")]
-    public DateTime CreateTime { get; set; }
+    [SugarColumn(ColumnDescription = "过站状态")]
+    public PassEnum? Pass { get; set; }
+
+    /// <summary>
+    /// 进站时间
+    /// </summary>
+    [SugarColumn(ColumnDescription = "进站时间")]
+    public DateTime? InboundTime { get; set; }
+
+    /// <summary>
+    /// 出站时间
+    /// </summary>
+    [SugarColumn(ColumnDescription = "出站时间")]
+    public DateTime? OutboundTime { get; set; }
 }

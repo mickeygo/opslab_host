@@ -202,4 +202,26 @@ public static class EnumExtensions
 
         return Enum.Parse(enumType, name);
     }
+
+    /// <summary>
+    /// 尝试将相关的值转换为对应的枚举对象。
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value">值</param>
+    /// <param name="result">成功转换后的对象</param>
+    /// <returns></returns>
+    public static bool TryParse<T>(object? value, out T? result)
+      where T : Enum
+    {
+        try
+        {
+            result = (T?)value;
+            return true;
+        }
+        catch
+        {
+            result = default;
+            return false;
+        }
+    }
 }

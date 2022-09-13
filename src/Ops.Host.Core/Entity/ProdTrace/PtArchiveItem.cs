@@ -36,12 +36,17 @@ public class PtArchiveItem : EntityBaseId
     public string? Name { get; set; }
 
     /// <summary>
-    /// 值
+    /// 值，数组值以逗号隔开
     /// </summary>
     [SugarColumn(ColumnDescription = "值", Length = 1024)]
     [Required, MaxLength(1024)]
     [NotNull]
     public string? Value { get; set; }
+
+    /// <summary>
+    /// 数据类型，若为数组的话表示每一项值的类型。
+    /// </summary>
+    public DynamicDataTypeEnum DataType { get; set; }
 
     /// <summary>
     /// 值是否是数组（非字符串类型）

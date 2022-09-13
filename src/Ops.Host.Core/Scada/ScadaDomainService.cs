@@ -12,17 +12,38 @@ public abstract class ScadaDomainService
     /// <returns></returns>
     public ReplyResult Ok(IDictionary<string, object>? values = null)
     {
-        return From(0, values);
+        return From((short)0, values);
     }
 
     /// <summary>
-    /// Error
+    /// 返回错误结果。
+    /// </summary>
+    /// <param name="code">错误代码</param>
+    /// <returns></returns>
+    public ReplyResult Error(ErrorCodeEnum code)
+    {
+        return Error((short)code);
+    }
+
+    /// <summary>
+    /// 返回错误结果。
     /// </summary>
     /// <param name="code">错误代码</param>
     /// <returns></returns>
     public ReplyResult Error(short code = 2)
     {
         return From(code);
+    }
+
+    /// <summary>
+    /// 自定义返回结果。
+    /// </summary>
+    /// <param name="code">代码枚举</param>
+    /// <param name="values">值</param>
+    /// <returns></returns>
+    public ReplyResult From(ErrorCodeEnum code, IDictionary<string, object>? values = null)
+    {
+        return From((short)code, values);
     }
 
     /// <summary>

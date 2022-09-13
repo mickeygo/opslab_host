@@ -46,10 +46,10 @@ public sealed class PtArchiveService : IPtArchiveService
         }
 
 		var devVariable = _stationCacheManager.GetDeviceVariable(filter.LineCode, filter.StationCode, PlcSymbolTag.PLC_Sign_Archive);
-		var normalVars = devVariable.NormalVariables.Where(s => s.IsAdditional);
+		var additionalVars = devVariable.NormalVariables.Where(s => s.IsAdditional);
 
         // 附加数据列
-        foreach (var normalVar in normalVars)
+        foreach (var normalVar in additionalVars)
 		{
             if (extendArray && IsArray(normalVar))
             {
@@ -78,20 +78,27 @@ public sealed class PtArchiveService : IPtArchiveService
                 }
             }
 
-            // 附加数据
-            foreach(var item in archive.ArchiveItems!)
+            // 附加数据，从变量中获取，防止地址后续变更
+            foreach (var normalVar in additionalVars)
             {
-                if (extendArray && item.IsArray)
+                var item = archive.ArchiveItems!.FirstOrDefault(s => s.Name == normalVar.Name);
+                if (item != null)
                 {
-                    foreach (var itemLine in item.ArchiveItemLines!.OrderBy(s => s.Seq))
+                    // 数组展开数据
+                    if (extendArray && item.IsArray)
                     {
-                        row[$"{item.Name}-{itemLine.Seq}"] = showLimit ? $"{itemLine.Value} ({itemLine.Lower}-{itemLine.Higher})" : itemLine.Value;
+                        foreach (var itemLine in item.ArchiveItemLines!.OrderBy(s => s.Seq))
+                        {
+
+
+                            row[$"{item.Name}-{itemLine.Seq}"] = showLimit ? $"{itemLine.Value} ({itemLine.Lower}-{itemLine.Higher})" : itemLine.Value;
+                        }
+
+                        continue;
                     }
 
-                    continue;
+                    row[item.Name] = showLimit ? $"{item.Value} ({item.Lower}-{item.Higher})" : item.Value;
                 }
-
-                row[item.Name] = showLimit ? $"{item.Value} ({item.Lower}-{item.Higher})" :  item.Value;
             }
         }
 
