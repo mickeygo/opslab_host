@@ -35,6 +35,12 @@ public sealed class MdStation : EntityBase
     public string? StationName { get; set; }
 
     /// <summary>
+    /// 额外标志
+    /// </summary>
+    [MaxLength(255)]
+    public string? ExtraFlag { get; set; }
+
+    /// <summary>
     /// 设备信息，会序列化为 Json 存储。
     /// </summary>
     [SugarColumn(IsJson = true)]

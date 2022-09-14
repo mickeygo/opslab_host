@@ -44,9 +44,8 @@ internal sealed class InboundService : ScadaDomainService, IInboundService
                 WO = "", // SN 反查工单
                 SN = sn,
                 FormualNo = (int)formula!,
+                InboundItems = new(),
             };
-
-            item0.InboundItems = new();
 
             foreach (var v in data.Values.Where(s => s.IsAdditional))
             {
@@ -80,20 +79,30 @@ internal sealed class InboundService : ScadaDomainService, IInboundService
             snTransit.OutboundTime = null;
             snTransit.Pass = null;
 
+            // TODD: 检查是否为首站
+            bool isHead = false;
+            if (isHead)
+            {
+                snTransit.OnlineTime = DateTime.Now; 
+            }
+
             await _transitRep.InsertOrUpdateAsync(snTransit);
 
-            // 更新工单数据（如果存在工单）
-            var workOrder = await _woRep.GetFirstAsync(s => s.Code == item0.WO);
-            if (workOrder is not null)
+            // 首站，更新工单数据（如果存在工单）
+            if (isHead)
             {
-                // 首次上线（非返工）
-                if (workOrder.Status == WoStatusEnum.Scheduled)
+                var workOrder = await _woRep.GetFirstAsync(s => s.Code == item0.WO);
+                if (workOrder is not null)
                 {
-                    workOrder.OnlineQty += 1;
-                    workOrder.Status = WoStatusEnum.Producing;
-                    workOrder.ActualStartDate = DateTime.Now;
+                    // 首次上线（工单处于排产状态，非返工）
+                    if (workOrder.Status == WoStatusEnum.Scheduled)
+                    {
+                        workOrder.OnlineQty += 1;
+                        workOrder.Status = WoStatusEnum.Producing; // 生产中
+                        workOrder.ActualStartDate = DateTime.Now;
 
-                    await _woRep.UpdateAsync(workOrder);
+                        await _woRep.UpdateAsync(workOrder);
+                    }
                 }
             }
 

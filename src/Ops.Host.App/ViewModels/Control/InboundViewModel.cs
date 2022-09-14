@@ -11,6 +11,8 @@ public sealed class InboundViewModel : AsyncSinglePagedViewModelBase<PtInbound, 
         _stationManager = stationManager;
     }
 
+    public List<NameValue> LineDropdownList => _stationManager.Lines;
+
     public List<NameValue> StationDropdownList => _stationManager.Stations;
 
     protected override async Task<PagedList<PtInbound>> OnSearchAsync(int pageIndex, int pageSize)

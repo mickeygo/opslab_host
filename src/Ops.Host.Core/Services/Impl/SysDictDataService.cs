@@ -2,11 +2,25 @@
 
 internal sealed class SysDictDataService : ISysDictDataService
 {
-    private readonly SqlSugarRepository<SysDictData> _dictRep;
+    private const string CacheKey = nameof(SysDictDataService);
 
-    public SysDictDataService(SqlSugarRepository<SysDictData> dictRep)
+    private readonly SqlSugarRepository<SysDictData> _dictRep;
+    private readonly IMemoryCache _cache;
+
+    public SysDictDataService(SqlSugarRepository<SysDictData> dictRep, IMemoryCache cache)
     {
         _dictRep = dictRep;
+        _cache = cache;
+    }
+
+    public async Task<List<SysDictData>> GetDicAllAsync()
+    {
+        return await _cache.GetOrCreateAsync(CacheKey, _ => _dictRep.GetListAsync());
+    }
+
+    public async Task<List<SysDictData>> GetDicsByCodeAsync(string code)
+    {
+        return (await GetDicAllAsync()).Where(s => s.Code == code).ToList();
     }
 
     public async Task<SysDictData> GetDictByIdAsync(long id)
@@ -42,11 +56,20 @@ internal sealed class SysDictDataService : ISysDictDataService
         }
 
         var ok = await _dictRep.InsertOrUpdateAsync(input);
+        if (ok)
+        {
+            _cache.Remove(CacheKey);
+        }
         return (ok, "");
     }
 
     public async Task<bool> DeleteDictAsync(long id)
     {
-        return await _dictRep.DeleteByIdAsync(id);
+        var ok = await _dictRep.DeleteByIdAsync(id);
+        if (ok)
+        {
+            _cache.Remove(CacheKey);
+        }
+        return ok;
     }
 }

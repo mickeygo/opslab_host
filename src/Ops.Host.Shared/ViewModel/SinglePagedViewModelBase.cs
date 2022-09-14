@@ -71,9 +71,7 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Page
             (ok, err) = OnSave(SelectedItem!);
         }
 
-        InnerAfterSave(ok, err);
-
-        OnAfterSave(SelectedItem!);
+        OnAfterSave(ok, err);
     }
 
     /// <summary>

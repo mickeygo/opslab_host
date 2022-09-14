@@ -7,19 +7,20 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
     private readonly SqlSugarRepository<PtSnMaterial> _materialRep;
     private readonly SqlSugarRepository<PtTrackMaterial> _trackRep;
     private readonly SqlSugarRepository<PtSnTransit> _transitRep;
-    private readonly SqlSugarRepository<MdProductBom> _bomRep;
+    private readonly IMdProductBomService _productBomService;
+
     private readonly ILogger _logger;
 
     public MaterialService(SqlSugarRepository<PtSnMaterial> materialRep,
         SqlSugarRepository<PtTrackMaterial> trackRep,
         SqlSugarRepository<PtSnTransit> transitRep,
-        SqlSugarRepository<MdProductBom> bomRep,
+        IMdProductBomService productBomService,
         ILogger<MaterialService> logger)
     {
         _materialRep = materialRep;
         _trackRep = trackRep;
         _transitRep = transitRep;
-        _bomRep = bomRep;
+        _productBomService = productBomService;
         _logger = logger;
     }
 
@@ -48,10 +49,7 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
             }
 
             // 校验 BOM
-            var bom = await _bomRep.AsQueryable()
-                .Includes(s => s.Product!.Code == snTransit.ProductCode)
-                .Includes(s => s.Items, it => it.Material)
-                .FirstAsync();
+            var bom = await _productBomService.GetBomByProductCodeAsync(snTransit.ProductCode!);
 
             if (bom == null)
             {

@@ -2,6 +2,7 @@ global using System;
 global using System.Collections.Generic;
 global using System.Collections.ObjectModel;
 global using System.ComponentModel;
+global using System.ComponentModel.DataAnnotations;
 global using System.Diagnostics.CodeAnalysis;
 global using System.IO;
 global using System.Linq;
@@ -28,6 +29,8 @@ global using Microsoft.Extensions.Options;
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
 
+global using Mapster;
+
 global using Ops.Exchange;
 global using Ops.Exchange.DependencyInjection;
 global using Ops.Exchange.Forwarder;
@@ -36,6 +39,7 @@ global using Ops.Exchange.Model;
 
 global using Ops.Host.Common;
 global using Ops.Host.Common.Extensions;
+global using Ops.Host.Common.Utils;
 
 global using Ops.Host.Core;
 global using Ops.Host.Core.Dtos;
@@ -47,3 +51,5 @@ global using Ops.Host.Core.Services;
 global using Ops.Host.Shared.Component;
 global using Ops.Host.Shared.Options;
 global using Ops.Host.Shared.ViewModel;
+
+global using Ops.Host.App.Models;

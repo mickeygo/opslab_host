@@ -9,9 +9,19 @@ internal sealed class MdItemService : IMdItemService
         _itemRep = itemRep;
     }
 
-    public async Task<MdItem> GetAsync(int id)
+    public async Task<MdItem> GetAsync(long id)
     {
         return await _itemRep.GetByIdAsync(id);
+    }
+
+    public List<MdItem> GetProducts()
+    {
+        return _itemRep.GetList(s => s.Attr == MaterialAttrEnum.Product);
+    }
+
+    public List<MdItem> GetCriticalMaterials()
+    {
+        return _itemRep.GetList(s => s.Attr == MaterialAttrEnum.Critical);
     }
 
     public async Task<PagedList<MdItem>> GetPagedListAsync(MdItemFilter filter, int pageIndex, int pageSize)

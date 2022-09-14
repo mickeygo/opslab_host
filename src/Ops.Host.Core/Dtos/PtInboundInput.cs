@@ -2,6 +2,8 @@
 
 public class PtInboundFilter
 {
+    public string? LineCode { get; set; }
+
     public string? StationCode { get; set; }
 
     public string? SN { get; set; }

@@ -11,6 +11,8 @@ public sealed class ArchiveViewModel : AsyncSinglePagedViewModelBase<PtArchive, 
         _stationManager = stationManager;
     }
 
+    public List<NameValue> LineDropdownList => _stationManager.Lines;
+
     public List<NameValue> StationDropdownList => _stationManager.Stations;
 
     protected override async Task<PagedList<PtArchive>> OnSearchAsync(int pageIndex, int pageSize)

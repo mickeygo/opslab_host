@@ -2,16 +2,16 @@
 
 internal sealed class AlarmService : ScadaDomainService, IAlarmService
 {
-    private readonly SqlSugarRepository<SysDictData> _dictDataRep;
     private readonly SqlSugarRepository<PtAlarmRecord> _alarmRecordRep;
+    private readonly ISysDictDataService _sysDictDataService;
     private readonly ILogger _logger;
 
-    public AlarmService(SqlSugarRepository<SysDictData> dictDataRep, 
-        SqlSugarRepository<PtAlarmRecord> alarmRecordRep,
+    public AlarmService(SqlSugarRepository<PtAlarmRecord> alarmRecordRep,
+        ISysDictDataService sysDictDataService,
         ILogger<AlarmService> logger)
     {
-        _dictDataRep = dictDataRep;
         _alarmRecordRep = alarmRecordRep;
+        _sysDictDataService = sysDictDataService;
         _logger = logger;
     }
 
@@ -23,7 +23,7 @@ internal sealed class AlarmService : ScadaDomainService, IAlarmService
         }
 
         // 从字典中查找对应的警报信息，若字典中没有设置，不会存储对应警报信息。
-        var dicts = await _dictDataRep.GetListAsync(s => s.Code == DictCodeEnum.Alarm.ToString());
+        var dicts = await _sysDictDataService.GetDicsByCodeAsync(DictCodeEnum.Alarm.ToString());
         if (!dicts.Any())
         {
             return;

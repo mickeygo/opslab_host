@@ -17,7 +17,16 @@
                 <ToolBar>
                     <StackPanel Orientation="Horizontal" Margin="20,2,0,0">
                         <hc:UniformSpacingPanel Spacing="10">
-                            <ComboBox Width="180" 
+                            <ComboBox Width="150" 
+                                      ItemsSource="{Binding LineDropdownList}"
+                                      hc:InfoElement.TitleWidth="30" 
+                                      hc:InfoElement.TitlePlacement="Left"
+                                      hc:InfoElement.Title="产线"
+                                      SelectedValuePath="Value"
+                                      DisplayMemberPath="Name"
+                                      Style="{StaticResource ComboBoxExtend}"
+                                      SelectedValue="{Binding QueryFilter.LineCode}"/>
+                            <ComboBox Width="150" 
                                       ItemsSource="{Binding StationDropdownList}"
                                       hc:InfoElement.TitleWidth="30" 
                                       hc:InfoElement.TitlePlacement="Left"

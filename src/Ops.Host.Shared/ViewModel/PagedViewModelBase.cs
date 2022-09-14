@@ -170,10 +170,27 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
     /// <summary>
     /// 数据保存后处理方法。
     /// </summary>
-    /// <param name="data">保存后的数据</param>
-    protected virtual void OnAfterSave(TDataSource data)
+    /// <param name="ok">是否保存成功</param>
+    /// <param name="err">保存异常后的错误消息</param>
+    protected virtual void OnAfterSave(bool ok, string? err)
     {
+        var desc = IsAdding ? "新增" : "更新";
 
+        if (ok)
+        {
+            NoticeInfo($"数据{desc}成功");
+
+            if (IsAdding)
+            {
+                DataSourceList?.Add(SelectedItem!);
+            }
+
+            IsOpenSidebar = false;
+        }
+        else
+        {
+            NoticeError($"{desc}失败：{err}");
+        }
     }
 
     /// <summary>
@@ -240,15 +257,61 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
         return (true, "");
     }
 
+    /// <summary>
+    /// 通知消息
+    /// </summary>
+    /// <param name="message">消息内容</param>
+    /// <param name="waitTime">延迟关闭时间，默认1s</param>
+    protected void NoticeInfo(string message, int waitTime = 1)
+    {
+        Growl.Info(new GrowlInfo
+        {
+            Message = message,
+            WaitTime = waitTime,
+        });
+    }
+
+    /// <summary>
+    /// 通知警告消息
+    /// </summary>
+    /// <param name="message">消息内容</param>
+    /// <param name="waitTime">延迟关闭时间，默认3s</param>
+    protected void NoticeWarning(string message, int waitTime = 3)
+    {
+        Growl.Warning(new GrowlInfo
+        {
+            Message = message,
+            WaitTime = waitTime,
+        });
+    }
+
+    /// <summary>
+    /// 通知错误消息
+    /// </summary>
+    /// <param name="message">消息内容</param>
+    /// <param name="waitTime">延迟关闭时间，小于 0 时不设置关闭时间，默认 5s。</param>
+    protected void NoticeError(string message, int waitTime = 5)
+    {
+        if (waitTime <= 0)
+        {
+            Growl.Error(message);
+        }
+        else
+        {
+            Growl.Error(new GrowlInfo
+            {
+                Message = message,
+                WaitTime = waitTime,
+                StaysOpen = false,
+            });
+        }
+    }
+
     internal protected void InnerDelete(TDataSource? data, Func<TDataSource, (bool, string)> deleteAction)
     {
         if (data == null)
         {
-            Growl.Info(new GrowlInfo
-            {
-                Message = "没有选择要删除的数据",
-                WaitTime = 1,
-            });
+            NoticeInfo("没有选择要删除的数据");
             return;
         }
 
@@ -260,15 +323,11 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
                 if (ok)
                 {
                     DataSourceList?.Remove(data);
-                    Growl.Info(new GrowlInfo
-                    {
-                        Message = "数据删除成功",
-                        WaitTime = 1,
-                    });
+                    NoticeInfo("数据删除成功");
                 }
                 else
                 {
-                    Growl.Error($"删除失败: {err}");
+                    NoticeError($"删除失败: {err}");
                 }
             }
 
@@ -383,31 +442,6 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
         void PrintDocument(PrintDialog pdlg, DocumentPaginator paginator)
         {
             pdlg.PrintDocument(paginator, builder.DocumentDescription);
-        }
-    }
-
-    internal protected void InnerAfterSave(bool ok, string? err)
-    {
-        var desc = IsAdding ? "新增" : "更新";
-
-        if (ok)
-        {
-            Growl.Info(new GrowlInfo
-            {
-                Message = $"数据{desc}成功",
-                WaitTime = 1,
-            });
-
-            if (IsAdding)
-            {
-                DataSourceList?.Add(SelectedItem!);
-            }
-
-            IsOpenSidebar = false;
-        }
-        else
-        {
-            Growl.Error($"{desc}失败：{err ?? ""}");
         }
     }
 

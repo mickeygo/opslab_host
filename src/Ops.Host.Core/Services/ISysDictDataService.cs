@@ -5,6 +5,10 @@
 /// </summary>
 public interface ISysDictDataService : IDomainService
 {
+    Task<List<SysDictData>> GetDicAllAsync();
+
+    Task<List<SysDictData>> GetDicsByCodeAsync(string code);
+
     Task<SysDictData> GetDictByIdAsync(long id);
 
     Task<PagedList<SysDictData>> GetPagedListAsync(SysDictDataFilter filter, int pageIndex, int pageSize);

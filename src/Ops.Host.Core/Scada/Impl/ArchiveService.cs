@@ -119,30 +119,37 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
             // 更新 SN 过站状态信息
             snTransit.LineCode = data.Schema.Line;
             snTransit.StationCode = data.Schema.Station;
-            snTransit.TransitMode = TransitModeEnum.Outbound;  // 需检验是否完工
+            snTransit.TransitMode = TransitModeEnum.Outbound; // 需检验是否完工
             snTransit.OutboundTime = DateTime.Now;
             snTransit.Pass = pass0;
+
+            snTransit.SetProductStatus();
+
+            // TODD: 检查是否为尾站
+            bool isTail = false;
+            if (isTail && snTransit.IsOK())
+            {
+                snTransit.CompletedTime = DateTime.Now;
+            }
 
             await _transitRep.UpdateAsync(snTransit);
 
             // 若是 NG，添加到可返工列表中。
-            if (snTransit.Pass is PassEnum.NG or PassEnum.ForceNG)
+            if (snTransit.IsNG())
             {
-
+                return Ok();
             }
 
-            // TODD: 检查是否为尾站
-            bool isTail = false;
-            if (isTail)
+            // OK 过站
+            if (isTail && snTransit.IsOK())
             {
                 // 更新工单数据（如果存在工单）
                 var workOrder = await _woRep.GetFirstAsync(s => s.Code == item0.WO);
                 if (workOrder is not null)
                 {
-                    // OK 过站
-                    workOrder.CompletedQty += 1;
+                    workOrder.CompletedQty += 1; // 完工数 +1
 
-                    // 当数据量相等时，表示单据完工。
+                    // 当工单两边数量相等时，表示单据完工。
                     if ((workOrder.CompletedQty + workOrder.ScrappedQty + workOrder.DismantlingQty) == workOrder.Qty)
                     {
                         workOrder.Status = WoStatusEnum.Completed;

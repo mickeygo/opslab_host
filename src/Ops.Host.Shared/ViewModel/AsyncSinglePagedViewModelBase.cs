@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using HandyControl.Controls;
+﻿using HandyControl.Controls;
 using HandyControl.Data;
 
 namespace Ops.Host.Shared.ViewModel;
@@ -73,9 +72,7 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
             (ok, err) = await OnSaveAsync(SelectedItem!);
         }
         
-        InnerAfterSave(ok, err);
-
-        OnAfterSave(SelectedItem!);
+        OnAfterSave(ok, err);
     }
 
     /// <summary>

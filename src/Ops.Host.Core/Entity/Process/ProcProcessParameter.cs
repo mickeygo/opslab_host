@@ -49,14 +49,14 @@ public sealed class ProcProcessParameter : EntityBase
     public VariableType DataType { get; set; }
 
     /// <summary>
-    /// 上限值
+    /// 上限值，空表示不校验。
     /// </summary>
     [DisplayName("上限值")]
     [SugarColumn(ColumnDescription = "上限值", Length = 12, DecimalDigits = 2)]
     public decimal? Higher { get; set; }
 
     /// <summary>
-    /// 下限值
+    /// 下限值，空表示不校验。
     /// </summary>
     [DisplayName("下限值")]
     [SugarColumn(ColumnDescription = "下限值", Length = 12, DecimalDigits = 2)]

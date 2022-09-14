@@ -22,6 +22,11 @@ public sealed class StationCacheManager : IManager
     }
 
     /// <summary>
+    /// 获取所有的产线。
+    /// </summary>
+    public List<NameValue> Lines => GetStations().Select(s => new NameValue(s.LineName, s.LineCode)).ToList();
+
+    /// <summary>
     /// 获取所有的工站。
     /// </summary>
     public List<NameValue> Stations => GetStations().Select(s => new NameValue(s.StationName, s.StationCode)).ToList();
@@ -55,7 +60,6 @@ public sealed class StationCacheManager : IManager
 
     private List<MdStation> GetStations()
     {
-        var devInfos = _stationService.GetStationList();
-        return _memoryCache.GetOrCreate(Key, entry => devInfos);
+        return _memoryCache.GetOrCreate(Key, entry => _stationService.GetStationList());
     }
 }
