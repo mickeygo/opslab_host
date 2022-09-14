@@ -35,6 +35,17 @@ public sealed class MdStation : EntityBase
     public string? StationName { get; set; }
 
     /// <summary>
+    /// 工站类型。
+    /// </summary>
+    public StationTypeEnum Type { get; set; } = StationTypeEnum.Assembly;
+
+    /// <summary>
+    /// 工站归属。
+    /// </summary>
+    /// <remarks>线外站没有工艺路线。</remarks>
+    public StationOwnerEnum Owner { get; set; } = StationOwnerEnum.Inline;
+
+    /// <summary>
     /// 额外标志
     /// </summary>
     [MaxLength(255)]

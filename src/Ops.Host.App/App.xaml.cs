@@ -95,6 +95,7 @@ public partial class App : Application
     {
         // options
         services.Configure<OpsHostOptions>(configuration.GetSection("OpsHost"));
+        services.Configure<BusinessOptions>(configuration.GetSection("OpsBusiness"));
 
         // 添加缓存
         services.AddMemoryCache();

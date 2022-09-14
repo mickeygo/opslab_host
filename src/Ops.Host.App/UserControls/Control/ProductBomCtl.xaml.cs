@@ -2,9 +2,9 @@
 
 namespace Ops.Host.App.UserControls;
 
-public partial class ProductBom : UserControl
+public partial class ProductBomCtl : UserControl
 {
-    public ProductBom()
+    public ProductBomCtl()
     {
         InitializeComponent();
         DataContext = App.Current.Services.GetRequiredService<ProductBomViewModel>();

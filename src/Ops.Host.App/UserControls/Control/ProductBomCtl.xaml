@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Ops.Host.App.UserControls.ProductBom"
+﻿<UserControl x:Class="Ops.Host.App.UserControls.ProductBomCtl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -85,6 +85,23 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate>
+                            <DataGrid HeadersVisibility="All" AutoGenerateColumns="False" 
+                                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                      hc:Empty.ShowEmpty="True"
+                                      Style="{StaticResource DataGrid.Small}"
+                                      IsReadOnly="True"
+                                      ItemsSource="{Binding Items}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Material.Code}" Width="120" Header="物料编码" CanUserSort="False"/>
+                                    <DataGridTextColumn Binding="{Binding Material.Name}" Width="160" Header="物料名称" CanUserSort="False"/>
+                                    <DataGridTextColumn Binding="{Binding Qty}" Width="60" Header="数量" CanUserSort="False"/>
+                                    <DataGridTextColumn Binding="{Binding Seq}" Width="60" Header="顺序" CanUserSort="False"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
                 </DataGrid>
                 <hc:Pagination Grid.Row="1" HorizontalAlignment="Right"
                     MaxPageCount="{Binding PageCount}" DataCountPerPage="{Binding PageSize}">

@@ -19,6 +19,14 @@ internal sealed class MdStationService : IMdStationService
         return await _stationRep.GetListAsync();
     }
 
+    public async Task<PagedList<MdStation>> GetPagedListAsync(StationFilter filter, int pageIndex, int pageSize)
+    {
+        return await _stationRep.AsQueryable()
+            .WhereIF(!string.IsNullOrWhiteSpace(filter.LineCode), s => s.LineCode == filter.LineCode)
+            .WhereIF(!string.IsNullOrWhiteSpace(filter.StationCode), s => s.StationCode.Contains(filter.StationCode!))
+            .ToPagedListAsync(pageIndex, pageSize);
+    }
+
     public async Task InsertOrUpdateAsync(IEnumerable<DeviceInfo> deviceInfos)
     {
         var stations = deviceInfos.Select(s => new MdStation
@@ -35,6 +43,8 @@ internal sealed class MdStationService : IMdStationService
             var station0 = await _stationRep.GetFirstAsync(s => s.LineCode == station.LineCode && s.StationCode == station.StationCode);
             if (station0 == null)
             {
+                station.Type = StationTypeEnum.Assembly;
+                station.Owner = StationOwnerEnum.Inline;
                 await _stationRep.InsertAsync(station);
             }
             else
@@ -46,5 +56,18 @@ internal sealed class MdStationService : IMdStationService
                 await _stationRep.AsUpdateable(station0).UpdateColumns(s => new { s.LineName, s.StationName, s.DeviceInfoExt, s.UpdateTime }).ExecuteCommandAsync();
             }
         }
+    }
+
+    public async Task<(bool ok, string err)> UpdateTypeAndOwnerAsync(MdStation input)
+    {
+        var station = await _stationRep.GetByIdAsync(input.Id);
+        if (station is not null)
+        {
+            station.Type = input.Type;
+            station.Owner = input.Owner;
+            await _stationRep.AsUpdateable(station).UpdateColumns(s => new { s.Type, s.Owner, s.UpdateTime }).ExecuteCommandAsync();
+        }
+
+        return (true, "");
     }
 }

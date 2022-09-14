@@ -8,6 +8,7 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
     private readonly SqlSugarRepository<PtTrackMaterial> _trackRep;
     private readonly SqlSugarRepository<PtSnTransit> _transitRep;
     private readonly IMdProductBomService _productBomService;
+    private readonly BusinessOptions _bizOptions;
 
     private readonly ILogger _logger;
 
@@ -15,12 +16,14 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
         SqlSugarRepository<PtTrackMaterial> trackRep,
         SqlSugarRepository<PtSnTransit> transitRep,
         IMdProductBomService productBomService,
+        IOptions<BusinessOptions> bizOptions,
         ILogger<MaterialService> logger)
     {
         _materialRep = materialRep;
         _trackRep = trackRep;
         _transitRep = transitRep;
         _productBomService = productBomService;
+        _bizOptions = bizOptions.Value;
         _logger = logger;
     }
 
@@ -50,13 +53,12 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
 
             // 校验 BOM
             var bom = await _productBomService.GetBomByProductCodeAsync(snTransit.ProductCode!);
-
             if (bom == null)
             {
                 return Error(ErrorCodeEnum.E1304);
             }
 
-            bool equalLength = true; // 是否匹配长度
+            bool equalLength = _bizOptions.IsMatchMaterialEqualLength; // 是否匹配长度
             MdItem? scanMaterial = null; // 扫入的物料
 
             // 带有索引的扫描
@@ -113,8 +115,8 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
 
             PtTrackMaterial trackMaterial = new()
             {
-                 SN = snTransit.SN,
-                 Barcode = barcode,
+                SN = snTransit.SN,
+                Barcode = barcode,
             };
             await _trackRep.InsertAsync(trackMaterial);
 

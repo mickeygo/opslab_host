@@ -51,7 +51,7 @@ public sealed class PtArchiveService : IPtArchiveService
         // 附加数据列
         foreach (var normalVar in additionalVars)
 		{
-            if (extendArray && IsArray(normalVar))
+            if (extendArray && normalVar.IsArray())
             {
                 for (int i = 1; i <= normalVar.Length; i++)
                 {
@@ -103,13 +103,5 @@ public sealed class PtArchiveService : IPtArchiveService
         }
 
         return dt;
-
-        static bool IsArray(DeviceVariable variable)
-        {
-            return variable.VarType != VariableType.String
-                && variable.VarType != VariableType.S7String
-                && variable.VarType != VariableType.S7WString
-                && variable.Length > 0;
-        }
 	}
 }

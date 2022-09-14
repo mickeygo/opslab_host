@@ -9,6 +9,7 @@ public sealed class ProcProcess : EntityBase
     /// <summary>
     /// 工序编码
     /// </summary>
+    /// <remarks>来源于工站。</remarks>
     [DisplayName("工序编码")]
     [Required, MaxLength(64)]
     [NotNull]
@@ -17,6 +18,7 @@ public sealed class ProcProcess : EntityBase
     /// <summary>
     /// 工序名称
     /// </summary>
+    /// <remarks>来源于工站。</remarks>
     [DisplayName("工序名称")]
     [Required, MaxLength(64)]
     [NotNull]
@@ -30,13 +32,20 @@ public sealed class ProcProcess : EntityBase
     public string? Remark { get; set; }
 
     /// <summary>
-    /// 工序状态
+    /// 工序类型。
     /// </summary>
-    public StatusEnum Status { get; set; } = StatusEnum.Enable;
+    /// <remarks>来源于工站。</remarks>
+    public StationTypeEnum Type { get; set; }
+
+    /// <summary>
+    /// 工序归属。
+    /// </summary>
+    /// <remarks>来源于工站，线外站没有工艺路线。</remarks>
+    public StationOwnerEnum Owner { get; set; }
 
     /// <summary>
     /// 工序参数集合
     /// </summary>
     [Navigate(NavigateType.OneToMany, nameof(ProcProcessParameter.ProcessId))]
-    public List<ProcProcessParameter>? ProcessParameters { get; set; }
+    public List<ProcProcessParameter>? Parameters { get; set; }
 }

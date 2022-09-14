@@ -1,10 +1,10 @@
 ﻿namespace Ops.Host.Core.Entity;
 
 /// <summary>
-/// 产品对应的工艺路线信息
+/// 产品制程（产品对应的工艺路线）
 /// </summary>
-[SugarTable("proc_product_process_route", "产品对应的工艺路线表")]
-public sealed class ProcProductProcessRoute : EntityBase
+[SugarTable("proc_route_product", "产品制程表")]
+public sealed class ProcRouteProduct : EntityBase
 {
     /// <summary>
     /// 产品 Id
@@ -21,14 +21,14 @@ public sealed class ProcProductProcessRoute : EntityBase
     /// <summary>
     /// 工艺路线 Id
     /// </summary>
-    [SugarColumn(ColumnDescription = "工艺路线 Id")]
-    public long ProcessRouteId { get; set; }
+    [SugarColumn(ColumnDescription = "工艺路线Id")]
+    public long RouteId { get; set; }
 
     /// <summary>
     /// 工艺路线
     /// </summary>
-    [Navigate(NavigateType.OneToOne, nameof(ProcessRouteId))]
-    public ProcProcessRoute? ProcessRoute { get; set; }
+    [Navigate(NavigateType.OneToOne, nameof(RouteId))]
+    public ProcRoute? Route { get; set; }
 
     /// <summary>
     /// 程序配方号（PLC 程序配方）。
