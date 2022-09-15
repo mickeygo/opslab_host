@@ -39,6 +39,6 @@ public sealed class ProcRoute : EntityBase
     /// <summary>
     /// 工序详细信息。
     /// </summary>
-    [Navigate(NavigateType.OneToMany, nameof(ProcRouteProcess.ProcessId))]
-    public List<ProcRouteProcess>? Items { get; set; }
+    [Navigate(NavigateType.OneToMany, nameof(ProcRouteProcess.RouteId))]
+    public List<ProcRouteProcess>? Contents { get; set; }
 }

@@ -5,6 +5,8 @@
 /// </summary>
 public interface IProcessService : IDomainService
 {
+    Task<ProcProcess> GetByIdAsync(long id);
+
     List<ProcProcess> GetAll();
 
     Task<List<ProcProcess>> GetAllAsyns();

@@ -246,6 +246,7 @@
                                     <Button Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,32,32" 
                                             Style="{StaticResource ButtonInfo}"
                                             Content="复制"
+                                            IsEnabled="{Binding IsAdding}"
                                             Command="{Binding CopyCommand}"/>
                                 </Grid>
                             </hc:TransitioningContentControl>

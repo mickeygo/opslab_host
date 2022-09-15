@@ -33,7 +33,7 @@ public class ProcRouteProcess : EntityBase
     /// <summary>
     /// 下一道工序
     /// </summary>
-    [Navigate(NavigateType.OneToOne, nameof(ProcessId))]
+    [Navigate(NavigateType.OneToOne, nameof(NextProcessId))]
     public ProcProcess? NextProcess { get; set; }
 
     /// <summary>

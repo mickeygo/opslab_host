@@ -66,7 +66,7 @@
                         <DataGridTextColumn Binding="{Binding LineCode}" Width="80" Header="产线"/>
                         <DataGridTextColumn Binding="{Binding StationCode}" Width="80" Header="工站"/>
                         <DataGridTextColumn Binding="{Binding Descirption}" Width="180" Header="描述"/>
-                        <DataGridTextColumn Binding="{Binding CreateTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="150" Header="进站时间"/>
+                        <DataGridTextColumn Binding="{Binding CreateTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="150" Header="警报时间"/>
                     </DataGrid.Columns>
                 </DataGrid>
                 <hc:Pagination Grid.Row="1" HorizontalAlignment="Right"

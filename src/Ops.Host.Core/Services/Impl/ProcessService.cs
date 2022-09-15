@@ -11,6 +11,11 @@ internal sealed class ProcessService : IProcessService
         _stationRep = stationRep;
     }
 
+    public async Task<ProcProcess> GetByIdAsync(long id)
+    {
+        return await _processRep.GetByIdAsync(id);
+    }
+
     public List<ProcProcess> GetAll()
     {
         return _processRep.GetList(s => !s.IsDelete && !s.IsDisable);
