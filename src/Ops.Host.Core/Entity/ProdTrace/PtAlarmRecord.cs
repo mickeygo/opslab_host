@@ -9,6 +9,7 @@ public class PtAlarmRecord : EntityBaseId
     /// <summary>
     /// 产线代码
     /// </summary>
+    [DisplayName("产线代码")]
     [SugarColumn(ColumnDescription = "产线代码", Length = 64)]
     [Required, MaxLength(64)]
     [NotNull]
@@ -17,6 +18,7 @@ public class PtAlarmRecord : EntityBaseId
     /// <summary>
     /// 工站代码
     /// </summary>
+    [DisplayName("工站代码")]
     [SugarColumn(ColumnDescription = "工站代码", Length = 64)]
     [Required, MaxLength(64)]
     [NotNull]
@@ -26,13 +28,13 @@ public class PtAlarmRecord : EntityBaseId
     /// 分类
     /// </summary>
     [SugarColumn(ColumnDescription = "分类", Length = 32)]
-    [Required, MaxLength(32)]
-    [NotNull]
+    [MaxLength(32)]
     public string? Category { get; set; }
 
     /// <summary>
-    /// 描述
+    /// 警报描述
     /// </summary>
+    [DisplayName("描述")]
     [SugarColumn(ColumnDescription = "描述", Length = 64)]
     [MaxLength(64)]
     public string? Descirption { get; set; }
@@ -40,6 +42,7 @@ public class PtAlarmRecord : EntityBaseId
     /// <summary>
     /// 警报时间
     /// </summary>
+    [DisplayName("警报时间")]
     [SugarColumn(ColumnDescription = "警报时间")]
     public DateTime CreateTime { get; set; }
 }

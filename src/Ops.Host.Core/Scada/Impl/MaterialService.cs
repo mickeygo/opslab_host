@@ -7,7 +7,7 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
     private readonly SqlSugarRepository<PtSnMaterial> _materialRep;
     private readonly SqlSugarRepository<PtTrackMaterial> _trackRep;
     private readonly SqlSugarRepository<PtSnTransit> _transitRep;
-    private readonly IMdProductBomService _productBomService;
+    private readonly IProcProcessBomService _bomService;
     private readonly BusinessOptions _bizOptions;
 
     private readonly ILogger _logger;
@@ -15,14 +15,14 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
     public MaterialService(SqlSugarRepository<PtSnMaterial> materialRep,
         SqlSugarRepository<PtTrackMaterial> trackRep,
         SqlSugarRepository<PtSnTransit> transitRep,
-        IMdProductBomService productBomService,
+        IProcProcessBomService bomService,
         IOptions<BusinessOptions> bizOptions,
         ILogger<MaterialService> logger)
     {
         _materialRep = materialRep;
         _trackRep = trackRep;
         _transitRep = transitRep;
-        _productBomService = productBomService;
+        _bomService = bomService;
         _bizOptions = bizOptions.Value;
         _logger = logger;
     }
@@ -52,7 +52,7 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
             }
 
             // 校验 BOM
-            var bom = await _productBomService.GetBomByProductCodeAsync(snTransit.ProductCode!);
+            var bom = await _bomService.GetBomAsync(snTransit.ProductCode!, data.Schema.Line, data.Schema.Station);
             if (bom == null)
             {
                 return Error(ErrorCodeEnum.E1304);
@@ -64,7 +64,7 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
             // 带有索引的扫描
             if (index > 0)
             {
-                var item = bom.Items!.FirstOrDefault(s => s.Seq == index);
+                var item = bom.Contents!.FirstOrDefault(s => s.Seq == index);
                 if (item == null)
                 {
                     return Error(ErrorCodeEnum.E1307);
@@ -84,7 +84,7 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
             else
             {
                 // 无索引的关键物料，匹配任一即可。
-                foreach (var item in bom.Items!.Where(s => s.Material!.Attr == MaterialAttrEnum.Critical))
+                foreach (var item in bom.Contents!.Where(s => s.Material!.Attr == MaterialAttrEnum.Critical))
                 {
                     var rules = item.Material!.BarcodeRule.Split(RuleSeparator, StringSplitOptions.RemoveEmptyEntries);
                     if (MatchRuleAny(rules, barcode, equalLength))

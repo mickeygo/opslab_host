@@ -38,7 +38,7 @@
                                   hc:InfoElement.TitleWidth="60" 
                                   hc:InfoElement.TitlePlacement="Left" 
                                   Style="{StaticResource GroupBoxOriginal}" 
-                                  Header="重新加载">
+                                  Header="同步数据">
                             <Button Style="{StaticResource ButtonSuccess.Small}" 
                                     hc:IconElement.Geometry="{StaticResource RotateRightGeometry}"
                                     Command="{Binding RefreshStationCacheCommand}"/>

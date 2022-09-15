@@ -28,6 +28,12 @@ public abstract class EntityBaseId
 public abstract class EntityBase : EntityBaseId
 {
     /// <summary>
+    /// 是否已删除
+    /// </summary>
+    [DisplayName("是否已删除")]
+    public bool IsDelete { get; set; }
+
+    /// <summary>
     /// 创建时间
     /// </summary>
     [DisplayName("创建时间")]

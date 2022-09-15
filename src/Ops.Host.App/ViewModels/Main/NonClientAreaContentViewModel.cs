@@ -32,7 +32,7 @@ public sealed class NonClientAreaContentViewModel : ObservableObject, IViewModel
 
     private async Task RefreshStationCacheAsync()
     {
-        await _stationManager.RefreshAsync();
+        await _stationManager.SyncToLocalAsync();
         Growl.Info(new GrowlInfo
         {
             Message = "数据加载完成",

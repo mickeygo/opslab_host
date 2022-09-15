@@ -185,7 +185,7 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
                 DataSourceList?.Add(SelectedItem!);
             }
 
-            IsOpenSidebar = false;
+            CloseSidebar();
         }
         else
         {
@@ -307,6 +307,14 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
         }
     }
 
+    /// <summary>
+    /// 关闭侧边栏
+    /// </summary>
+    protected void CloseSidebar()
+    {
+        IsOpenSidebar = false;
+    }
+
     internal protected void InnerDelete(TDataSource? data, Func<TDataSource, (bool, string)> deleteAction)
     {
         if (data == null)
@@ -398,7 +406,7 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
 
         if (builder.Mode == PrintModelBuilder.PrintMode.Preview)
         {
-            // TODO：若是打开失败后，关闭主窗体应用程序依旧存在的 bug。
+            // TODO: 若是打开失败后，关闭主窗体应用程序依旧存在的 bug。
             PrintPreviewWindow? previewWnd = null;
             try
             {

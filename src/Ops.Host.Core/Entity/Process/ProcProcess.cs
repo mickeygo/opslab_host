@@ -9,7 +9,7 @@ public sealed class ProcProcess : EntityBase
     /// <summary>
     /// 工序编码
     /// </summary>
-    /// <remarks>来源于工站。</remarks>
+    /// <remarks>来源于工站代码。</remarks>
     [DisplayName("工序编码")]
     [Required, MaxLength(64)]
     [NotNull]
@@ -18,11 +18,23 @@ public sealed class ProcProcess : EntityBase
     /// <summary>
     /// 工序名称
     /// </summary>
-    /// <remarks>来源于工站。</remarks>
+    /// <remarks>来源于工站名称。</remarks>
     [DisplayName("工序名称")]
     [Required, MaxLength(64)]
     [NotNull]
     public string? Name { get; set; }
+
+    /// <summary>
+    /// 工站Id。
+    /// </summary>
+    /// <remarks>目前工序与工站是一一对应关系。</remarks>
+    public long StationId { get; set; }
+
+    /// <summary>
+    /// 工站。
+    /// </summary>
+    [Navigate(NavigateType.OneToOne, nameof(StationId))]
+    public MdStation? Station { get; set; }
 
     /// <summary>
     /// 备注
@@ -32,20 +44,7 @@ public sealed class ProcProcess : EntityBase
     public string? Remark { get; set; }
 
     /// <summary>
-    /// 工序类型。
+    /// 是否禁用
     /// </summary>
-    /// <remarks>来源于工站。</remarks>
-    public StationTypeEnum Type { get; set; }
-
-    /// <summary>
-    /// 工序归属。
-    /// </summary>
-    /// <remarks>来源于工站，线外站没有工艺路线。</remarks>
-    public StationOwnerEnum Owner { get; set; }
-
-    /// <summary>
-    /// 工序参数集合
-    /// </summary>
-    [Navigate(NavigateType.OneToMany, nameof(ProcProcessParameter.ProcessId))]
-    public List<ProcProcessParameter>? Parameters { get; set; }
+    public bool IsDisable { get; set; }
 }

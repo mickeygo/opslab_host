@@ -15,6 +15,10 @@
 
             <ToolBarTray>
                 <ToolBar>
+                    <Button Margin="8,2,0,0" Content="同步" 
+                            hc:Poptip.Content="注：会将工站信息同步到工序" hc:Poptip.Placement="Top" hc:Poptip.HitMode="Hover"
+                            Command="{Binding SyncCommand}"/>
+                    <Separator Margin="10,0,0,0"/>
                     <StackPanel Orientation="Horizontal" Margin="20,2,0,0">
                         <hc:UniformSpacingPanel Spacing="10">
                             <TextBox Width="180" 
@@ -22,13 +26,13 @@
                                      hc:InfoElement.TitlePlacement="Left" 
                                      hc:InfoElement.Title="工艺编号"
                                      Style="{StaticResource TextBoxExtend}"
-                                     Text="{Binding QueryFilter.StationCode}"/>
+                                     Text="{Binding QueryFilter.Code}"/>
                             <TextBox Width="180" 
                                      hc:InfoElement.TitleWidth="60"
                                      hc:InfoElement.TitlePlacement="Left" 
                                      hc:InfoElement.Title="工艺名称"
                                      Style="{StaticResource TextBoxExtend}"
-                                     Text="{Binding QueryFilter.StationCode}"/>
+                                     Text="{Binding QueryFilter.Name}"/>
                             <Button Content="查询" Command="{Binding QueryCommand}"/>
                         </hc:UniformSpacingPanel>
                     </StackPanel>
@@ -49,8 +53,6 @@
                         <DataGridTextColumn Binding="{Binding Code}" Width="100" Header="工艺代码"/>
                         <DataGridTextColumn Binding="{Binding Name}" Width="160" Header="工艺名称"/>
                         <DataGridTextColumn Binding="{Binding Remark}" Width="100" Header="备注"/>
-                        <DataGridTextColumn Binding="{Binding Type, Converter={StaticResource EnumDescriptionConverter}}" Width="80" Header="类型"/>
-                        <DataGridTextColumn Binding="{Binding Owner, Converter={StaticResource EnumDescriptionConverter}}" Width="80" Header="归属"/>
                         <DataGridTemplateColumn Width="*" Header="操作">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -112,12 +114,6 @@
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
                                                             <hc:UniformSpacingPanel Orientation="Horizontal" Spacing="8">
-                                                                <Button Content="上移" Style="{StaticResource ButtonWarning.Small}" 
-                                                                        Command="{Binding DataContext.UpCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" 
-                                                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Path=SelectedItem}" />
-                                                                <Button Content="下移" Style="{StaticResource ButtonWarning.Small}" 
-                                                                        Command="{Binding DataContext.DownCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" 
-                                                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Path=SelectedItem}" />
                                                                 <Button Content="删除" Style="{StaticResource ButtonDanger.Small}" 
                                                                         Command="{Binding DataContext.DelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" 
                                                                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Path=SelectedItem}" />

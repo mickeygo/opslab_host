@@ -1,18 +1,15 @@
 ﻿namespace Ops.Host.Core.Entity;
 
-[SugarTable("md_product_bom_item", "产品BOM明细")]
-public sealed class MdProductBomItem : EntityBase
+/// <summary>
+/// 工艺BOM内容
+/// </summary>
+[SugarTable("proc_process_bom_content", "工艺BOM内容表")]
+public sealed class ProcProcessBomContent : EntityBase
 {
     /// <summary>
-    /// 产品 BOM Id。
+    /// 工艺BOM Id。
     /// </summary>
-    public long ProductBomId { get; set; }
-
-    /// <summary>
-    /// 产品 BOM。
-    /// </summary>
-    [Navigate(NavigateType.OneToOne, nameof(ProductBomId))]
-    public MdProductBom? ProductBom { get; set; }
+    public long ProcessBomId { get; set; }
 
     /// <summary>
     /// 物料信息 Id。

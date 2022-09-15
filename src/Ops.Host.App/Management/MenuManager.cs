@@ -17,13 +17,15 @@ public sealed class MenuManager
         new MenuItemModel("", "用户信息", typeof(UserCtl), false),
         new MenuItemModel("", "物料信息", typeof(ItemCtl), false),
         new MenuItemModel("", "字典数据", typeof(DictDataCtl), false),
-        new MenuItemModel("", "产品BOM", typeof(ProductBomCtl), false),
+        new MenuItemModel("", "卡号管理", typeof(CardCtl), false),
         new MenuItemModel("", "工站信息", typeof(StationCtl), false),
         new MenuItemModel("", "工艺管理", typeof(ProcessCtl), false),
+        new MenuItemModel("", "工艺BOM", typeof(ProcessBomCtl), false),
+        //new MenuItemModel("", "工艺路线", typeof(ProcessBomCtl), false),
         new MenuItemModel("", "进站记录", typeof(InboundCtl), false),
         new MenuItemModel("", "过站记录", typeof(ArchiveCtl), false),
         new MenuItemModel("", "物料追溯", typeof(MaterialTraceCtl), false),
-        new MenuItemModel("", "卡号管理", typeof(CardCtl), false),
+        new MenuItemModel("", "警报记录", typeof(AlarmRecordCtl), false),
         new MenuItemModel("", "刷卡记录", typeof(CardRecordCtl), false),
     };
 }

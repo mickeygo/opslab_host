@@ -3,10 +3,12 @@
 internal sealed class MdStationService : IMdStationService
 {
     private readonly SqlSugarRepository<MdStation> _stationRep;
+    private readonly SqlSugarRepository<ProcProcess> _processRep;
 
-    public MdStationService(SqlSugarRepository<MdStation> stationRep)
+    public MdStationService(SqlSugarRepository<MdStation> stationRep, SqlSugarRepository<ProcProcess> processRep)
     {
         _stationRep = stationRep;
+        _processRep = processRep;
     }
 
     public List<MdStation> GetStationList()
@@ -27,7 +29,7 @@ internal sealed class MdStationService : IMdStationService
             .ToPagedListAsync(pageIndex, pageSize);
     }
 
-    public async Task InsertOrUpdateAsync(IEnumerable<DeviceInfo> deviceInfos)
+    public async Task SyncToLocalAsync(IEnumerable<DeviceInfo> deviceInfos)
     {
         var stations = deviceInfos.Select(s => new MdStation
         {
@@ -40,6 +42,7 @@ internal sealed class MdStationService : IMdStationService
 
         foreach (var station in stations)
         {
+            // 同步工站
             var station0 = await _stationRep.GetFirstAsync(s => s.LineCode == station.LineCode && s.StationCode == station.StationCode);
             if (station0 == null)
             {

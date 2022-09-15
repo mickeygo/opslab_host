@@ -47,13 +47,13 @@ public sealed class StationCacheManager : IManager
     }
 
     /// <summary>
-    /// 刷新数据。
+    /// 同步数据到本地（包含工站）。
     /// </summary>
     /// <returns></returns>
-    public async Task RefreshAsync()
+    public async Task SyncToLocalAsync()
     {
         var devInfos = await _deviceInfoManager.GetAllAsync();
-        await _stationService.InsertOrUpdateAsync(devInfos);
+        await _stationService.SyncToLocalAsync(devInfos);
 
         _memoryCache.Remove(Key);
     }

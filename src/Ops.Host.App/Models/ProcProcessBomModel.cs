@@ -1,6 +1,6 @@
 ﻿namespace Ops.Host.App.Models;
 
-public class MdProductBomModel : ObservableObject
+public sealed class ProcProcessBomModel : ObservableObject
 {
     public long Id { get; set; }
 
@@ -15,28 +15,24 @@ public class MdProductBomModel : ObservableObject
     public MdItemModel? Product { get; set; }
 
     /// <summary>
-    /// 产线
+    /// 工序 Id
     /// </summary>
-    [DisplayName("产线")]
-    [Required]
-    public string? LineCode { get; set; }
+    public long ProcessId { get; set; }
 
     /// <summary>
-    /// 工站
+    /// 工序
     /// </summary>
-    [DisplayName("工站")]
-    [Required]
-    public string? StationCode { get; set; }
+    public ProcProcess? Process { get; set; }
 
-    private ObservableCollection<MdProductBomItemModel>? _items;
+    private ObservableCollection<ProcProcessBomContentModel>? _contents;
 
     /// <summary>
     /// BOM 详细
     /// </summary>
-    public ObservableCollection<MdProductBomItemModel>? Items
+    public ObservableCollection<ProcProcessBomContentModel>? Contents
     {
-        get => _items;
-        set => SetProperty(ref _items, value);
+        get => _contents;
+        set => SetProperty(ref _contents, value);
     }
 
     /// <summary>
@@ -50,17 +46,12 @@ public class MdProductBomModel : ObservableObject
     public DateTime? UpdateTime { get; set; }
 }
 
-public class MdProductBomItemModel : ObservableObject
+public sealed class ProcProcessBomContentModel : ObservableObject
 {
     /// <summary>
-    /// 产品 BOM Id。
+    /// 工艺BOM Id。
     /// </summary>
-    public long ProductBomId { get; set; }
-
-    /// <summary>
-    /// 产品 BOM。
-    /// </summary>
-    public MdProductBomModel? ProductBom { get; set; }
+    public long ProcessBomId { get; set; }
 
     /// <summary>
     /// 物料信息 Id。
@@ -72,10 +63,17 @@ public class MdProductBomItemModel : ObservableObject
     /// </summary>
     public MdItemModel? Material { get; set; }
 
+    private int _qty;
+
     /// <summary>
     /// 使用数量。
     /// </summary>
-    public int Qty { get; set; }
+    public int Qty
+    {
+        get => _qty;
+        set => SetProperty(ref _qty, value);
+    }
+
 
     private int _seq;
 
