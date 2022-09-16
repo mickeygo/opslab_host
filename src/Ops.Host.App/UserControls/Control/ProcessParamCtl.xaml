@@ -119,7 +119,8 @@
                                                   DisplayMemberPath="Name"
                                                   Style="{StaticResource ComboBoxExtend}"
                                                   SelectedValue="{Binding SelectedItem.ProcessId}"/>
-                                        <Button Margin="10,10,0,0" Style="{StaticResource ButtonSuccess}" 
+                                        <Button Margin="60,10,0,0" HorizontalAlignment="Left"
+                                                Style="{StaticResource ButtonSuccess}" 
                                                 Content="生成模板" 
                                                 IsEnabled="{Binding IsAdding}"
                                                 Command="{Binding GenerateTemplateCommand}" />
@@ -140,7 +141,7 @@
                                     <DataGridTextColumn Binding="{Binding DataType}" Width="80" Header="数据类型" IsReadOnly="True"/>
                                     <DataGridTextColumn Binding="{Binding Lower}" Width="80" Header="下限值"/>
                                     <DataGridTextColumn Binding="{Binding Higher}" Width="80" Header="上限值"/>
-                                    <DataGridTextColumn Binding="{Binding IsCheck}" Width="60" Header="需校验"/>
+                                    <DataGridCheckBoxColumn Binding="{Binding IsCheck}" Width="60" Header="需校验"/>
                                 </DataGrid.Columns>
                             </DataGrid>
 

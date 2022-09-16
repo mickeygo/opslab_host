@@ -1,6 +1,6 @@
 ﻿namespace Ops.Host.App.ViewModels;
 
-public sealed class ProcessParamViewModel : AsyncSinglePagedViewModelBase<ProcProcessParam, ProcessParamFilter>, IViewModel
+public sealed class ProcessParamViewModel : AsyncSinglePagedViewModelBase<ProcProcessParamModel, ProcessParamFilter>, IViewModel
 {
     private readonly IProcProcessParamService _paramService;
     private readonly IProcessService _processService;
@@ -23,14 +23,16 @@ public sealed class ProcessParamViewModel : AsyncSinglePagedViewModelBase<ProcPr
 
     public ICommand GenerateTemplateCommand { get; }
 
-    protected override Task<PagedList<ProcProcessParam>> OnSearchAsync(int pageIndex, int pageSize)
+    protected override async Task<PagedList<ProcProcessParamModel>> OnSearchAsync(int pageIndex, int pageSize)
     {
-        return _paramService.GetPagedListAsync(QueryFilter, pageIndex, pageSize);
+        var items = await _paramService.GetPagedListAsync(QueryFilter, pageIndex, pageSize);
+        return items.Adapt<PagedList<ProcProcessParamModel>>();
     }
 
-    protected override async Task<(bool ok, string? err)> OnSaveAsync(ProcProcessParam data)
+    protected override async Task<(bool ok, string? err)> OnSaveAsync(ProcProcessParamModel data)
     {
-        return await _paramService.InsertOrUpdateAsync(data);
+        var input = data.Adapt<ProcProcessParam>();
+        return await _paramService.InsertOrUpdateAsync(input);
     }
 
     private async Task GenerateTemplateAsync()
@@ -56,6 +58,6 @@ public sealed class ProcessParamViewModel : AsyncSinglePagedViewModelBase<ProcPr
 
         SelectedItem.Product = content!.Product;
         SelectedItem.Process = content!.Process;
-        SelectedItem.Contents = content!.Contents;
+        SelectedItem.Contents = new(content!.Contents!);
     }
 }
