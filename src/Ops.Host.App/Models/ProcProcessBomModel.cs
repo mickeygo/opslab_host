@@ -48,6 +48,8 @@ public sealed class ProcProcessBomModel : ObservableObject
 
 public sealed class ProcProcessBomContentModel : ObservableObject
 {
+    public long Id { get; set; }
+
     /// <summary>
     /// 工艺BOM Id。
     /// </summary>
@@ -85,14 +87,4 @@ public sealed class ProcProcessBomContentModel : ObservableObject
         get => _seq;
         set => SetProperty(ref _seq, value);
     }
-
-    /// <summary>
-    /// 创建时间
-    /// </summary>
-    public DateTime CreateTime { get; set; }
-
-    /// <summary>
-    /// 更新时间
-    /// </summary>
-    public DateTime? UpdateTime { get; set; }
 }

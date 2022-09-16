@@ -4,25 +4,48 @@ public sealed class ProcessRouteViewModel : AsyncSinglePagedViewModelBase<ProcRo
 {
     private readonly IProcRouteService _routeService;
     private readonly IProcessService _processService;
+    private readonly IMdItemService _itemService;
 
-    public ProcessRouteViewModel(IProcRouteService routeService, IProcessService processService)
+    public ProcessRouteViewModel(IProcRouteService routeService, 
+        IProcessService processService, 
+        IMdItemService itemService)
     {
         _routeService = routeService;
         _processService = processService;
+        _itemService = itemService;
 
-        AddProcessCommand = new AsyncRelayCommand(AddProcessAsync);
+        AddProcessCommand = new RelayCommand(AddProcess);
         UpCommand = new RelayCommand<ProcRouteProcessModel>(Up!);
         DownCommand = new RelayCommand<ProcRouteProcessModel>(Down!);
         DelCommand = new RelayCommand<ProcRouteProcessModel>(Del!);
+
+        LinkProductCommand = new AsyncRelayCommand(LinkProductAsync);
+        DelLinkProductCommand = new AsyncRelayCommand<ProcRouteProduct>(DelLinkProductAsync!);
     }
 
     public List<ProcProcess> ProcessDropdownList => _processService.GetAll();
 
-    private long _processId;
-    public long ProcessId
+    public List<MdItem> ProductDropdownList => _itemService.GetProducts();
+
+    private ProcProcess? _selectedProcProcess;
+    public ProcProcess? SelectedProcProcess
     {
-        get => _processId;
-        set => SetProperty(ref _processId, value);
+        get => _selectedProcProcess;
+        set => SetProperty(ref _selectedProcProcess, value);
+    }
+
+    private MdItem? _selectedLinkProduct;
+    public MdItem? SelectedLinkProduct
+    {
+        get => _selectedLinkProduct;
+        set => SetProperty(ref _selectedLinkProduct, value);
+    }
+
+    private int _formulaNo;
+    public int FormulaNo
+    {
+        get => _formulaNo;
+        set => SetProperty(ref _formulaNo, value);
     }
 
     public ICommand AddProcessCommand { get; }
@@ -33,6 +56,10 @@ public sealed class ProcessRouteViewModel : AsyncSinglePagedViewModelBase<ProcRo
 
     public ICommand DelCommand { get; }
 
+    public ICommand LinkProductCommand { get; }
+
+    public ICommand DelLinkProductCommand { get; }
+
     protected override async Task<PagedList<ProcRouteModel>> OnSearchAsync(int pageIndex, int pageSize)
     {
         var pagedList = await _routeService.GetPagedListAsync(QueryFilter, pageIndex, pageSize);
@@ -42,34 +69,28 @@ public sealed class ProcessRouteViewModel : AsyncSinglePagedViewModelBase<ProcRo
     protected override async Task<(bool ok, string? err)> OnSaveAsync(ProcRouteModel data)
     {
         var route = data.Adapt<ProcRoute>();
-        var (ok, err) = await _routeService.InsertOrUpdateAsync(route);
-        if (ok)
-        {
-            // 此处要将实体映射到 model。
-            var bom1 = await _routeService.GetAsync(route.Id);
-            SelectedItem = bom1.Adapt<ProcRouteModel>();
-        }
-
-        return (ok, err);
+        return await _routeService.InsertOrUpdateAsync(route);
     }
 
-    private async Task AddProcessAsync()
+    protected override async Task<(bool ok, string? err)> OnDeleteAsync(ProcRouteModel data)
     {
-        if (ProcessId == 0)
+        return await _routeService.DeleteAsync(data.Id);
+    }
+
+    private void AddProcess()
+    {
+        if (SelectedProcProcess is null)
         {
             NoticeWarning("请先选择 [工序]");
             return;
         }
 
-        var procs = await _processService.GetByIdAsync(ProcessId);
-        //var procs0 = item.Adapt<MdItemModel>();
-
         var route = SelectedItem;
         route!.Contents ??= new();
         route.Contents.Add(new()
         {
-            ProcessId = ProcessId,
-            Process = procs,
+            ProcessId = SelectedProcProcess.Id,
+            Process = SelectedProcProcess,
             Seq = route.Contents.Count + 1,
         });
     }
@@ -115,5 +136,48 @@ public sealed class ProcessRouteViewModel : AsyncSinglePagedViewModelBase<ProcRo
         {
             SelectedItem!.Contents.Where(s => s.Seq > item.Seq).ToList().ForEach(s => s.Seq -= 1);
         }
+    }
+
+    private async Task LinkProductAsync()
+    {
+        if (SelectedItem?.Id == 0)
+        {
+            NoticeWarning("请选择要关联的产品");
+            return;
+        }
+
+        if (SelectedLinkProduct is null)
+        {
+            NoticeWarning("请选择要关联的产品");
+            return;
+        }
+
+        ProcRouteProduct input = new()
+        {
+            RouteId = SelectedItem!.Id,
+            ProductId = SelectedLinkProduct.Id,
+            Product = SelectedLinkProduct,
+            FormulaNo = FormulaNo,
+        };
+        var (ok, err) = await _routeService.LinkProductAsync(input);
+        if (!ok)
+        {
+            NoticeWarning($"关联产品失败，原因：{err}");
+            return;
+        }
+
+        SelectedItem!.LinkProducts?.Add(input);
+    }
+
+    private async Task DelLinkProductAsync(ProcRouteProduct item)
+    {
+        var (ok, err) = await _routeService.DelLinkProductAsync(item.RouteId, item.ProductId);
+        if (!ok)
+        {
+            NoticeWarning($"删除关联产品失败，原因：{err}");
+            return;
+        }
+
+        SelectedItem!.LinkProducts?.Remove(item);
     }
 }

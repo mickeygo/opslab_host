@@ -1,0 +1,157 @@
+﻿<UserControl x:Class="Ops.Host.App.UserControls.ProcessParamCtl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <hc:TransitioningContentControl>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <ToolBarTray>
+                <ToolBar>
+                    <Button Content="新增" Margin="10,2,0,0" Style="{StaticResource ButtonPrimary}" Command="{Binding AddCommand}"/>
+                    <Separator Margin="10,0,0,0"/>
+                    <StackPanel Orientation="Horizontal" Margin="20,2,0,0">
+                        <hc:UniformSpacingPanel Spacing="10">
+                            <TextBox Width="160" 
+                                     hc:InfoElement.TitleWidth="60"
+                                     hc:InfoElement.TitlePlacement="Left" 
+                                     hc:InfoElement.Title="产品编码"
+                                     Style="{StaticResource TextBoxExtend}"
+                                     Text="{Binding QueryFilter.ProductCode}"/>
+                            <TextBox Width="160" 
+                                     hc:InfoElement.TitleWidth="60"
+                                     hc:InfoElement.TitlePlacement="Left" 
+                                     hc:InfoElement.Title="产品名称"
+                                     Style="{StaticResource TextBoxExtend}"
+                                     Text="{Binding QueryFilter.ProductName}"/>
+                            <TextBox Width="160" 
+                                     hc:InfoElement.TitleWidth="60"
+                                     hc:InfoElement.TitlePlacement="Left" 
+                                     hc:InfoElement.Title="工序编码"
+                                     Style="{StaticResource TextBoxExtend}"
+                                     Text="{Binding QueryFilter.ProcessCode}"/>
+                            <Button Content="查询" Command="{Binding QueryCommand}"/>
+                        </hc:UniformSpacingPanel>
+                    </StackPanel>
+                </ToolBar>
+            </ToolBarTray>
+
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <DataGrid HeadersVisibility="All" AutoGenerateColumns="False" 
+                          ScrollViewer.VerticalScrollBarVisibility="Visible"
+                          hc:Empty.ShowEmpty="True"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding DataSourceList}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Process.Code}" Width="100" Header="工序"/>
+                        <DataGridTextColumn Binding="{Binding Process.Name}" Width="120" Header="工序名称"/>
+                        <DataGridTextColumn Binding="{Binding Product.Code}" Width="100" Header="产品"/>
+                        <DataGridTextColumn Binding="{Binding Product.Name}" Width="120" Header="产品名称"/>
+                        <DataGridTemplateColumn Width="120" Header="操作">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <hc:UniformSpacingPanel Orientation="Horizontal" Spacing="8">
+                                        <Button Content="编辑" Style="{StaticResource ButtonWarning.Small}" 
+                                                Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" 
+                                                CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Path=SelectedItem}" />
+                                        <Button Content="删除" Style="{StaticResource ButtonDanger.Small}" 
+                                                Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" 
+                                                CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Path=SelectedItem}" />
+                                    </hc:UniformSpacingPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <hc:Pagination Grid.Row="1" HorizontalAlignment="Right"
+                    MaxPageCount="{Binding PageCount}" DataCountPerPage="{Binding PageSize}">
+                    <hc:Interaction.Triggers>
+                        <hc:EventTrigger EventName="PageUpdated">
+                            <hc:EventToCommand Command="{Binding PageUpdatedCommand}" PassEventArgsToCommand="True" />
+                        </hc:EventTrigger>
+                    </hc:Interaction.Triggers>
+                </hc:Pagination>
+            </Grid>
+
+            <hc:Drawer Name="DrawerCode" IsOpen="{Binding IsOpenSidebar}">
+                <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0" CornerRadius="0,0,0,0" Background="{DynamicResource RegionBrush}" Width="620">
+                    <hc:TransitioningContentControl>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="80" />
+                            </Grid.RowDefinitions>
+                            <hc:SimpleStackPanel Margin="12">
+                                <hc:UniformSpacingPanel Spacing="8">
+                                    <hc:SimpleStackPanel>
+                                        <ComboBox Width="340" 
+                                                  Margin="0,10,0,0"
+                                                  ItemsSource="{Binding ProductDropdownList}"
+                                                  hc:InfoElement.TitleWidth="60" 
+                                                  hc:InfoElement.TitlePlacement="Left"
+                                                  hc:InfoElement.Title="产品"
+                                                  hc:InfoElement.Necessary="True"
+                                                  IsEnabled="{Binding IsAdding}"
+                                                  SelectedValuePath="Id"
+                                                  DisplayMemberPath="Code"
+                                                  Style="{StaticResource ComboBoxExtend}"
+                                                  SelectedValue="{Binding SelectedItem.ProductId}"/>
+                                        <ComboBox Width="340" 
+                                                  Margin="0,10,0,0"
+                                                  ItemsSource="{Binding ProcessDropdownList}"
+                                                  hc:InfoElement.TitleWidth="60" 
+                                                  hc:InfoElement.TitlePlacement="Left"
+                                                  hc:InfoElement.Title="工序"
+                                                  hc:InfoElement.Necessary="True"
+                                                  IsEnabled="{Binding IsAdding}"
+                                                  SelectedValuePath="Id"
+                                                  DisplayMemberPath="Name"
+                                                  Style="{StaticResource ComboBoxExtend}"
+                                                  SelectedValue="{Binding SelectedItem.ProcessId}"/>
+                                        <Button Margin="10,10,0,0" Style="{StaticResource ButtonSuccess}" 
+                                                Content="生成模板" 
+                                                IsEnabled="{Binding IsAdding}"
+                                                Command="{Binding GenerateTemplateCommand}" />
+                                    </hc:SimpleStackPanel>
+                                </hc:UniformSpacingPanel>
+                            </hc:SimpleStackPanel>
+
+                            <DataGrid Grid.Row="1" Margin="8,10,8,0" 
+                                      HeadersVisibility="All" AutoGenerateColumns="False" 
+                                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                      hc:Empty.ShowEmpty="True"
+                                      Style="{StaticResource DataGrid.Small}"
+                                      ItemsSource="{Binding SelectedItem.Contents}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Tag}" Width="160" Header="标签" IsReadOnly="True"/>
+                                    <DataGridTextColumn Binding="{Binding Name}" Width="120" Header="名称" IsReadOnly="True"/>
+                                    <DataGridTextColumn Binding="{Binding Seq}" Width="60" Header="序号" IsReadOnly="True"/>
+                                    <DataGridTextColumn Binding="{Binding DataType}" Width="80" Header="数据类型" IsReadOnly="True"/>
+                                    <DataGridTextColumn Binding="{Binding Lower}" Width="80" Header="下限值"/>
+                                    <DataGridTextColumn Binding="{Binding Higher}" Width="80" Header="上限值"/>
+                                    <DataGridTextColumn Binding="{Binding IsCheck}" Width="60" Header="需校验"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Button Grid.Row="2" HorizontalAlignment="Right" Margin="0,10,32,32"
+                                    Style="{StaticResource ButtonInfo}"
+                                    Content="提交"
+                                    Command="{Binding SaveCommand}"/>
+                        </Grid>
+                    </hc:TransitioningContentControl>
+                </Border>
+            </hc:Drawer>
+        </Grid>
+    </hc:TransitioningContentControl>
+</UserControl>

@@ -38,7 +38,7 @@ internal sealed class MdItemService : IMdItemService
         // 新增数据，检查用户是否已存在
         if (input.IsTransient() && _itemRep.IsAny(s => s.Code == input.Code))
         {
-            return (false, $"物料代码 '{input.Code}' 已存在");
+            return (false, $"物料编码 '{input.Code}' 已存在");
         }
 
         var ok = await _itemRep.InsertOrUpdateAsync(input);

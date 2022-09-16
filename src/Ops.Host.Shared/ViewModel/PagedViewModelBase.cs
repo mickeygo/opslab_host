@@ -17,6 +17,7 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
     private TDataSource? _selectedItem;
     private bool _isOpenSidebar = false;
     private bool _isAdding = false;
+    private bool _isEdit = false;
 
     /// <summary>
     /// 每页数量，默认 20 条。
@@ -93,6 +94,15 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
     {
         get => _isAdding;
         set => SetProperty(ref _isAdding, value);
+    }
+
+    /// <summary>
+    /// 是否为编辑动作，此值与 IsAdding 相反。
+    /// </summary>
+    public bool IsEdit
+    {
+        get => _isEdit;
+        set => SetProperty(ref _isEdit, value);
     }
 
     #endregion
@@ -458,6 +468,7 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
         SelectedItem = new();
         IsOpenSidebar = true;
         IsAdding = true;
+        IsEdit = false;
     }
 
     private void Edit(TDataSource data)
@@ -465,5 +476,6 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
         SelectedItem = data;
         IsOpenSidebar = true;
         IsAdding = false;
+        IsEdit = true;
     }
 }

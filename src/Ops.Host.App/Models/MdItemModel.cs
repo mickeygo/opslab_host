@@ -7,9 +7,9 @@ public class MdItemModel : ObservableObject
     private string? _code;
 
     /// <summary>
-    /// 产品/物料代码
+    /// 产品/物料编码
     /// </summary>
-    [DisplayName("物料代码")]
+    [DisplayName("物料编码")]
     [Required]
     public string? Code 
     { 

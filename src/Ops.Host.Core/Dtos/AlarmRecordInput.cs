@@ -3,7 +3,7 @@
 public class AlarmRecordFilter
 {
     /// <summary>
-    /// 工站代码
+    /// 工站编码
     /// </summary>
     public string? StationCode { get; set; }
 

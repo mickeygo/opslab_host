@@ -7,7 +7,7 @@ public class MdItemInput
 public class MdItemFilter
 {
     /// <summary>
-    /// 产品/物料代码
+    /// 产品/物料编码
     /// </summary>
     public string? Code { get; set; }
 

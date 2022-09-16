@@ -7,9 +7,9 @@
 public sealed class MdItem : EntityBase
 {
     /// <summary>
-    /// 产品/物料代码
+    /// 产品/物料编码
     /// </summary>
-    [DisplayName("物料代码")]
+    [DisplayName("物料编码")]
     [Required, MaxLength(64)]
     [NotNull]
     public string? Code { get; set; }

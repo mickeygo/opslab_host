@@ -18,7 +18,7 @@ public abstract class ScadaDomainService
     /// <summary>
     /// 返回错误结果。
     /// </summary>
-    /// <param name="code">错误代码</param>
+    /// <param name="code">错误编码</param>
     /// <returns></returns>
     public ReplyResult Error(ErrorCodeEnum code)
     {
@@ -28,7 +28,7 @@ public abstract class ScadaDomainService
     /// <summary>
     /// 返回错误结果。
     /// </summary>
-    /// <param name="code">错误代码</param>
+    /// <param name="code">错误编码</param>
     /// <returns></returns>
     public ReplyResult Error(short code = 2)
     {
@@ -38,7 +38,7 @@ public abstract class ScadaDomainService
     /// <summary>
     /// 自定义返回结果。
     /// </summary>
-    /// <param name="code">代码枚举</param>
+    /// <param name="code">编码枚举</param>
     /// <param name="values">值</param>
     /// <returns></returns>
     public ReplyResult From(ErrorCodeEnum code, IDictionary<string, object>? values = null)
@@ -49,7 +49,7 @@ public abstract class ScadaDomainService
     /// <summary>
     /// 自定义返回结果。
     /// </summary>
-    /// <param name="code">代码</param>
+    /// <param name="code">编码</param>
     /// <param name="values">值</param>
     /// <returns></returns>
     public ReplyResult From(short code, IDictionary<string, object>? values = null)

@@ -1,7 +1,7 @@
 ﻿namespace Ops.Host.Core;
 
 /// <summary>
-/// 字典代码枚举。根据具体业务修改相关代码。
+/// 字典编码枚举。根据具体业务修改相关编码。
 /// </summary>
 public enum DictCodeEnum
 {

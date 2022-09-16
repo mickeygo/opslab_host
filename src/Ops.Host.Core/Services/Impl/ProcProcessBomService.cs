@@ -51,15 +51,15 @@ internal sealed class ProcProcessBomService : IProcProcessBomService
             .Includes(s => s.Process)
             .Includes(s => s.Product)
             .Includes(s => s.Contents, it => it.Material)
-            .WhereIF(!string.IsNullOrWhiteSpace(filter.Code), s => s.Product!.Code.Contains(filter.Code!))
-            .WhereIF(!string.IsNullOrWhiteSpace(filter.Name), s => s.Product!.Name.Contains(filter.Name!))
+            .WhereIF(!string.IsNullOrWhiteSpace(filter.ProductCode), s => s.Product!.Code.Contains(filter.ProductCode!))
+            .WhereIF(!string.IsNullOrWhiteSpace(filter.ProductName), s => s.Product!.Name.Contains(filter.ProductName!))
             .ToPagedListAsync(pageIndex, pageSize);
     }
 
     public async Task<(bool ok, string err)> InsertOrUpdateAsync(ProcProcessBom input)
     {
         // 新增数据，检查产品 BOM 是否已存在（同一产品在同一工序下不能存在多个产品 BOM）。
-        if (input.IsTransient() && _bomRep.IsAny(s => s.ProductId == input.ProductId && s.ProcessId == input.ProcessId))
+        if (input.IsTransient() && (await _bomRep.IsAnyAsync(s => s.ProductId == input.ProductId && s.ProcessId == input.ProcessId)))
         {
             return (false, $"工艺BOM 在该工序中已存在");
         }
@@ -76,7 +76,10 @@ internal sealed class ProcProcessBomService : IProcProcessBomService
 
     public async Task<(bool ok, string err)> DeleteAsync(long id)
     {
-        var ok = await _bomRep.DeleteByIdAsync(id);
+        var ok = await _bomRep.AsSugarClient()
+           .DeleteNav<ProcProcessBom>(s => s.Id == id)
+           .Include(s => s.Contents)
+           .ExecuteCommandAsync();
         return (ok, "");
     }
 

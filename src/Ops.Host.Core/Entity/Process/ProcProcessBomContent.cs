@@ -4,7 +4,7 @@
 /// 工艺BOM内容
 /// </summary>
 [SugarTable("proc_process_bom_content", "工艺BOM内容表")]
-public sealed class ProcProcessBomContent : EntityBase
+public sealed class ProcProcessBomContent : EntityBaseId
 {
     /// <summary>
     /// 工艺BOM Id。

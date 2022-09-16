@@ -32,6 +32,16 @@ public sealed class StationCacheManager : IManager
     public List<NameValue> Stations => GetStations().Select(s => new NameValue(s.StationName, s.StationCode)).ToList();
 
     /// <summary>
+    /// 获取工站。
+    /// </summary>
+    /// <param name="stationId">工站 Id</param>
+    /// <returns></returns>
+    public MdStation? GetById(long stationId)
+    {
+        return GetStations().FirstOrDefault(s => s.Id == stationId);
+    }
+
+    /// <summary>
     /// 获取指定设备指定标签的变量。
     /// </summary>
     /// <returns></returns>

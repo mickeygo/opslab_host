@@ -24,7 +24,7 @@
                             <TextBox Width="180" 
                                      hc:InfoElement.TitleWidth="60"
                                      hc:InfoElement.TitlePlacement="Left" 
-                                     hc:InfoElement.Title="工艺编号"
+                                     hc:InfoElement.Title="工艺编码"
                                      Style="{StaticResource TextBoxExtend}"
                                      Text="{Binding QueryFilter.Code}"/>
                             <TextBox Width="180" 
@@ -50,7 +50,7 @@
                           IsReadOnly="True"
                           ItemsSource="{Binding DataSourceList}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Code}" Width="100" Header="工艺代码"/>
+                        <DataGridTextColumn Binding="{Binding Code}" Width="100" Header="工艺编码"/>
                         <DataGridTextColumn Binding="{Binding Name}" Width="160" Header="工艺名称"/>
                         <DataGridTextColumn Binding="{Binding Remark}" Width="*" Header="备注"/>
                     </DataGrid.Columns>
@@ -64,65 +64,6 @@
                     </hc:Interaction.Triggers>
                 </hc:Pagination>
             </Grid>
-
-            <hc:Drawer Name="DrawerCode" IsOpen="{Binding IsOpenSidebar}">
-                <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0" CornerRadius="0,0,0,0" Background="{DynamicResource RegionBrush}" Width="380">
-                    <hc:TransitioningContentControl>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="80" />
-                            </Grid.RowDefinitions>
-                            <hc:SimpleStackPanel Margin="12">
-                                <hc:UniformSpacingPanel Spacing="8">
-                                    <hc:SimpleStackPanel>
-                                        <TextBox Width="340"
-                                                 Margin="0,10,0,0"
-                                                 hc:InfoElement.TitleWidth="80" 
-                                                 hc:InfoElement.TitlePlacement="Left"
-                                                 hc:InfoElement.Title="工艺编码"
-                                                 hc:InfoElement.Necessary="True"
-                                                 IsEnabled="False"
-                                                 Style="{StaticResource TextBoxExtend}"
-                                                 Text="{Binding SelectedItem.Code}"/>
-                                        
-                                        <DataGrid Margin="0,10,0,0" HeadersVisibility="All" AutoGenerateColumns="False" 
-                                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
-                                                  hc:Empty.ShowEmpty="True"
-                                                  Style="{StaticResource DataGrid.Small}"
-                                                  IsReadOnly="True"
-                                                  ItemsSource="{Binding SelectedItem.Parameters}">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Binding="{Binding Tag}" Width="110" Header="标签"/>
-                                                <DataGridTextColumn Binding="{Binding Name}" Width="120" Header="名称"/>
-                                                <DataGridTextColumn Binding="{Binding Seq}" Width="60" Header="序号"/>
-                                                <DataGridTextColumn Binding="{Binding DataType}" Width="60" Header="数据类型"/>
-                                                <DataGridTextColumn Binding="{Binding Lower}" Width="60" Header="下限值"/>
-                                                <DataGridTextColumn Binding="{Binding Higher}" Width="60" Header="上限值"/>
-                                                <DataGridTemplateColumn Width="Auto" Header="操作">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <hc:UniformSpacingPanel Orientation="Horizontal" Spacing="8">
-                                                                <Button Content="删除" Style="{StaticResource ButtonDanger.Small}" 
-                                                                        Command="{Binding DataContext.DelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" 
-                                                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Path=SelectedItem}" />
-                                                            </hc:UniformSpacingPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-                                            </DataGrid.Columns>
-                                        </DataGrid>
-                                    </hc:SimpleStackPanel>
-                                </hc:UniformSpacingPanel>
-                            </hc:SimpleStackPanel>
-                            <Button Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,32,32" 
-                                    Style="{StaticResource ButtonInfo}"
-                                    Content="提交"
-                                    Command="{Binding SaveCommand}"/>
-                        </Grid>
-                    </hc:TransitioningContentControl>
-                </Border>
-            </hc:Drawer>
         </Grid>
     </hc:TransitioningContentControl>
 </UserControl>

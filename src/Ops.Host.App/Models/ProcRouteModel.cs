@@ -5,8 +5,9 @@ public sealed class ProcRouteModel : ObservableObject
     public long Id { get; set; }
 
     /// <summary>
-    /// 工艺路线代码
+    /// 工艺路线编码
     /// </summary>
+    [DisplayName("工艺路线编码")]
     [Required, MaxLength(64)]
     [NotNull]
     public string? Code { get; set; }
@@ -14,6 +15,7 @@ public sealed class ProcRouteModel : ObservableObject
     /// <summary>
     /// 工艺路线名称
     /// </summary>
+    [DisplayName("工艺路线名称")]
     [Required, MaxLength(64)]
     [NotNull]
     public string? Name { get; set; }
@@ -39,6 +41,13 @@ public sealed class ProcRouteModel : ObservableObject
     {
         get => _contents;
         set => SetProperty(ref _contents, value);
+    }
+
+    private ObservableCollection<ProcRouteProduct>? _linkProducts;
+    public ObservableCollection<ProcRouteProduct>? LinkProducts
+    {
+        get => _linkProducts;
+        set => SetProperty(ref _linkProducts, value);
     }
 
     /// <summary>

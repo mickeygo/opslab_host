@@ -1,33 +1,15 @@
 ﻿namespace Ops.Host.Core.Entity;
 
 /// <summary>
-/// 工艺参数
+/// 工艺参数内容
 /// </summary>
-[SugarTable("proc_process_param", "工艺参数表")]
-public sealed class ProcProcessParameter : EntityBase
+[SugarTable("proc_process_param_content", "工艺参数内容表")]
+public class ProcProcessParamContent : EntityBaseId
 {
     /// <summary>
-    /// 产品 Id
+    /// 工艺参数详主表Id
     /// </summary>
-    [SugarColumn(ColumnDescription = "产品Id")]
-    public long ProductId { get; set; }
-
-    /// <summary>
-    /// 产品信息
-    /// </summary>
-    [Navigate(NavigateType.OneToOne, nameof(ProductId))]
-    public MdItem? Product { get; set; }
-
-    /// <summary>
-    /// 工序 Id
-    /// </summary>
-    public long ProcessId { get; set; }
-
-    /// <summary>
-    /// 工序
-    /// </summary>
-    [Navigate(NavigateType.OneToOne, nameof(ProcessId))]
-    public ProcProcess? Process { get; set; }
+    public long ProcessParamId { get; set; }
 
     /// <summary>
     /// 标签。
@@ -73,4 +55,10 @@ public sealed class ProcProcessParameter : EntityBase
     [DisplayName("下限值")]
     [SugarColumn(ColumnDescription = "下限值", Length = 12, DecimalDigits = 2)]
     public decimal? Lower { get; set; }
+
+    /// <summary>
+    /// 是否进行校验，默认为 true。
+    /// </summary>
+    /// <remarks>当全局校验开启时，此参数才有效。</remarks>
+    public bool IsCheck { get; set; } = true;
 }

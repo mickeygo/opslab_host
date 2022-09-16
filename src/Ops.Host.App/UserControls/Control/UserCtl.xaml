@@ -102,6 +102,7 @@
                                                  hc:InfoElement.TitleWidth="60" 
                                                  hc:InfoElement.TitlePlacement="Left"
                                                  hc:InfoElement.Title="用户名"
+                                                 hc:InfoElement.Necessary="True"
                                                  IsEnabled="{Binding IsAdding}"
                                                  Style="{StaticResource TextBoxExtend}"
                                                  Text="{Binding SelectedItem.UserName}"/>
@@ -109,6 +110,7 @@
                                                  hc:InfoElement.TitleWidth="60" 
                                                  hc:InfoElement.TitlePlacement="Left"
                                                  hc:InfoElement.Title="显示名"
+                                                 hc:InfoElement.Necessary="True"
                                                  Style="{StaticResource TextBoxExtend}"
                                                  Text="{Binding SelectedItem.DisplayName}"/>
                                     </hc:SimpleStackPanel>

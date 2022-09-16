@@ -7,19 +7,19 @@
 public class PtAlarmRecord : EntityBaseId
 {
     /// <summary>
-    /// 产线代码
+    /// 产线编码
     /// </summary>
-    [DisplayName("产线代码")]
-    [SugarColumn(ColumnDescription = "产线代码", Length = 64)]
+    [DisplayName("产线编码")]
+    [SugarColumn(ColumnDescription = "产线编码", Length = 64)]
     [Required, MaxLength(64)]
     [NotNull]
     public string? LineCode { get; set; }
 
     /// <summary>
-    /// 工站代码
+    /// 工站编码
     /// </summary>
-    [DisplayName("工站代码")]
-    [SugarColumn(ColumnDescription = "工站代码", Length = 64)]
+    [DisplayName("工站编码")]
+    [SugarColumn(ColumnDescription = "工站编码", Length = 64)]
     [Required, MaxLength(64)]
     [NotNull]
     public string? StationCode { get; set; }

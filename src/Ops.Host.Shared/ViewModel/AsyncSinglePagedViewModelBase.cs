@@ -90,10 +90,18 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
 
         (bool, string?) Del(TDataSource data)
         {
-            return OnDeleteAsync(data).ConfigureAwait(false).GetAwaiter().GetResult(); // Growl 中异步无效
+            // Growl 中异步无效
+            // 注意：异步可能会导致阻塞当前线程。
+
+            // TODO: 使用 SqlSugarCore 导航属性删除时，在弹出确认框确定时会出现阻塞情况。
+            // return OnDeleteAsync(data).ConfigureAwait(false).GetAwaiter().GetResult();
+            AwaitAndThrowIfFailed(OnDeleteAsync(data));
+
+            // 转换为同步后没有返回数据，目前只能返回 true。
+            return (true, "");
         }
     }
-
+   
     private async Task PageUpdatedAsync(FunctionEventArgs<int> e)
     {
         await DoSearchAsync(e.Info, PageSize);
@@ -142,5 +150,25 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
 
         PageCount = pagedList.TotalPages;
         DataSourceList = new ObservableCollection<TDataSource>(pagedList.Items);
+    }
+
+    /// <summary>
+    /// Awaits an input <see cref="Task"/> and throws an exception on the calling context, if the task fails.
+    /// </summary>
+    /// <param name="executionTask">The input <see cref="Task"/> instance to await.</param>
+    internal static async void AwaitAndThrowIfFailed(Task executionTask)
+    {
+        // Note: this method is purposefully an async void method awaiting the input task. This is done so that
+        // if an async relay command is invoked synchronously (ie. when Execute is called, eg. from a binding),
+        // exceptions in the wrapped delegate will not be ignored or just become visible through the ExecutionTask
+        // property, but will be rethrown in the original synchronization context by default. This makes the behavior
+        // more consistent with how normal commands work (where exceptions are also just normally propagated to the
+        // caller context), and avoids getting an app into an inconsistent state in case a method faults without
+        // other components being notified. It is also possible to not await this task and to instead ignore exceptions
+        // and then inspect them manually from the ExecutionTask property, by constructing an async command instance
+        // using the AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler option. That will cause this call to
+        // be skipped, and exceptions will just either normally be available through that property, or will otherwise
+        // flow to the static TaskScheduler.UnobservedTaskException event if otherwise unobserved (eg. for logging).
+        await executionTask;
     }
 }

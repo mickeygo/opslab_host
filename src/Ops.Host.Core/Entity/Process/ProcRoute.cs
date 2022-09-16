@@ -7,10 +7,10 @@
 public sealed class ProcRoute : EntityBase
 {
     /// <summary>
-    /// 工艺路线代码
+    /// 工艺路线编码
     /// </summary>
-    [DisplayName("工艺路线编号")]
-    [SugarColumn(ColumnDescription = "工艺路线编号", Length = 64)]
+    [DisplayName("工艺路线编码")]
+    [SugarColumn(ColumnDescription = "工艺路线编码", Length = 64)]
     [Required, MaxLength(64)]
     [NotNull]
     public string? Code { get; set; }
@@ -41,4 +41,10 @@ public sealed class ProcRoute : EntityBase
     /// </summary>
     [Navigate(NavigateType.OneToMany, nameof(ProcRouteProcess.RouteId))]
     public List<ProcRouteProcess>? Contents { get; set; }
+
+    /// <summary>
+    /// 路由关联的产品。
+    /// </summary>
+    [Navigate(NavigateType.OneToMany, nameof(ProcRouteProduct.RouteId))]
+    public List<ProcRouteProduct>? LinkProducts { get; set; }
 }

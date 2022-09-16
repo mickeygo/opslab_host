@@ -16,7 +16,7 @@ public sealed class Message
     public string Station { get; }
 
     /// <summary>
-    /// 消息代码，可用于区分是哪种消息。
+    /// 消息编码，可用于区分是哪种消息。
     /// </summary>
     public string Code { get; }
 

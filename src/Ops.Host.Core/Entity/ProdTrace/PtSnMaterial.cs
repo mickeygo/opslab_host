@@ -32,17 +32,17 @@ public sealed class PtSnMaterial : EntityBase
     public string? ItemCode { get; set; }
 
     /// <summary>
-    /// 产线代码
+    /// 产线编码
     /// </summary>
-    [SugarColumn(ColumnDescription = "产线代码", Length = 64)]
+    [SugarColumn(ColumnDescription = "产线编码", Length = 64)]
     [Required, MaxLength(64)]
     [NotNull]
     public string? LineCode { get; set; }
 
     /// <summary>
-    /// 工站代码
+    /// 工站编码
     /// </summary>
-    [SugarColumn(ColumnDescription = "工站代码", Length = 64)]
+    [SugarColumn(ColumnDescription = "工站编码", Length = 64)]
     [Required, MaxLength(64)]
     [NotNull]
     public string? StationCode { get; set; }

@@ -3,7 +3,7 @@
 public class ProcRouteFilter
 {
     /// <summary>
-    /// 工艺路线代码
+    /// 工艺路线编码
     /// </summary>
     public string? Code { get; set; }
 

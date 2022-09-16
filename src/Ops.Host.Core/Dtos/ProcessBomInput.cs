@@ -3,14 +3,14 @@
 public class ProcessBomFilter
 {
     /// <summary>
-    /// 产品/物料代码
+    /// 产品编码
     /// </summary>
-    public string? Code { get; set; }
+    public string? ProductCode { get; set; }
 
     /// <summary>
-    /// 产品/物料名称
+    /// 产品名称
     /// </summary>
-    public string? Name { get; set; }
+    public string? ProductName { get; set; }
 }
 
 public class ProcessBomInput

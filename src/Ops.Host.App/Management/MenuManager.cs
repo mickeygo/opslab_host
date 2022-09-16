@@ -21,6 +21,7 @@ public sealed class MenuManager
         new MenuItemModel("", "工站信息", typeof(StationCtl), false),
         new MenuItemModel("", "工艺设置", typeof(ProcessCtl), false),
         new MenuItemModel("", "工艺BOM", typeof(ProcessBomCtl), false),
+        new MenuItemModel("", "工参设置", typeof(ProcessParamCtl), false),
         new MenuItemModel("", "工艺路线", typeof(ProcessRouteCtl), false),
         new MenuItemModel("", "进站记录", typeof(InboundCtl), false),
         new MenuItemModel("", "过站记录", typeof(ArchiveCtl), false),

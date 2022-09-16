@@ -77,15 +77,7 @@ public sealed class ProcessBomViewModel : AsyncSinglePagedViewModelBase<ProcProc
     protected override async Task<(bool ok, string? err)> OnSaveAsync(ProcProcessBomModel data)
     {
         var bom = data.Adapt<ProcProcessBom>();
-        var (ok, err) = await _bomService.InsertOrUpdateAsync(bom);
-        if (ok)
-        {
-            // 此处要将实体映射到 model。
-            var bom1 = await _bomService.GetBomByIdAsync(bom.Id);
-            SelectedItem = bom1.Adapt<ProcProcessBomModel>();
-        }
-
-        return (ok, err);
+        return await _bomService.InsertOrUpdateAsync(bom);
     }
 
     protected override async Task<(bool ok, string? err)> OnDeleteAsync(ProcProcessBomModel data)
@@ -216,7 +208,7 @@ public sealed class ProcessBomViewModel : AsyncSinglePagedViewModelBase<ProcProc
             return;
         }
 
-        NoticeInfo("已复制成功，请刷新下页面。");
+        NoticeInfo("已复制成功，请刷新页面查看。");
         CloseSidebar();
     }
 }

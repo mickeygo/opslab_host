@@ -9,7 +9,7 @@ public sealed class ProcProcess : EntityBase
     /// <summary>
     /// 工序编码
     /// </summary>
-    /// <remarks>来源于工站代码。</remarks>
+    /// <remarks>来源于工站编码。</remarks>
     [DisplayName("工序编码")]
     [Required, MaxLength(64)]
     [NotNull]

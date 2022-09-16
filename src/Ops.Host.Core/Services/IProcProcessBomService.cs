@@ -15,6 +15,11 @@ public interface IProcProcessBomService : IDomainService
 
     Task<(bool ok, string err)> InsertOrUpdateAsync(ProcProcessBom input);
 
+    /// <summary>
+    /// 删除数据，包括关联的明细项。
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     Task<(bool ok, string err)> DeleteAsync(long id);
 
     /// <summary>

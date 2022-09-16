@@ -47,13 +47,13 @@ public class PtSnMaterialModel : ObservableObject
     public string? Barcode { get; set; }
 
     /// <summary>
-    /// 产线代码
+    /// 产线编码
     /// </summary>
     [NotNull]
     public string? LineCode { get; set; }
 
     /// <summary>
-    /// 工站代码
+    /// 工站编码
     /// </summary>
     [NotNull]
     public string? StationCode { get; set; }

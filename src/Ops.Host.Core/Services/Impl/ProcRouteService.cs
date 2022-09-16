@@ -3,10 +3,12 @@
 internal sealed class ProcRouteService : IProcRouteService
 {
     private readonly SqlSugarRepository<ProcRoute> _routeRep;
+    private readonly SqlSugarRepository<ProcRouteProduct> _routeProductRep;
 
-    public ProcRouteService(SqlSugarRepository<ProcRoute> routeRep)
+    public ProcRouteService(SqlSugarRepository<ProcRoute> routeRep, SqlSugarRepository<ProcRouteProduct> routeProductRep)
     {
         _routeRep = routeRep;
+        _routeProductRep = routeProductRep;
     }
 
     public async Task<List<ProcRoute>> GetAsync(long id)
@@ -36,6 +38,7 @@ internal sealed class ProcRouteService : IProcRouteService
         return await _routeRep.AsQueryable()
                 .Includes(s => s.Contents, it => it.Process)
                 .Includes(s => s.Contents, it => it.NextProcess)
+                .Includes(s => s.LinkProducts, it => it.Product)
                 .WhereIF(!string.IsNullOrWhiteSpace(filter.Code), s => s.Code.Contains(filter.Code!))
                 .WhereIF(!string.IsNullOrWhiteSpace(filter.Name), s => s.Name.Contains(filter.Name!))
                 .ToPagedListAsync(pageIndex, pageSize);
@@ -70,7 +73,29 @@ internal sealed class ProcRouteService : IProcRouteService
 
     public async Task<(bool ok, string err)> DeleteAsync(long id)
     {
-        var ok = await _routeRep.DeleteByIdAsync(id);
+        var ok = await _routeRep.AsSugarClient()
+            .DeleteNav<ProcRoute>(s => s.Id == id)
+            .Include(s => s.Contents)
+            .Include(s => s.LinkProducts)
+            .ExecuteCommandAsync();
+
+        return (ok, "");
+    }
+
+    public async Task<(bool ok, string err)> LinkProductAsync(ProcRouteProduct input)
+    {
+        if (await _routeProductRep.IsAnyAsync(s => s.RouteId == input.RouteId && s.ProductId == input.ProductId))
+        {
+            return (false, "工艺路线中已关联此产品");
+        }
+
+        var ok = await _routeProductRep.InsertAsync(input);
+        return (ok, "");
+    }
+
+    public async Task<(bool ok, string err)> DelLinkProductAsync(long routeId, long productId)
+    {
+        var ok = await _routeProductRep.DeleteAsync(s => s.RouteId == routeId && s.ProductId == productId);
         return (ok, "");
     }
 }
