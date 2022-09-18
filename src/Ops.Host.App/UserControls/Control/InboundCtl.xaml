@@ -104,26 +104,18 @@
                     <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0" CornerRadius="0,0,0,0" Background="{DynamicResource RegionBrush}" Width="380">
                         <hc:TransitioningContentControl>
                             <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="80" />
-                                </Grid.RowDefinitions>
-                                <hc:SimpleStackPanel Margin="2">
-                                    <hc:UniformSpacingPanel Spacing="8">
-                                        <hc:SimpleStackPanel>
-                                            <GroupBox Header="进站数据详细" Margin="2" Style="{StaticResource GroupBoxOriginal}">
-                                                <ListView ItemsSource="{Binding SelectedItem.InboundItems}">
-                                                    <ListView.View>
-                                                        <GridView>
-                                                            <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="名称" Width="200" />
-                                                            <GridViewColumn DisplayMemberBinding="{Binding Value}" Header="值" Width="160" />
-                                                        </GridView>
-                                                    </ListView.View>
-                                                </ListView>
-                                            </GroupBox>
-                                        </hc:SimpleStackPanel>
-                                    </hc:UniformSpacingPanel>
-                                </hc:SimpleStackPanel>
+                                <hc:SimplePanel Margin="2">
+                                    <GroupBox Header="进站数据详细" Margin="2" Style="{StaticResource GroupBoxOriginal}">
+                                        <ListView ItemsSource="{Binding SelectedItem.InboundItems}">
+                                            <ListView.View>
+                                                <GridView>
+                                                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="名称" Width="200" />
+                                                    <GridViewColumn DisplayMemberBinding="{Binding Value}" Header="值" Width="160" />
+                                                </GridView>
+                                            </ListView.View>
+                                        </ListView>
+                                    </GroupBox>
+                                </hc:SimplePanel>
                             </Grid>
                         </hc:TransitioningContentControl>
                     </Border>

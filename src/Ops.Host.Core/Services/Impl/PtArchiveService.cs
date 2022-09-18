@@ -41,8 +41,20 @@ public sealed class PtArchiveService : IPtArchiveService
             var attr = pi.GetCustomAttribute<DisplayNameAttribute>(); // 只导出标记了 DisplayNameAttribute 特性的数据。
             if (attr != null)
 			{
-                dt.Columns.Add(new DataColumn(attr.DisplayName, pi.PropertyType));
-			}
+                Type propType = pi.PropertyType;
+
+                if (pi.PropertyType.IsEnum)
+                {
+                    propType = typeof(string);
+                }
+                else if (pi.PropertyType.IsGenericType)
+                {
+                    var propType0 = pi.PropertyType.GetGenericArguments()[0];
+                    propType = propType0.IsEnum ? typeof(string) : propType0;
+                }
+
+                dt.Columns.Add(new DataColumn(attr.DisplayName, propType));
+            }
         }
 
 		var devVariable = _stationCacheManager.GetDeviceVariable(filter.LineCode, filter.StationCode, PlcSymbolTag.PLC_Sign_Archive);
@@ -64,6 +76,7 @@ public sealed class PtArchiveService : IPtArchiveService
             dt.Columns.Add(new DataColumn(normalVar.Name, typeof(string)));
         }
         
+        // 数据行
         foreach (var archive in archives)
 		{
 			var row = dt.NewRow();
@@ -74,7 +87,14 @@ public sealed class PtArchiveService : IPtArchiveService
                 var attr = pi.GetCustomAttribute<DisplayNameAttribute>();
                 if (attr != null)
                 {
-                    row[attr.DisplayName] = pi.GetValue(archive);
+                    if (EnumExtensions.IsEnum(pi.PropertyType))
+                    {
+                        row[attr.DisplayName] = EnumExtensions.Desc((Enum)pi.GetValue(archive)!);
+                    }
+                    else
+                    {
+                        row[attr.DisplayName] = pi.GetValue(archive);
+                    }
                 }
             }
 
@@ -89,8 +109,6 @@ public sealed class PtArchiveService : IPtArchiveService
                     {
                         foreach (var itemLine in item.ArchiveItemLines!.OrderBy(s => s.Seq))
                         {
-
-
                             row[$"{item.Name}-{itemLine.Seq}"] = showLimit ? $"{itemLine.Value} ({itemLine.Lower}-{itemLine.Higher})" : itemLine.Value;
                         }
 
@@ -100,6 +118,8 @@ public sealed class PtArchiveService : IPtArchiveService
                     row[item.Name] = showLimit ? $"{item.Value} ({item.Lower}-{item.Higher})" : item.Value;
                 }
             }
+
+            dt.Rows.Add(row);
         }
 
         return dt;

@@ -1,6 +1,4 @@
-﻿using Ops.Host.App.Models;
-
-namespace Ops.Host.App.ViewModels;
+﻿namespace Ops.Host.App.ViewModels;
 
 public sealed class KibanaViewModel : ObservableObject, IViewModel, IDisposable
 {
@@ -48,6 +46,52 @@ public sealed class KibanaViewModel : ObservableObject, IViewModel, IDisposable
             }
                 
         }, default, TaskCreationOptions.LongRunning, TaskScheduler.FromCurrentSynchronizationContext());
+
+        // 测试数据
+        _ = Task.Factory.StartNew(async () =>
+        {
+            while (!_cts.IsCancellationRequested)
+            {
+                await Task.Delay(new Random().Next(2, 10) * 1000);
+
+                if (AlarmSourceList.Count >= 32)
+                {
+                    AlarmSourceList.RemoveAt(AlarmSourceList.Count - 1);
+                }
+
+                AlarmSourceList.Insert(0, new()
+                {
+                    Station = "OP10",
+                    Name = "焊接设备电压过高",
+                });
+            }
+
+        }, default, TaskCreationOptions.LongRunning, TaskScheduler.FromCurrentSynchronizationContext());
+
+        _ = Task.Factory.StartNew(async () =>
+        {
+            int n = 1;
+            while (!_cts.IsCancellationRequested)
+            {
+                await Task.Delay(new Random().Next(3, 15) * 1000);
+
+                if (ProductionSourceList.Count >= 32)
+                {
+                    ProductionSourceList.RemoveAt(AlarmSourceList.Count - 1);
+                }
+
+                ProductionSourceList.Insert(0, new()
+                {
+                    Station = "OP10",
+                    SN = $"SN{DateTime.Now:yyyyMMddHHmmss}",
+                    Shift = "早班",
+                    Pass = n++ % 4 != 0,
+                    InboundTime = DateTime.Now,
+                    OutboundTime = DateTime.Now,
+                });
+            }
+
+        }, default, TaskCreationOptions.LongRunning, TaskScheduler.FromCurrentSynchronizationContext());
     }
 
     #region 绑定属性
@@ -58,6 +102,24 @@ public sealed class KibanaViewModel : ObservableObject, IViewModel, IDisposable
     {
         get => _deviceSourceList;
         set => SetProperty(ref _deviceSourceList, value);
+    }
+
+    // 生产（测试）
+    private ObservableCollection<ProductionModel> _productionSourceList = new();
+
+    public ObservableCollection<ProductionModel> ProductionSourceList
+    {
+        get => _productionSourceList;
+        set => SetProperty(ref _productionSourceList, value);
+    }
+
+    // 警报（测试）
+    private ObservableCollection<AlarmModel> _alarmSourceList = new();
+
+    public ObservableCollection<AlarmModel> AlarmSourceList
+    {
+        get => _alarmSourceList;
+        set => SetProperty(ref _alarmSourceList, value);
     }
 
     #endregion
@@ -82,4 +144,28 @@ public sealed class KibanaViewModel : ObservableObject, IViewModel, IDisposable
     {
         _cts.Cancel();
     }
+}
+
+public class ProductionModel : ObservableObject
+{
+    public string? Station { get; set; }
+
+    public string? SN { get; set; }
+
+    public bool Pass { get; set; }
+
+    public string? Shift { get; set; }
+
+    public DateTime InboundTime { get; set; }
+
+    public DateTime? OutboundTime { get; set; }
+}
+
+public class AlarmModel
+{
+    public string? Station { get; set; }
+
+    public string? Name { get; set; }
+
+    public DateTime CreateTime { get; set; } = DateTime.Now;
 }

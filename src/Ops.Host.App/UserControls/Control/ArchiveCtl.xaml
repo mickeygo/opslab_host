@@ -54,7 +54,7 @@
                                            Style="{StaticResource DatePickerExtend}"
                                            SelectedDate="{Binding QueryFilter.CreateTimeEnd}"/>
                             <Button Content="查询" Command="{Binding QueryCommand}"/>
-                            <Button Content="导出" Command="{Binding DownloadCommand}"/>
+                            <Button Content="导出" Command="{Binding MyDownloadCommand}"/>
                         </hc:UniformSpacingPanel>
                     </StackPanel>
                 </ToolBar>
@@ -116,35 +116,27 @@
                     <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0" CornerRadius="0,0,0,0" Background="{DynamicResource RegionBrush}" Width="380">
                         <hc:TransitioningContentControl>
                             <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="80" />
-                                </Grid.RowDefinitions>
-                                <hc:SimpleStackPanel Margin="2">
-                                    <hc:UniformSpacingPanel Spacing="8">
-                                        <hc:SimpleStackPanel>
-                                            <GroupBox Header="过程数据详细" Margin="2" Style="{StaticResource GroupBoxOriginal}">
-                                                <ListView ItemsSource="{Binding SelectedItem.ArchiveItems}">
-                                                    <ListView.View>
-                                                        <GridView>
-                                                            <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="名称" Width="120" />
-                                                            <GridViewColumn Width="80" Header="值">
-                                                                <GridViewColumn.CellTemplate>
-                                                                    <DataTemplate>
-                                                                        <Label Content="{Binding Value}" 
-                                                                               Style="{Binding IsPass,Converter={StaticResource Boolean2ResourceConverter},ConverterParameter='LabelDanger;LabelPrimary'}"/>
-                                                                    </DataTemplate>
-                                                                </GridViewColumn.CellTemplate>
-                                                            </GridViewColumn>
-                                                            <GridViewColumn DisplayMemberBinding="{Binding Lower}" Header="下限" Width="66" />
-                                                            <GridViewColumn DisplayMemberBinding="{Binding Higher}" Header="上限" Width="66" />
-                                                        </GridView>
-                                                    </ListView.View>
-                                                </ListView>
-                                            </GroupBox>
-                                        </hc:SimpleStackPanel>
-                                    </hc:UniformSpacingPanel>
-                                </hc:SimpleStackPanel>
+                                <hc:SimplePanel Margin="2">
+                                    <GroupBox Header="过程数据详细" Margin="2" Style="{StaticResource GroupBoxOriginal}">
+                                        <ListView ItemsSource="{Binding SelectedItem.ArchiveItems}">
+                                            <ListView.View>
+                                                <GridView>
+                                                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="名称" Width="120" />
+                                                    <GridViewColumn Width="80" Header="值">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <Label Content="{Binding Value}" 
+                                                                       Style="{Binding IsPass,Converter={StaticResource Boolean2ResourceConverter},ConverterParameter='LabelDanger;LabelPrimary'}"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                    <GridViewColumn DisplayMemberBinding="{Binding Lower}" Header="下限" Width="66" />
+                                                    <GridViewColumn DisplayMemberBinding="{Binding Higher}" Header="上限" Width="66" />
+                                                </GridView>
+                                            </ListView.View>
+                                        </ListView>
+                                    </GroupBox>
+                                </hc:SimplePanel>
                             </Grid>
                         </hc:TransitioningContentControl>
                     </Border>

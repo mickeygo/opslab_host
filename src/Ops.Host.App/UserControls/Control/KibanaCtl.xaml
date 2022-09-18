@@ -18,16 +18,41 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <hc:SimplePanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+            <hc:SimplePanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="2">
+                <GroupBox Header="生产数据" Margin="2" Style="{StaticResource GroupBoxOriginal}">
+                    <ListView ItemsSource="{Binding ProduceSourceList}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="80" Header="工站" DisplayMemberBinding="{Binding Station}" />
+                                <GridViewColumn Width="160" Header="SN" DisplayMemberBinding="{Binding SN}" />
+                                <GridViewColumn Width="60" Header="结果">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Pass,Converter={StaticResource Boolean2StringConverter},ConverterParameter='NG;OK'}" 
+                                                   Style="{Binding Pass,Converter={StaticResource Boolean2ResourceConverter},ConverterParameter='LabelDanger;LabelPrimary'}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="140" Header="进站时间" DisplayMemberBinding="{Binding InboundTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" />
+                                <GridViewColumn Width="Auto" Header="出站时间" DisplayMemberBinding="{Binding OutboundTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
             </hc:SimplePanel>
 
-            <hc:SimplePanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
-            </hc:SimplePanel>
-
-            <hc:SimplePanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">
-            </hc:SimplePanel>
-
-            <hc:SimplePanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
+            <hc:SimplePanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
+                <GroupBox Header="警报信息" Margin="2" Style="{StaticResource GroupBoxOriginal}">
+                    <ListView ItemsSource="{Binding AlarmSourceList}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="80" Header="工站" DisplayMemberBinding="{Binding Station}" />
+                                <GridViewColumn Width="Auto" Header="警报" DisplayMemberBinding="{Binding Name}" />
+                                <GridViewColumn Width="140" Header="时间" DisplayMemberBinding="{Binding CreateTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
             </hc:SimplePanel>
 
             <hc:SimplePanel Grid.RowSpan="2" Grid.Column="2">

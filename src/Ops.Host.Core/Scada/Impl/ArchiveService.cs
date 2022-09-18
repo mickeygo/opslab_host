@@ -125,6 +125,8 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
 
             snTransit.SetProductStatus();
 
+            // 线上站才处理工单
+
             // TODD: 检查是否为尾站
             bool isTail = false;
             if (isTail && snTransit.IsOK())
