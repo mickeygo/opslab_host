@@ -8,7 +8,7 @@ public interface IPtArchiveService : IDomainService
     Task<PagedList<PtArchive>> GetPagedListAsync(PtArchiveFilter filter, int pageIndex, int pageSize);
 
     /// <summary>
-    /// 
+    /// 将数据转换为 DataTable，用于 Excel 导出。只会导出标记了 <see cref="DisplayNameAttribute"/> 的数据。
     /// </summary>
     /// <param name="filter"></param>
     /// <param name="extendArray">是否将数组展开</param>

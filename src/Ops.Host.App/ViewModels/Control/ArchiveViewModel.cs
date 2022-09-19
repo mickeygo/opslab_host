@@ -31,13 +31,25 @@ public sealed class ArchiveViewModel : AsyncSinglePagedViewModelBase<PtArchive, 
 
     private async Task MyExportTableAsync()
     {
+        if (string.IsNullOrWhiteSpace(QueryFilter.LineCode))
+        {
+            NoticeWarning("请先选择 [产线]");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(QueryFilter.StationCode))
+        {
+            NoticeWarning("请先选择 [工站]");
+            return;
+        }
+
         try
         {
             SaveFileDialog saveFile = new()
             {
                 Filter = "导出文件 （*.xlsx）|*.xlsx",
                 FilterIndex = 0,
-                FileName = $"{QueryFilter.LineCode}-{QueryFilter.StationCode}过站信息",
+                FileName = $"{QueryFilter.LineCode}-{QueryFilter.StationCode}",
             };
 
             if (saveFile.ShowDialog() != true)

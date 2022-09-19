@@ -37,17 +37,24 @@ public sealed class MenuItemModel
     /// </summary>
     public bool IsShow { get; set; }
 
+    /// <summary>
+    /// 页面是否是单例模式。
+    /// </summary>
+    /// <remarks>单例模式在页面每次切换时都不会重新创建页面。</remarks>
+    public bool IsSingleton { get; set; }
+
     public MenuItemModel()
     {
 
     }
 
-    public MenuItemModel(string icon, string name, Type contentType, bool isHome = false, bool isShow = true)
+    public MenuItemModel(string icon, string name, Type contentType, bool isHome = false, bool isShow = true, bool isSingleton = true)
     {
         Icon = icon;
         Name = name;
         ContentType = contentType;
         IsHome = isHome;
         IsShow = isShow;
+        IsSingleton = isSingleton;
     }
 }

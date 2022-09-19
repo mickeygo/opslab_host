@@ -1,5 +1,4 @@
-﻿using Ops.Host.App.Models;
-using Ops.Host.App.UserControls;
+﻿using Ops.Host.App.UserControls;
 
 namespace Ops.Host.App.Management;
 
@@ -23,6 +22,8 @@ public sealed class MenuManager
         new MenuItemModel("", "工艺BOM", typeof(ProcessBomCtl), false),
         new MenuItemModel("", "工参设置", typeof(ProcessParamCtl), false),
         new MenuItemModel("", "工艺路线", typeof(ProcessRouteCtl), false),
+        new MenuItemModel("", "工单管理", typeof(WorkOrderCtl), false),
+        new MenuItemModel("", "生产排程", typeof(WoScheduleCtl), false),
         new MenuItemModel("", "进站记录", typeof(InboundCtl), false),
         new MenuItemModel("", "过站记录", typeof(ArchiveCtl), false),
         new MenuItemModel("", "物料追溯", typeof(MaterialTraceCtl), false),

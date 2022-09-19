@@ -4,8 +4,8 @@
 /// 生产工单。
 /// <para></para>
 /// </summary>
-[SugarTable("prod_wo", "生产工单表")]
-[SugarIndex("index_prod_wo_code", nameof(Code), OrderByType.Asc)]
+[SugarTable("prod_workorder", "生产工单表")]
+[SugarIndex("index_prod_workorder_code", nameof(Code), OrderByType.Asc)]
 public class ProdWo : EntityBase
 {
     /// <summary>
@@ -33,11 +33,16 @@ public class ProdWo : EntityBase
     public string? Source { get; set; }
 
     /// <summary>
-    /// 来源单据
+    /// 来源单据。
     /// </summary>
     [SugarColumn(ColumnDescription = "来源单据", Length = 32)]
     [MaxLength(32)]
     public string? SourceOrder { get; set; }
+
+    /// <summary>
+    /// 工单类型
+    /// </summary>
+    public WoTypeEnum WoType { get; set; } = WoTypeEnum.Official;
 
     /// <summary>
     /// 产品信息Id
@@ -48,13 +53,13 @@ public class ProdWo : EntityBase
     /// <summary>
     /// 产品信息
     /// </summary>
-    [SugarColumn(IsIgnore = true)]
+    [Navigate(NavigateType.OneToOne, nameof(ProductId))]
     public MdItem? Product { get; set; }
 
     /// <summary>
-    /// 工单数量（Qty = CompletedQty + ScrappedQty + DismantlingQty）
+    /// 投入数量（Qty = CompletedQty + ScrappedQty + DismantlingQty）
     /// </summary>
-    [SugarColumn(ColumnDescription = "生产数量")]
+    [SugarColumn(ColumnDescription = "投入数量")]
     public int Qty { get; set; }
 
     /// <summary>
@@ -76,7 +81,7 @@ public class ProdWo : EntityBase
     public int ScrappedQty { get; set; }
 
     /// <summary>
-    /// 拆解数量（脱离工单数量）
+    /// 拆解数量（脱离工单数量，用于尾数处理）
     /// </summary>
     [SugarColumn(ColumnDescription = "拆解数量")]
     public int DismantlingQty { get; set; }
@@ -116,4 +121,11 @@ public class ProdWo : EntityBase
     /// </summary>
     [SugarColumn(ColumnDescription = "单据当前状态")]
     public WoStatusEnum Status { get; set; } = WoStatusEnum.Created;
+
+    /// <summary>
+    /// 备注
+    /// </summary>
+    [SugarColumn(ColumnDescription = "备注", Length = 255)]
+    [MaxLength(255)]
+    public string? Remark { get; set; }
 }

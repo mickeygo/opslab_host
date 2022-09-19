@@ -1,7 +1,6 @@
 ﻿using HandyControl.Controls;
 using Ops.Exchange.Monitors;
 using Ops.Host.App.Management;
-using Ops.Host.App.Models;
 
 namespace Ops.Host.App.ViewModels;
 
@@ -70,12 +69,33 @@ public sealed class MainWindowViewModel : ObservableObject, IViewModel
         get => _selectedItem;
         set 
         {
+            var lastSelectedItem = _selectedItem; // 最近一次选中的菜单项
+
             if (SetProperty(ref _selectedItem, value))
             {
                 if (_selectedItem != null)
                 {
-                    _selectedItem.Content ??= CreatePage(_selectedItem.ContentType);
-                    SubContent = _selectedItem?.Content;
+                    if (_selectedItem.IsSingleton)
+                    {
+                        // 为 null 时才创建新内容
+                        _selectedItem.Content ??= CreatePage(_selectedItem.ContentType);
+                    }
+                    else
+                    {
+                        // 创建新内容
+                        _selectedItem.Content = CreatePage(_selectedItem.ContentType);
+                    }
+
+                    SubContent = _selectedItem.Content; // 呈现内容
+
+                    // 页面非单例模式，释放上一次的页面资源
+                    if (lastSelectedItem != null)
+                    {
+                        if (!lastSelectedItem.IsSingleton && lastSelectedItem.Content is IDisposable disposable)
+                        {
+                            disposable?.Dispose();
+                        }
+                    }
                 }
             }
         }

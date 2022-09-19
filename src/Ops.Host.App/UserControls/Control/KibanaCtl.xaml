@@ -20,7 +20,7 @@
 
             <hc:SimplePanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="2">
                 <GroupBox Header="生产数据" Margin="2" Style="{StaticResource GroupBoxOriginal}">
-                    <ListView ItemsSource="{Binding ProduceSourceList}">
+                    <ListView ItemsSource="{Binding ProductionSourceList}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Width="80" Header="工站" DisplayMemberBinding="{Binding Station}" />

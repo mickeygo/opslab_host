@@ -17,9 +17,11 @@ internal sealed class ProdWoService : IProdWoService
     public async Task<PagedList<ProdWo>> GetPagedListAsync(ProdWoFilter filter, int pageIndex, int pageSize)
     {
         return await _woRep.AsQueryable()
+                .Includes(s => s.Product)
                 .WhereIF(!string.IsNullOrWhiteSpace(filter.WoCode), s => s.Code.Contains(filter.WoCode!))
                 .WhereIF(!string.IsNullOrWhiteSpace(filter.WoName), s => s.Name.Contains(filter.WoName!))
                 .WhereIF(filter.ProductId > 0, s => s.ProductId == filter.ProductId)
+                .OrderBy(s => s.CreateTime, OrderByType.Desc)
                 .ToPagedListAsync(pageIndex, pageSize);
     }
 
@@ -31,7 +33,31 @@ internal sealed class ProdWoService : IProdWoService
             return (false, $"工单编码 '{input.Code}' 已存在");
         }
 
+        // 修改
+        // 非创建状态，不能再更改工单物料相关数据
+        if (input.Status != WoStatusEnum.Created)
+        {
+            return (false, $"工单已 {input.Status.Desc()}，不能进行更改");
+        }
+
         var ok = await _woRep.InsertOrUpdateAsync(input);
+        return (ok, "");
+    }
+
+    public async Task<(bool ok, string err)> IssueAsync(long woId)
+    {
+        var wo = await _woRep.GetByIdAsync(woId);
+        if (wo?.Status != WoStatusEnum.Created)
+        {
+            return (false, "工单只有创建状态才能下发");
+        }
+
+        var ok = await _woRep.UpdateAsync(s => new()
+        {
+            LastStatus = s.Status,
+            Status = WoStatusEnum.Issued,
+        }, s => s.Id == woId);
+
         return (ok, "");
     }
 

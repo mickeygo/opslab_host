@@ -7,6 +7,15 @@ public interface IProdWoService : IDomainService
 {
     Task<PagedList<ProdWo>> GetPagedListAsync(ProdWoFilter filter, int pageIndex, int pageSize);
 
+    Task<(bool ok, string err)> InsertOrUpdateAsync(ProdWo input);
+
+    /// <summary>
+    /// 下发工单。
+    /// </summary>
+    /// <param name="woId">工单 Id</param>
+    /// <returns></returns>
+    Task<(bool ok, string err)> IssueAsync(long woId);
+
     /// <summary>
     /// 暂停工单。
     /// </summary>

@@ -17,6 +17,7 @@ public static class DropdownListHelper
         if (list is List<T> list1)
         {
             list1.Insert(0, new T());
+            return list1;
         }
 
         var list2 = list.ToList();

@@ -21,12 +21,7 @@ public sealed class NonClientAreaContentViewModel : ObservableObject, IViewModel
 
     #region 属性绑定
 
-    private string _appVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
-    public string AppVersion
-    {
-        get => _appVersion;
-        set => SetProperty(ref _appVersion, value);
-    }
+    public string AppVersion => $"v {Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0"}";
 
     #endregion
 

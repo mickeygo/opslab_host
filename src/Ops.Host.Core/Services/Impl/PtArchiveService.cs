@@ -41,6 +41,8 @@ public sealed class PtArchiveService : IPtArchiveService
             var attr = pi.GetCustomAttribute<DisplayNameAttribute>(); // 只导出标记了 DisplayNameAttribute 特性的数据。
             if (attr != null)
 			{
+                // 枚举类型使用字符串类型；
+                // 可空类型使用其具体返修参数。
                 Type propType = pi.PropertyType;
 
                 if (pi.PropertyType.IsEnum)
@@ -58,22 +60,25 @@ public sealed class PtArchiveService : IPtArchiveService
         }
 
 		var devVariable = _stationCacheManager.GetDeviceVariable(filter.LineCode, filter.StationCode, PlcSymbolTag.PLC_Sign_Archive);
-		var additionalVars = devVariable.NormalVariables.Where(s => s.IsAdditional);
+		var additionalVars = devVariable?.NormalVariables.Where(s => s.IsAdditional);
 
         // 附加数据列
-        foreach (var normalVar in additionalVars)
-		{
-            if (extendArray && normalVar.IsArray())
+        if (additionalVars is not null)
+        {
+            foreach (var normalVar in additionalVars)
             {
-                for (int i = 1; i <= normalVar.Length; i++)
+                if (extendArray && normalVar.IsArray())
                 {
-                    dt.Columns.Add(new DataColumn($"{normalVar.Name}-{i}", typeof(string)));
+                    for (int i = 1; i <= normalVar.Length; i++)
+                    {
+                        dt.Columns.Add(new DataColumn($"{normalVar.Name}-{i}", typeof(string)));
+                    }
+
+                    continue;
                 }
 
-                continue;
+                dt.Columns.Add(new DataColumn(normalVar.Name, typeof(string)));
             }
-
-            dt.Columns.Add(new DataColumn(normalVar.Name, typeof(string)));
         }
         
         // 数据行
@@ -99,23 +104,26 @@ public sealed class PtArchiveService : IPtArchiveService
             }
 
             // 附加数据，从变量中获取，防止地址后续变更
-            foreach (var normalVar in additionalVars)
+            if (additionalVars is not null)
             {
-                var item = archive.ArchiveItems!.FirstOrDefault(s => s.Name == normalVar.Name);
-                if (item != null)
+                foreach (var normalVar in additionalVars)
                 {
-                    // 数组展开数据
-                    if (extendArray && item.IsArray)
+                    var item = archive.ArchiveItems!.FirstOrDefault(s => s.Name == normalVar.Name);
+                    if (item != null)
                     {
-                        foreach (var itemLine in item.ArchiveItemLines!.OrderBy(s => s.Seq))
+                        // 数组展开数据
+                        if (extendArray && item.IsArray)
                         {
-                            row[$"{item.Name}-{itemLine.Seq}"] = showLimit ? $"{itemLine.Value} ({itemLine.Lower}-{itemLine.Higher})" : itemLine.Value;
+                            foreach (var itemLine in item.ArchiveItemLines!.OrderBy(s => s.Seq))
+                            {
+                                row[$"{item.Name}-{itemLine.Seq}"] = showLimit ? $"{itemLine.Value} ({itemLine.Lower}-{itemLine.Higher})" : itemLine.Value;
+                            }
+
+                            continue;
                         }
 
-                        continue;
+                        row[item.Name] = showLimit ? $"{item.Value} ({item.Lower}-{item.Higher})" : item.Value;
                     }
-
-                    row[item.Name] = showLimit ? $"{item.Value} ({item.Lower}-{item.Higher})" : item.Value;
                 }
             }
 

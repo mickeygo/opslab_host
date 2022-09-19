@@ -52,7 +52,7 @@ public sealed class KibanaViewModel : ObservableObject, IViewModel, IDisposable
         {
             while (!_cts.IsCancellationRequested)
             {
-                await Task.Delay(new Random().Next(2, 10) * 1000);
+                await Task.Delay(new Random().Next(5, 15) * 1000);
 
                 if (AlarmSourceList.Count >= 32)
                 {
@@ -73,7 +73,7 @@ public sealed class KibanaViewModel : ObservableObject, IViewModel, IDisposable
             int n = 1;
             while (!_cts.IsCancellationRequested)
             {
-                await Task.Delay(new Random().Next(3, 15) * 1000);
+                await Task.Delay(new Random().Next(2, 8) * 1000);
 
                 if (ProductionSourceList.Count >= 32)
                 {
