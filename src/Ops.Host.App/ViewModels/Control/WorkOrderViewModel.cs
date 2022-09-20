@@ -1,6 +1,9 @@
-﻿namespace Ops.Host.App.ViewModels;
+﻿using Ops.Host.Common;
+using System.Windows.Markup;
 
-internal sealed class WorkOrderViewModel : AsyncSinglePagedViewModelBase<ProdWo, ProdWoFilter>, IViewModel
+namespace Ops.Host.App.ViewModels;
+
+internal sealed class WorkOrderViewModel : AsyncSinglePagedViewModelBase<ProdWoModel, ProdWoFilter>, IViewModel
 {
     private readonly IProdWoService _woService;
     private readonly IMdItemService _itemService;
@@ -10,7 +13,7 @@ internal sealed class WorkOrderViewModel : AsyncSinglePagedViewModelBase<ProdWo,
         _woService = woService;
         _itemService = itemService;
 
-        IssueCommand = new AsyncRelayCommand<ProdWo>(IssueAsync!);
+        IssueCommand = new AsyncRelayCommand<ProdWoModel>(IssueAsync!);
     }
 
     public List<MdItem> ProductDropdownList => _itemService.GetProducts();
@@ -21,17 +24,30 @@ internal sealed class WorkOrderViewModel : AsyncSinglePagedViewModelBase<ProdWo,
 
     public ICommand IssueCommand { get; }
 
-    protected override async Task<PagedList<ProdWo>> OnSearchAsync(int pageIndex, int pageSize)
+    protected override async Task<PagedList<ProdWoModel>> OnSearchAsync(int pageIndex, int pageSize)
     {
-        return await _woService.GetPagedListAsync(QueryFilter, pageIndex, pageSize);
+        var items = await _woService.GetPagedListAsync(QueryFilter, pageIndex, pageSize);
+        return items.Adapt<PagedList<ProdWoModel>>();
     }
 
-    protected override async Task<(bool ok, string? err)> OnSaveAsync(ProdWo data)
+    protected override async Task<(bool ok, string? err)> OnSaveAsync(ProdWoModel data)
     {
-        return await _woService.InsertOrUpdateAsync(data);
+        if (data.Product == null)
+        {
+            return (false, "必须选择 [产品]");
+        }
+
+        data.ProductId = data.Product.Id;
+        var data0 = data.Adapt<ProdWo>();
+        return await _woService.InsertOrUpdateAsync(data0);
     }
 
-    private async Task IssueAsync(ProdWo input)
+    protected override async Task<(bool ok, string? err)> OnDeleteAsync(ProdWoModel data)
+    {
+        return await _woService.DeleteAsync(data.Id);
+    }
+
+    private async Task IssueAsync(ProdWoModel input)
     {
         var (ok, err) = await _woService.IssueAsync(input.Id);
         if (!ok)
@@ -40,6 +56,7 @@ internal sealed class WorkOrderViewModel : AsyncSinglePagedViewModelBase<ProdWo,
             return;
         }
 
+        input.Status = WoStatusEnum.Issued;
         NoticeInfo("下发成功");
     }
 }

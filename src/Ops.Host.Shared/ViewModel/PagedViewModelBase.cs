@@ -1,13 +1,11 @@
 ﻿using Microsoft.Win32;
-using HandyControl.Controls;
-using HandyControl.Data;
 
 namespace Ops.Host.Shared.ViewModel;
 
 /// <summary>
 /// 分页 ViewModel 基类。
 /// </summary>
-public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : ObservableObject
+public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : ObservableViewModelBase
     where TDataSource : class, new()
     where TQueryFilter : class, new()
 {
@@ -225,13 +223,14 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
                     return (false, $"[{name}] 字段不能为空");
                 }
 
-                // 允许 Required 后，null 字符串直接返回。
+                // 允许 Required 后，null 字符串直接跳过。
                 if (v is null)
                 {
-                    return (true, "");
+                    continue;
                 }
 
                 // 先移除两端空格。
+                int len = v.Length;
                 if (trim)
                 {
                     v = v.Trim();
@@ -239,16 +238,16 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
 
                 // 设置了 MaxLengthAttribute 属性，判断字符长度。
                 var maxLenAttr = prop.GetCustomAttribute<MaxLengthAttribute>();
-                if (maxLenAttr is not null && v!.Length > maxLenAttr.Length)
+                if (maxLenAttr is not null && v.Length > maxLenAttr.Length)
                 {
                     var name = prop.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? prop.Name;
-                    return (false, $"[{name}] 字段长度（{v?.Length}）超过了允许的最大长度 {maxLenAttr.Length}");
+                    return (false, $"[{name}] 字段长度（{v.Length}）超过了允许的最大长度 {maxLenAttr.Length}");
                 }
 
-                // 重置属性值，这里在检测最大长度后设置。
-                if (trim)
+                // 若有 Trim 处理，重置属性值。这里在检测最大长度后设置。
+                if (v.Length != len)
                 {
-                    prop.SetValue(SelectedItem, v!.Trim());
+                    prop.SetValue(SelectedItem, v);
                 }
             }
             else if (prop.PropertyType.IsConstructedGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)) // 可空值类型
@@ -268,56 +267,6 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
     }
 
     /// <summary>
-    /// 通知消息
-    /// </summary>
-    /// <param name="message">消息内容</param>
-    /// <param name="waitTime">延迟关闭时间，默认1s</param>
-    protected void NoticeInfo(string message, int waitTime = 1)
-    {
-        Growl.Info(new GrowlInfo
-        {
-            Message = message,
-            WaitTime = waitTime,
-        });
-    }
-
-    /// <summary>
-    /// 通知警告消息
-    /// </summary>
-    /// <param name="message">消息内容</param>
-    /// <param name="waitTime">延迟关闭时间，默认3s</param>
-    protected void NoticeWarning(string message, int waitTime = 3)
-    {
-        Growl.Warning(new GrowlInfo
-        {
-            Message = message,
-            WaitTime = waitTime,
-        });
-    }
-
-    /// <summary>
-    /// 通知错误消息
-    /// </summary>
-    /// <param name="message">消息内容</param>
-    /// <param name="waitTime">延迟关闭时间，小于 0 时不设置关闭时间，默认 5s。</param>
-    protected void NoticeError(string message, int waitTime = 5)
-    {
-        if (waitTime <= 0)
-        {
-            Growl.Error(message);
-        }
-        else
-        {
-            Growl.Error(new GrowlInfo
-            {
-                Message = message,
-                WaitTime = waitTime,
-                StaysOpen = false,
-            });
-        }
-    }
-
-    /// <summary>
     /// 关闭侧边栏
     /// </summary>
     protected void CloseSidebar()
@@ -325,32 +274,17 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
         IsOpenSidebar = false;
     }
 
-    internal protected void InnerDelete(TDataSource? data, Func<TDataSource, (bool, string)> deleteAction)
+    internal protected void AfterDelete(TDataSource data, bool ok, string? err)
     {
-        if (data == null)
+        if (ok)
         {
-            NoticeInfo("没有选择要删除的数据");
-            return;
+            DataSourceList?.Remove(data);
+            NoticeInfo("数据删除成功");
         }
-
-        Growl.Ask("确定要删除？", isConfirmed =>
+        else
         {
-            if (isConfirmed)
-            {
-                var (ok, err) = deleteAction(data); // Growl 中异步无效
-                if (ok)
-                {
-                    DataSourceList?.Remove(data);
-                    NoticeInfo("数据删除成功");
-                }
-                else
-                {
-                    NoticeError($"删除失败: {err}");
-                }
-            }
-
-            return true;
-        });
+            NoticeError($"删除失败: {err}");
+        }
     }
 
     internal protected (bool, string?, ExcelExportData<TDataSource>?, ExcelModelBuilder) InnerDownload()

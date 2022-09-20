@@ -67,7 +67,15 @@
                         <DataGridTextColumn Binding="{Binding PlanEndDate, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="160" Header="计划结束时间"/>
                         <DataGridTextColumn Binding="{Binding ActualStartDate, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="160" Header="实际开始时间"/>
                         <DataGridTextColumn Binding="{Binding ActualEndDate, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="160" Header="实际结束时间"/>
-                        <DataGridTextColumn Binding="{Binding Status, Converter={StaticResource EnumDescriptionConverter}}" Width="80" Header="状态"/>
+                        <DataGridTemplateColumn Width="90" Header="状态">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Label Content="{Binding Status, Converter={StaticResource EnumDescriptionConverter}}"
+                                           Foreground="White" BorderThickness="0" HorizontalAlignment="Left"
+                                           Background="{Binding Status, Converter={StaticResource Enum2BrushConverter}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTextColumn Binding="{Binding Remark}" Width="120" Header="备注"/>
                         <DataGridTextColumn Binding="{Binding CreateTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="160" Header="创建时间"/>
                         <DataGridTemplateColumn Width="160" Header="操作">
@@ -163,10 +171,9 @@
                                                   hc:InfoElement.TitlePlacement="Left"
                                                   hc:InfoElement.Title="产品"
                                                   hc:InfoElement.Necessary="True"
-                                                  SelectedValuePath="Id"
                                                   DisplayMemberPath="Code"
                                                   Style="{StaticResource ComboBoxExtend}"
-                                                  SelectedValue="{Binding SelectedItem.ProductId}"/>
+                                                  SelectedItem="{Binding SelectedItem.Product}"/>
                                         <hc:NumericUpDown 
                                             Width="340" Margin="0,10,0,0"
                                             hc:InfoElement.TitleWidth="80" 
@@ -176,22 +183,22 @@
                                             Minimum="0"
                                             Style="{StaticResource NumericUpDownExtend}"
                                             Value="{Binding SelectedItem.Qty}"/>
-                                        <hc:DateTimePicker
+                                        <hc:DatePicker
                                             Width="340" Margin="0,10,0,0"
                                             hc:InfoElement.TitleWidth="100" 
                                             hc:InfoElement.TitlePlacement="Left"
                                             hc:InfoElement.Title="计划开始时间"
                                             hc:InfoElement.Necessary="True"
-                                            Style="{StaticResource DateTimePickerPlus}"
-                                            SelectedDateTime="{Binding SelectedItem.PlanStartDate}"/>
-                                        <hc:DateTimePicker
+                                            Style="{StaticResource DatePickerExtend}"
+                                            SelectedDate="{Binding SelectedItem.PlanStartDate}"/>
+                                        <hc:DatePicker
                                             Width="340" Margin="0,10,0,0"
                                             hc:InfoElement.TitleWidth="100" 
                                             hc:InfoElement.TitlePlacement="Left"
                                             hc:InfoElement.Title="计划结束时间"
                                             hc:InfoElement.Necessary="True"
-                                            Style="{StaticResource DateTimePickerPlus}"
-                                            SelectedDateTime="{Binding SelectedItem.PlanEndDate}"/>
+                                            Style="{StaticResource DatePickerExtend}"
+                                            SelectedDate="{Binding SelectedItem.PlanEndDate}"/>
                                         <TextBox Width="340" Margin="0,10,0,0"
                                                  hc:InfoElement.TitleWidth="60" 
                                                  hc:InfoElement.TitlePlacement="Left"

@@ -129,6 +129,20 @@ public static class EnumExtensions
     }
 
     /// <summary>
+    /// 获取指定的特性。
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
+    /// <returns></returns>
+    public static T? GetAttr<T>(this Enum source)
+        where T : Attribute
+    {
+        var fi = source.GetType().GetField(source.ToString());
+        var attr = fi!.GetCustomAttribute<T>(false);
+        return attr;
+    }
+
+    /// <summary>
     /// 获取枚举类型的 <see cref="DescriptionAttribute"/> 描述，没有则为 null。
     /// </summary>
     /// <typeparam name="T"></typeparam>

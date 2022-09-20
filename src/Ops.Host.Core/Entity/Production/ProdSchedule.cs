@@ -30,5 +30,5 @@ public sealed class ProdSchedule : EntityBase
     /// 顺序号
     /// </summary>
     [SugarColumn(ColumnDescription = "顺序号")]
-    public int Seq { get; set; }
+    public long Seq { get; set; }
 }

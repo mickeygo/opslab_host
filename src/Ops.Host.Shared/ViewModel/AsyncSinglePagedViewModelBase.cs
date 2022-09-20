@@ -28,7 +28,7 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
         PageUpdatedCommand = new AsyncRelayCommand<FunctionEventArgs<int>>(PageUpdatedAsync!);
 
         SaveCommand = new AsyncRelayCommand(DoSaveAsync);
-        DeleteCommand = new RelayCommand<TDataSource>(DoDelete);
+        DeleteCommand = new AsyncRelayCommand<TDataSource>(DoDeleteAsync!);
        
         DownloadCommand = new AsyncRelayCommand(DownloadAsync!);
         PrintCommand = new AsyncRelayCommand(PrintAsync);
@@ -84,22 +84,19 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
         return Task.FromResult((true, (string?)""));
     }
 
-    private void DoDelete(TDataSource? data)
+    private async Task DoDeleteAsync(TDataSource data)
     {
-        InnerDelete(data, Del!);
-
-        (bool, string?) Del(TDataSource data)
+        // 采用 MessageBox 对话框形式确认删除。
+        // 部分情况下，Growl.Ask 中采用异步转同步会出现界面阻塞（假死）情况。
+        // 异步使用 TaskFunc.ConfigureAwait(false).GetAwaiter().GetResult() 可转为同步操作，但在使用 SqlSugarCore 导航属性删除时，在弹出确认框确定时会出现阻塞情况。
+        // 另外一点，弹出的确认框不是 Modal 形式，会导致有多个弹出框时删除的都是最后一条数据。
+        if (HandyControl.Controls.MessageBox.Show("确认要删除？", "删除", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK)
         {
-            // Growl 中异步无效
-            // 注意：异步可能会导致阻塞当前线程。
-
-            // TODO: 使用 SqlSugarCore 导航属性删除时，在弹出确认框确定时会出现阻塞情况。
-            // return OnDeleteAsync(data).ConfigureAwait(false).GetAwaiter().GetResult();
-            AwaitAndThrowIfFailed(OnDeleteAsync(data));
-
-            // 转换为同步后没有返回数据，目前只能返回 true。
-            return (true, "");
+            return;
         }
+
+        var (ok, err) = await OnDeleteAsync(data!);
+        AfterDelete(data, ok, err);
     }
    
     private async Task PageUpdatedAsync(FunctionEventArgs<int> e)
@@ -150,25 +147,5 @@ public abstract class AsyncSinglePagedViewModelBase<TDataSource, TQueryFilter> :
 
         PageCount = pagedList.TotalPages;
         DataSourceList = new ObservableCollection<TDataSource>(pagedList.Items);
-    }
-
-    /// <summary>
-    /// Awaits an input <see cref="Task"/> and throws an exception on the calling context, if the task fails.
-    /// </summary>
-    /// <param name="executionTask">The input <see cref="Task"/> instance to await.</param>
-    internal static async void AwaitAndThrowIfFailed(Task executionTask)
-    {
-        // Note: this method is purposefully an async void method awaiting the input task. This is done so that
-        // if an async relay command is invoked synchronously (ie. when Execute is called, eg. from a binding),
-        // exceptions in the wrapped delegate will not be ignored or just become visible through the ExecutionTask
-        // property, but will be rethrown in the original synchronization context by default. This makes the behavior
-        // more consistent with how normal commands work (where exceptions are also just normally propagated to the
-        // caller context), and avoids getting an app into an inconsistent state in case a method faults without
-        // other components being notified. It is also possible to not await this task and to instead ignore exceptions
-        // and then inspect them manually from the ExecutionTask property, by constructing an async command instance
-        // using the AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler option. That will cause this call to
-        // be skipped, and exceptions will just either normally be available through that property, or will otherwise
-        // flow to the static TaskScheduler.UnobservedTaskException event if otherwise unobserved (eg. for logging).
-        await executionTask;
     }
 }

@@ -10,6 +10,7 @@
     <converter:EnumDropdownListConverter x:Key="EnumDropdownListConverter"/>
     <converter:Enum2ResourceConverter x:Key="Enum2ResourceConverter"/>
     <converter:Enum2StringConverter x:Key="Enum2StringConverter"/>
+    <converter:Enum2BrushConverter x:Key="Enum2BrushConverter"/>
     <converter:String2BooleanConverter x:Key="String2BooleanConverter"/>
 
 </ResourceDictionary>

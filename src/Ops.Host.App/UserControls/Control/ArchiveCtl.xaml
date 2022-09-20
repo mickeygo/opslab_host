@@ -118,7 +118,7 @@
                             <Grid>
                                 <hc:SimplePanel Margin="2">
                                     <GroupBox Header="过程数据详细" Margin="2" Style="{StaticResource GroupBoxOriginal}">
-                                        <ListView ItemsSource="{Binding SelectedItem.ArchiveItems}">
+                                        <ListView ItemsSource="{Binding SelectedItem.ArchiveItems}" Style="{StaticResource ListView.Small}">
                                             <ListView.View>
                                                 <GridView>
                                                     <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="名称" Width="120" />

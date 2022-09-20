@@ -77,7 +77,13 @@ public sealed class ProcessBomViewModel : AsyncSinglePagedViewModelBase<ProcProc
     protected override async Task<(bool ok, string? err)> OnSaveAsync(ProcProcessBomModel data)
     {
         var bom = data.Adapt<ProcProcessBom>();
-        return await _bomService.InsertOrUpdateAsync(bom);
+        var (ok, err) = await _bomService.InsertOrUpdateAsync(bom);
+        if (ok)
+        {
+            var bom0 = await _bomService.GetBomByIdAsync(bom.Id);
+            SelectedItem = bom0.Adapt<ProcProcessBomModel>();
+        }
+        return (ok, err);
     }
 
     protected override async Task<(bool ok, string? err)> OnDeleteAsync(ProcProcessBomModel data)

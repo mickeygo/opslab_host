@@ -28,7 +28,7 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Page
         PageUpdatedCommand = new RelayCommand<FunctionEventArgs<int>>((e) => PageUpdated(e!));
 
         SaveCommand = new RelayCommand(DoSave);
-        DeleteCommand = new RelayCommand<TDataSource>(DoDelete);
+        DeleteCommand = new RelayCommand<TDataSource>(DoDelete!);
 
         DownloadCommand = new RelayCommand(Download);
         PrintCommand = new RelayCommand(Print);
@@ -83,9 +83,15 @@ public abstract class SinglePagedViewModelBase<TDataSource, TQueryFilter> : Page
         return (true, default);
     }
 
-    private void DoDelete(TDataSource? data)
+    private void DoDelete(TDataSource data)
     {
-        InnerDelete(data, OnDelete!);
+        if (HandyControl.Controls.MessageBox.Show("确认要删除？", "删除", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK)
+        {
+            return;
+        }
+
+        var (ok, err) = OnDelete(data);
+        AfterDelete(data, ok, err);
     }
 
     private void PageUpdated(FunctionEventArgs<int> e)

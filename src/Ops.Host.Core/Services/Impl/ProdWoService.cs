@@ -49,7 +49,7 @@ internal sealed class ProdWoService : IProdWoService
         var wo = await _woRep.GetByIdAsync(woId);
         if (wo?.Status != WoStatusEnum.Created)
         {
-            return (false, "工单只有创建状态才能下发");
+            return (false, "工单只有处于创建状态才能下发");
         }
 
         var ok = await _woRep.UpdateAsync(s => new()

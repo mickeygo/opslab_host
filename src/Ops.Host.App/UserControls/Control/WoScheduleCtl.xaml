@@ -22,7 +22,7 @@
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="330"/>
+                    <ColumnDefinition Width="380"/>
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
@@ -35,8 +35,8 @@
                           Style="{StaticResource DataGrid.Small}"
                           ItemsSource="{Binding IssueWoSourceList}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Code}" Width="100" Header="编码" CanUserSort="False"/>
-                        <DataGridTextColumn Binding="{Binding Name}" Width="160" Header="名称" CanUserSort="False"/>
+                        <DataGridTextColumn Binding="{Binding Code}" Width="120" Header="工单编码" CanUserSort="False"/>
+                        <DataGridTextColumn Binding="{Binding Name}" Width="180" Header="工单名称" CanUserSort="False"/>
                         <DataGridTemplateColumn Width="60" Header="" CanUserSort="False">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -59,12 +59,20 @@
                           Style="{StaticResource DataGrid.Small}" 
                           ItemsSource="{Binding ScheduleSourceList}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Code}" Width="100" Header="编码" CanUserSort="False"/>
-                        <DataGridTextColumn Binding="{Binding Name}" Width="160" Header="名称" CanUserSort="False"/>
+                        <DataGridTextColumn Binding="{Binding WorkOrder.Code}" Width="120" Header="工单编码" CanUserSort="False"/>
+                        <DataGridTextColumn Binding="{Binding WorkOrder.Name}" Width="180" Header="工单名称" CanUserSort="False"/>
                         <DataGridTextColumn Binding="{Binding WorkOrder.Product.Code}" Width="120" Header="产品编码" CanUserSort="False"/>
-                        <DataGridTextColumn Binding="{Binding WorkOrder.Product.Name}" Width="160" Header="产品名称" CanUserSort="False"/>
-                        <DataGridTextColumn Binding="{Binding Status, Converter={StaticResource EnumDescriptionConverter}}" Width="80" Header="状态" CanUserSort="False"/>
-                        <DataGridTemplateColumn Width="100" Header="">
+                        <DataGridTextColumn Binding="{Binding WorkOrder.Product.Name}" Width="180" Header="产品名称" CanUserSort="False"/>
+                        <DataGridTemplateColumn Width="90" Header="状态" CanUserSort="False">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Label Content="{Binding WorkOrder.Status, Converter={StaticResource EnumDescriptionConverter}}"
+                                           Foreground="White" Padding="2" BorderThickness="0" HorizontalAlignment="Left"
+                                           Background="{Binding WorkOrder.Status, Converter={StaticResource Enum2BrushConverter}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="160" Header="">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <hc:UniformSpacingPanel Orientation="Horizontal" Spacing="8">

@@ -48,50 +48,50 @@ public sealed class KibanaViewModel : ObservableObject, IViewModel, IDisposable
         }, default, TaskCreationOptions.LongRunning, TaskScheduler.FromCurrentSynchronizationContext());
 
         // 测试数据
-        _ = Task.Factory.StartNew(async () =>
-        {
-            while (!_cts.IsCancellationRequested)
-            {
-                await Task.Delay(new Random().Next(5, 15) * 1000);
+        //_ = Task.Factory.StartNew(async () =>
+        //{
+        //    while (!_cts.IsCancellationRequested)
+        //    {
+        //        await Task.Delay(new Random().Next(5, 15) * 1000);
 
-                if (AlarmSourceList.Count >= 32)
-                {
-                    AlarmSourceList.RemoveAt(AlarmSourceList.Count - 1);
-                }
+        //        if (AlarmSourceList.Count >= 32)
+        //        {
+        //            AlarmSourceList.RemoveAt(AlarmSourceList.Count - 1);
+        //        }
 
-                AlarmSourceList.Insert(0, new()
-                {
-                    Station = "OP10",
-                    Name = "焊接设备电压过高",
-                });
-            }
+        //        AlarmSourceList.Insert(0, new()
+        //        {
+        //            Station = "OP10",
+        //            Name = "焊接设备电压过高",
+        //        });
+        //    }
 
-        }, default, TaskCreationOptions.LongRunning, TaskScheduler.FromCurrentSynchronizationContext());
+        //}, default, TaskCreationOptions.LongRunning, TaskScheduler.FromCurrentSynchronizationContext());
 
-        _ = Task.Factory.StartNew(async () =>
-        {
-            int n = 1;
-            while (!_cts.IsCancellationRequested)
-            {
-                await Task.Delay(new Random().Next(2, 8) * 1000);
+        //_ = Task.Factory.StartNew(async () =>
+        //{
+        //    int n = 1;
+        //    while (!_cts.IsCancellationRequested)
+        //    {
+        //        await Task.Delay(new Random().Next(2, 8) * 1000);
 
-                if (ProductionSourceList.Count >= 32)
-                {
-                    ProductionSourceList.RemoveAt(AlarmSourceList.Count - 1);
-                }
+        //        if (ProductionSourceList.Count >= 32)
+        //        {
+        //            ProductionSourceList.RemoveAt(AlarmSourceList.Count - 1);
+        //        }
 
-                ProductionSourceList.Insert(0, new()
-                {
-                    Station = "OP10",
-                    SN = $"SN{DateTime.Now:yyyyMMddHHmmss}",
-                    Shift = "早班",
-                    Pass = n++ % 4 != 0,
-                    InboundTime = DateTime.Now,
-                    OutboundTime = DateTime.Now,
-                });
-            }
+        //        ProductionSourceList.Insert(0, new()
+        //        {
+        //            Station = "OP10",
+        //            SN = $"SN{DateTime.Now:yyyyMMddHHmmss}",
+        //            Shift = "早班",
+        //            Pass = n++ % 4 != 0,
+        //            InboundTime = DateTime.Now,
+        //            OutboundTime = DateTime.Now,
+        //        });
+        //    }
 
-        }, default, TaskCreationOptions.LongRunning, TaskScheduler.FromCurrentSynchronizationContext());
+        //}, default, TaskCreationOptions.LongRunning, TaskScheduler.FromCurrentSynchronizationContext());
     }
 
     #region 绑定属性
