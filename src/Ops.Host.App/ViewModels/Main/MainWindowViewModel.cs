@@ -22,10 +22,7 @@ public sealed class MainWindowViewModel : ObservableObject, IViewModel
         MenuItemList = GetMenuItems();
         SelectedItem = MenuItemList.FirstOrDefault(s => s.IsHome); // 设置首页
 
-        RunCommand = new RelayCommand(async () =>
-        {
-            await RunAsync();
-        });
+        RunCommand = new AsyncRelayCommand(RunAsync);
 
         Init();
     }
@@ -127,7 +124,15 @@ public sealed class MainWindowViewModel : ObservableObject, IViewModel
 
     private static ObservableCollection<MenuItemModel> GetMenuItems()
     {
-        return new ObservableCollection<MenuItemModel>(MenuManager.Menus);
+        var menus = MenuManager.Menus;
+        foreach (var menu in menus)
+        {
+            if (!string.IsNullOrWhiteSpace(menu.Icon))
+            {
+                menu.Icon = $"/Resources/Images/thumbs/{menu.Icon}";
+            }
+        }
+        return new ObservableCollection<MenuItemModel>(menus);
     }
 
     private static object? CreatePage(Type contentType)

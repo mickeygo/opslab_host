@@ -214,7 +214,7 @@ public sealed class ProcessBomViewModel : AsyncSinglePagedViewModelBase<ProcProc
             return;
         }
 
-        NoticeInfo("已复制成功，请刷新页面查看。");
+        NoticeSuccess("已复制成功，请刷新页面查看。");
         CloseSidebar();
     }
 }

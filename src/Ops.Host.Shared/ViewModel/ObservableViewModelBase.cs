@@ -9,6 +9,20 @@ namespace Ops.Host.Shared.ViewModel;
 public abstract class ObservableViewModelBase : ObservableObject
 {
     /// <summary>
+    /// 通知成功消息
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="waitTime"></param>
+    protected void NoticeSuccess(string? message, int waitTime = 1)
+    {
+        Growl.Success(new GrowlInfo
+        {
+            Message = message ?? "成功",
+            WaitTime = waitTime,
+        });
+    }
+
+    /// <summary>
     /// 通知消息
     /// </summary>
     /// <param name="message">消息内容</param>
@@ -17,7 +31,7 @@ public abstract class ObservableViewModelBase : ObservableObject
     {
         Growl.Info(new GrowlInfo
         {
-            Message = message ?? "成功",
+            Message = message ?? "消息",
             WaitTime = waitTime,
         });
     }

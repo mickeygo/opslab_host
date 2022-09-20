@@ -57,6 +57,6 @@ internal sealed class WorkOrderViewModel : AsyncSinglePagedViewModelBase<ProdWoM
         }
 
         input.Status = WoStatusEnum.Issued;
-        NoticeInfo("下发成功");
+        NoticeSuccess("下发成功");
     }
 }

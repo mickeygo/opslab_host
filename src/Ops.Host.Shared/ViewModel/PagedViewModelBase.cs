@@ -186,7 +186,7 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
 
         if (ok)
         {
-            NoticeInfo($"数据{desc}成功");
+            NoticeSuccess($"数据{desc}成功");
 
             if (IsAdding)
             {
@@ -279,7 +279,7 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
         if (ok)
         {
             DataSourceList?.Remove(data);
-            NoticeInfo("数据删除成功");
+            NoticeSuccess("数据删除成功");
         }
         else
         {

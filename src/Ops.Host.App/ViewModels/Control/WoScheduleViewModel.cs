@@ -54,7 +54,7 @@ public sealed class WoScheduleViewModel : ObservableViewModelBase, IViewModel
         var (ok, schedule, err) = await _scheduleService.ScheduleAsync(item);
         if (!ok)
         {
-            NoticeInfo(err);
+            NoticeWarning(err);
             return;
         }
 
@@ -67,7 +67,7 @@ public sealed class WoScheduleViewModel : ObservableViewModelBase, IViewModel
         var (ok, wo, err) = await _scheduleService.DisScheduleAsync(item);
         if (!ok)
         {
-            NoticeInfo(err);
+            NoticeWarning(err);
             return;
         }
 
@@ -87,7 +87,7 @@ public sealed class WoScheduleViewModel : ObservableViewModelBase, IViewModel
         var (ok, err) = await _scheduleService.UpScheduleAsync(item, prev);
         if (!ok)
         {
-            NoticeInfo(err);
+            NoticeWarning(err);
             return;
         }
 
@@ -107,7 +107,7 @@ public sealed class WoScheduleViewModel : ObservableViewModelBase, IViewModel
         var (ok, err) = await _scheduleService.DownScheduleAsync(item, next);
         if (!ok)
         {
-            NoticeInfo(err);
+            NoticeWarning(err);
             return;
         }
 

@@ -27,6 +27,6 @@ public sealed class ProcessViewModel : AsyncSinglePagedViewModelBase<ProcProcess
             return;
         }
 
-        NoticeInfo("数据同步成功");
+        NoticeSuccess("数据同步成功");
     }
 }
