@@ -1,6 +1,4 @@
-﻿using SqlSugar;
-
-namespace Ops.Host.Core;
+﻿namespace Ops.Host.Core;
 
 /// <summary>
 /// 数据库链接配置

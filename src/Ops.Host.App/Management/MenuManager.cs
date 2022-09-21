@@ -29,7 +29,7 @@ public sealed class MenuManager
 
         new MenuItemModel("Tag_16x.png", "进站信息", typeof(InboundCtl), false),
         new MenuItemModel("DataGrid_16x.png", "过站信息", typeof(ArchiveCtl), false),
-        new MenuItemModel("Search_16x.png", "物料追溯", typeof(MaterialTraceCtl), false),
+        new MenuItemModel("TreeView_16x.png", "物料追溯", typeof(MaterialTraceCtl), false),
         new MenuItemModel("Search_16x.png", "警报记录", typeof(AlarmRecordCtl), false),
         new MenuItemModel("Search_16x.png", "刷卡记录", typeof(CardRecordCtl), false),
     };

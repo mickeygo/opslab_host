@@ -29,6 +29,7 @@ global using Microsoft.Extensions.Options;
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
 
+global using MediatR;
 global using Mapster;
 
 global using Ops.Exchange;

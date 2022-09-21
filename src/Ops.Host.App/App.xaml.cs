@@ -93,15 +93,21 @@ public partial class App : Application
 
     private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        // options
+        // 注册 options
         services.Configure<OpsHostOptions>(configuration.GetSection("OpsHost"));
         services.Configure<BusinessOptions>(configuration.GetSection("OpsBusiness"));
 
-        // 添加缓存
+        // 注册缓存
         services.AddMemoryCache();
 
-        // 添加 Exchange
+        // 注册 MediatR
+        services.AddHostMediatR(typeof(App).Assembly, typeof(App).Assembly, typeof(Shared.Doc).Assembly, typeof(Doc).Assembly);
+
+        // 注册 Exchange
         services.AddOpsExchange(configuration);
+
+        // 注册基础组件
+        services.AddHostCommon();
 
         // 添加
         services.AddHostApp();
