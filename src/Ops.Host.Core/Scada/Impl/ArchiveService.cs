@@ -62,6 +62,8 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
                 return Error(ErrorCodeEnum.E1202);
             }
 
+            // TODO：校验工艺BOM
+
             // 从字典中查找对应的警报信息，若字典中没有设置，不会存储对应警报信息。
             var dicts = await _sysDictDataService.GetDicsByCodeAsync(DictCodeEnum.Shift.ToString());
             var shift0 = dicts.FirstOrDefault(s => s.Value == shift.ToString())?.Name;
