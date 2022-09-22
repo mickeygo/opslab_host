@@ -9,13 +9,3 @@ global using System.Linq;
 global using System.Reflection;
 global using System.Threading;
 global using System.Threading.Tasks;
-
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Logging;
-
-global using OfficeOpenXml;
-global using OfficeOpenXml.Style;
-
-global using Ops.Host.Common.Extensions;
-global using Ops.Host.Common.Management;

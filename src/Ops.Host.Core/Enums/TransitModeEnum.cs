@@ -1,9 +1,9 @@
 ﻿namespace Ops.Host.Core;
 
 /// <summary>
-/// 过站状态
+/// 过站阶段枚举
 /// </summary>
-public enum TransitModeEnum
+public enum TransitStageEnum
 {
     /// <summary>
     /// 已进站
@@ -16,10 +16,4 @@ public enum TransitModeEnum
     /// </summary>
     [Description("已出站")]
     Outbound = 20,
-
-    /// <summary>
-    /// 已完工
-    /// </summary>
-    [Description("已完工")]
-    Completed = 30,
 }

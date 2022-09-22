@@ -9,6 +9,13 @@ public interface IProcProcessBomService : IDomainService
 
     Task<ProcProcessBom> GetBomAsync(long productId, long processId);
 
+    /// <summary>
+    /// 获取产品工艺BOM
+    /// </summary>
+    /// <param name="productCode">产品号</param>
+    /// <param name="lineCode">产线</param>
+    /// <param name="stationCode">工站</param>
+    /// <returns></returns>
     Task<ProcProcessBom> GetBomAsync(string productCode, string lineCode, string stationCode);
 
     Task<PagedList<ProcProcessBom>> GetPagedListAsync(ProcessBomFilter filter, int pageIndex, int pageSize);

@@ -1,7 +1,8 @@
 ﻿using Serilog;
-using Ops.Host.App.Extensions;
+using Ops.Host.Agent.Extensions;
+using Ops.Host.Common;
 
-namespace Ops.Host.App;
+namespace Ops.Host.Agent;
 
 public partial class App : Application
 {
@@ -32,7 +33,7 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         // 只允许开启一个
-        _mutex = new Mutex(true, "Ops.Host.App", out var createdNew);
+        _mutex = new Mutex(true, "Ops.Host.Agent", out var createdNew);
         if (!createdNew)
         {
             MessageBox.Show("已有一个程序在运行");
@@ -93,18 +94,11 @@ public partial class App : Application
 
     private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        // 注册 options
-        services.Configure<OpsHostOptions>(configuration.GetSection("OpsHost"));
-        services.Configure<BusinessOptions>(configuration.GetSection("OpsBusiness"));
-
         // 注册缓存
         services.AddMemoryCache();
 
         // 注册 MediatR
-        services.AddHostMediatR(typeof(App).Assembly, typeof(Shared.Doc).Assembly, typeof(Core.Doc).Assembly);
-
-        // 注册 Exchange
-        services.AddOpsExchange(configuration);
+        services.AddHostMediatR(typeof(App).Assembly, typeof(Shared.Doc).Assembly);
 
         // 注册基础组件
         services.AddHostCommon();

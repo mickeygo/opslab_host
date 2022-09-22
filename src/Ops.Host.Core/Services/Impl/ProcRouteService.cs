@@ -33,6 +33,13 @@ internal sealed class ProcRouteService : IProcRouteService
                 .ToListAsync();
     }
 
+    public async Task<ProcRouteProduct?> GetByFormulaAsync(int formulaNo)
+    {
+        return await _routeProductRep.AsQueryable()
+            .Includes(s => s.Product)
+            .FirstAsync(s => s.FormulaNo == formulaNo);
+    }
+
     public async Task<PagedList<ProcRoute>> GetPagedListAsync(ProcRouteFilter filter, int pageIndex, int pageSize)
     {
         return await _routeRep.AsQueryable()
@@ -84,9 +91,10 @@ internal sealed class ProcRouteService : IProcRouteService
 
     public async Task<(bool ok, string err)> LinkProductAsync(ProcRouteProduct input)
     {
-        if (await _routeProductRep.IsAnyAsync(s => s.RouteId == input.RouteId && s.ProductId == input.ProductId))
+        // 一种产品只能有一条工艺路线。
+        if (await _routeProductRep.IsAnyAsync(s => s.ProductId == input.ProductId))
         {
-            return (false, "工艺路线中已关联此产品");
+            return (false, "该产品已设置工艺路线");
         }
 
         var ok = await _routeProductRep.InsertAsync(input);
@@ -97,5 +105,11 @@ internal sealed class ProcRouteService : IProcRouteService
     {
         var ok = await _routeProductRep.DeleteAsync(s => s.RouteId == routeId && s.ProductId == productId);
         return (ok, "");
+    }
+
+    public void IsHead(string productCode)
+    {
+        _routeProductRep.AsQueryable()
+            .Includes(s => s.Product!.Code == productCode);
     }
 }

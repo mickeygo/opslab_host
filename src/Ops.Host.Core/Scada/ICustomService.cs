@@ -3,7 +3,7 @@
 /// <summary>
 /// 自定义服务
 /// </summary>
-public interface ICustomService
+public interface ICustomService : IDomainService
 {
     /// <summary>
     /// 处理自定义数据。

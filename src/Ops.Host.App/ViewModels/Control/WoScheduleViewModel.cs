@@ -10,7 +10,7 @@ public sealed class WoScheduleViewModel : ObservableViewModelBase, IViewModel
 
         RefreshCommand = new AsyncRelayCommand(RefreshAsync);
         ScheduleCommand = new AsyncRelayCommand<ProdWo>(ScheduleAsync!);
-        DisScheduleCommand = new AsyncRelayCommand<ProdSchedule>(DisScheduleAsync!);
+        UnscheduleCommand = new AsyncRelayCommand<ProdSchedule>(UnscheduleAsync!);
         UpCommand = new AsyncRelayCommand<ProdSchedule>(UpAsync!);
         DownCommand = new AsyncRelayCommand<ProdSchedule>(DownAsync!);
     }
@@ -33,7 +33,7 @@ public sealed class WoScheduleViewModel : ObservableViewModelBase, IViewModel
 
     public ICommand ScheduleCommand { get; }
 
-    public ICommand DisScheduleCommand { get; }
+    public ICommand UnscheduleCommand { get; }
 
     public ICommand UpCommand { get; }
 
@@ -62,7 +62,7 @@ public sealed class WoScheduleViewModel : ObservableViewModelBase, IViewModel
         ScheduleSourceList?.Add(schedule!);
     }
 
-    private async Task DisScheduleAsync(ProdSchedule item)
+    private async Task UnscheduleAsync(ProdSchedule item)
     {
         var (ok, wo, err) = await _scheduleService.DisScheduleAsync(item);
         if (!ok)

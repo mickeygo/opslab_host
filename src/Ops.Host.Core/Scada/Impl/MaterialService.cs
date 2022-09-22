@@ -9,7 +9,6 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
     private readonly SqlSugarRepository<PtSnTransit> _transitRep;
     private readonly IProcProcessBomService _bomService;
     private readonly BusinessOptions _bizOptions;
-
     private readonly ILogger _logger;
 
     public MaterialService(SqlSugarRepository<PtSnMaterial> materialRep,
@@ -40,7 +39,7 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
         {
             // 是否有进站信息。
             var snTransit = await _transitRep.GetFirstAsync(s => s.LineCode == data.Schema.Line && s.StationCode == data.Schema.Station);
-            if (snTransit == null || snTransit.TransitMode != TransitModeEnum.Inbound)
+            if (snTransit == null || snTransit.TransitStage != TransitStageEnum.Inbound)
             {
                 return Error(ErrorCodeEnum.E1202);
             }
@@ -131,10 +130,13 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
 
     public Task<ReplyResult> HandleBactchMaterialAsync(ForwardData data)
     {
+        // 批次料可以随时扫入，也可以反复扫入（比如，一大包螺丝可以在工站空闲时上料，可以分多次放入物料盒中）；
+        // 批次料和 SN 没有绑定关系；
+        // 批次料一般无法精确追溯，可用于防呆处理，如校验保质期、指定加料箱等。
         return Task.FromResult(Ok());
     }
 
-    private bool MatchRuleAny(string[] rules, string barcode, bool equalLength)
+    private static bool MatchRuleAny(string[] rules, string barcode, bool equalLength)
     {
         foreach (var rule in rules)
         {
@@ -154,7 +156,7 @@ internal sealed class MaterialService : ScadaDomainService, IMaterialService
     /// <param name="barcode">条码</param>
     /// <param name="equalLength">是否需要两者长度相等，若不需要，必须满足条码长度不小于规则长度。</param>
     /// <returns></returns>
-    private bool MatchRule(string rule, string barcode, bool equalLength)
+    private static bool MatchRule(string rule, string barcode, bool equalLength)
     {
         if (equalLength)
         {

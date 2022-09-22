@@ -35,6 +35,11 @@ public sealed class ProcessParamViewModel : AsyncSinglePagedViewModelBase<ProcPr
         return await _paramService.InsertOrUpdateAsync(input);
     }
 
+    protected override Task<(bool ok, string? err)> OnDeleteAsync(ProcProcessParamModel data)
+    {
+        return base.OnDeleteAsync(data);
+    }
+
     private async Task GenerateTemplateAsync()
     {
         if (SelectedItem!.ProductId == 0)

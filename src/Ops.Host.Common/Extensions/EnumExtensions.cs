@@ -148,6 +148,7 @@ public static class EnumExtensions
     /// <typeparam name="T"></typeparam>
     /// <param name="name">枚举名称</param>
     /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static string? GetDesc<T>(string name)
     {
         var fi = typeof(T).GetField(name);
@@ -161,6 +162,7 @@ public static class EnumExtensions
     /// <typeparam name="T"></typeparam>
     /// <param name="name">枚举名称</param>
     /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static string? GetDisplayName<T>(string name)
     {
         var fi = typeof(T).GetField(name);

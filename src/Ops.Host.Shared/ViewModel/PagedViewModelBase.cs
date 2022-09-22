@@ -167,7 +167,7 @@ public abstract class PagedViewModelBase<TDataSource, TQueryFilter> : Observable
     }
 
     /// <summary>
-    /// 数据保存前（包括验证）处理方法。
+    /// 数据保存前（验证前）处理方法。
     /// </summary>
     /// <param name="data">要保存的数据</param>
     protected virtual void OnBeforeSave(TDataSource data)

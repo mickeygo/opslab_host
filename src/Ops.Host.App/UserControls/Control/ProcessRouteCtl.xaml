@@ -139,9 +139,9 @@
                                               IsReadOnly="True"
                                               ItemsSource="{Binding SelectedItem.Contents}">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Binding="{Binding Process.Code}" Width="90" Header="工序编码"/>
-                                            <DataGridTextColumn Binding="{Binding Process.Name}" Width="140" Header="工序名称"/>
-                                            <DataGridTextColumn Binding="{Binding Seq}" Width="60" Header="顺序"/>
+                                            <DataGridTextColumn Binding="{Binding Process.Code}" Width="90" Header="工序编码" CanUserSort="False"/>
+                                            <DataGridTextColumn Binding="{Binding Process.Name}" Width="140" Header="工序名称" CanUserSort="False"/>
+                                            <DataGridTextColumn Binding="{Binding Seq}" Width="60" Header="顺序" CanUserSort="False"/>
                                             <DataGridTemplateColumn Width="Auto" Header="操作">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>

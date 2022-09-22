@@ -21,7 +21,10 @@ public sealed class DictDataViewModel : AsyncSinglePagedViewModelBase<SysDictDat
     protected override void OnBeforeSave(SysDictData data)
     {
         base.OnBeforeSave(data);
-        data.CodeDesc ??= EnumExtensions.GetDesc<DictCodeEnum>(data.Code); // 补上编码描述
+        if (!string.IsNullOrEmpty(data.Code))
+        {
+            data.CodeDesc ??= EnumExtensions.GetDesc<DictCodeEnum>(data.Code); // 补上编码描述
+        }
     }
 
     protected override async Task<(bool ok, string? err)> OnSaveAsync(SysDictData data)

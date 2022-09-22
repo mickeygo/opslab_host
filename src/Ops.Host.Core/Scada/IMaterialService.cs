@@ -3,7 +3,7 @@
 /// <summary>
 /// SCADA 扫入物料服务。
 /// </summary>
-public interface IMaterialService
+public interface IMaterialService : IDomainService
 {
     /// <summary>
     /// 扫入关键物料。

@@ -3,7 +3,7 @@
 /// <summary>
 /// SCADA 安灯信息服务。
 /// </summary>
-public interface IAndonService
+public interface IAndonService : IDomainService
 {
     Task HandleAsync(ForwardData data);
 }

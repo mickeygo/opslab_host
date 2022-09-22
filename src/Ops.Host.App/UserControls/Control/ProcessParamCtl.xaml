@@ -84,7 +84,7 @@
             </Grid>
 
             <hc:Drawer Name="DrawerCode" IsOpen="{Binding IsOpenSidebar}">
-                <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0" CornerRadius="0,0,0,0" Background="{DynamicResource RegionBrush}" Width="620">
+                <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0" CornerRadius="0,0,0,0" Background="{DynamicResource RegionBrush}" Width="630">
                     <hc:TransitioningContentControl>
                         <Grid>
                             <Grid.RowDefinitions>
@@ -135,13 +135,13 @@
                                       Style="{StaticResource DataGrid.Small}"
                                       ItemsSource="{Binding SelectedItem.Contents}">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding Tag}" Width="160" Header="标签" IsReadOnly="True"/>
-                                    <DataGridTextColumn Binding="{Binding Name}" Width="120" Header="名称" IsReadOnly="True"/>
-                                    <DataGridTextColumn Binding="{Binding Seq}" Width="60" Header="序号" IsReadOnly="True"/>
-                                    <DataGridTextColumn Binding="{Binding DataType}" Width="80" Header="数据类型" IsReadOnly="True"/>
-                                    <DataGridTextColumn Binding="{Binding Lower}" Width="80" Header="下限值"/>
-                                    <DataGridTextColumn Binding="{Binding Higher}" Width="80" Header="上限值"/>
-                                    <DataGridCheckBoxColumn Binding="{Binding IsCheck}" Width="60" Header="需校验"/>
+                                    <DataGridTextColumn Binding="{Binding Tag}" Width="160" Header="标签" IsReadOnly="True" CanUserSort="False"/>
+                                    <DataGridTextColumn Binding="{Binding Name}" Width="120" Header="名称" IsReadOnly="True" CanUserSort="False"/>
+                                    <DataGridTextColumn Binding="{Binding Seq}" Width="60" Header="序号" IsReadOnly="True" CanUserSort="False"/>
+                                    <DataGridTextColumn Binding="{Binding DataType}" Width="70" Header="数据类型" IsReadOnly="True" CanUserSort="False"/>
+                                    <DataGridTextColumn Binding="{Binding Lower}" Width="70" Header="下限值" CanUserSort="False"/>
+                                    <DataGridTextColumn Binding="{Binding Higher}" Width="70" Header="上限值" CanUserSort="False"/>
+                                    <DataGridCheckBoxColumn Binding="{Binding IsCheck}" Width="60" Header="需校验" CanUserSort="False"/>
                                 </DataGrid.Columns>
                             </DataGrid>
 

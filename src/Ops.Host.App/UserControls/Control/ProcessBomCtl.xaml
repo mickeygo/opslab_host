@@ -155,10 +155,10 @@
                                               IsReadOnly="True"
                                               ItemsSource="{Binding SelectedItem.Contents}">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Binding="{Binding Material.Code}" Width="120" Header="物料编码"/>
-                                            <DataGridTextColumn Binding="{Binding Material.Name}" Width="140" Header="物料名称"/>
-                                            <DataGridTextColumn Binding="{Binding Qty}" Width="50" Header="数量"/>
-                                            <DataGridTextColumn Binding="{Binding Seq}" Width="50" Header="顺序"/>
+                                            <DataGridTextColumn Binding="{Binding Material.Code}" Width="120" Header="物料编码" CanUserSort="False"/>
+                                            <DataGridTextColumn Binding="{Binding Material.Name}" Width="140" Header="物料名称" CanUserSort="False"/>
+                                            <DataGridTextColumn Binding="{Binding Qty}" Width="50" Header="数量" CanUserSort="False"/>
+                                            <DataGridTextColumn Binding="{Binding Seq}" Width="50" Header="顺序" CanUserSort="False"/>
                                             <DataGridTemplateColumn Width="Auto" Header="操作">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>

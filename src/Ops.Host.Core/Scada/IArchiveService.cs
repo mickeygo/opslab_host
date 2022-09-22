@@ -3,7 +3,7 @@
 /// <summary>
 /// SCADA 出站/存档服务。
 /// </summary>
-public interface IArchiveService
+public interface IArchiveService : IDomainService
 {
     /// <summary>
     /// 产品出站

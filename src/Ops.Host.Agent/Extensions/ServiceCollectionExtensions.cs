@@ -1,19 +1,11 @@
-﻿using Ops.Host.App.Forwarders;
-using Ops.Host.App.ViewModels;
+﻿using Ops.Host.Agent.ViewModels;
 
-namespace Ops.Host.App.Extensions;
+namespace Ops.Host.Agent.Extensions;
 
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddHostApp(this IServiceCollection services)
     {
-        // forwarders
-        services.AddTransient<INoticeForwarder, OpsLocalNoticeForwarder>();
-        services.AddTransient<IReplyForwarder, OpsLocalReplyForwarder>();
-
-        // 注册 Host.Core 服务。
-        services.AddHostCore();
-
         // 注册 ViewModels
         services.AddViewModel();
 

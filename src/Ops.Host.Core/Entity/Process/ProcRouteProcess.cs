@@ -1,7 +1,7 @@
 ﻿namespace Ops.Host.Core.Entity;
 
 /// <summary>
-/// 工艺组成
+/// 工艺组成。
 /// </summary>
 [SugarTable("proc_route_process", "工艺组成表")]
 public class ProcRouteProcess : EntityBase

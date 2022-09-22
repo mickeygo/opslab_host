@@ -1,11 +1,11 @@
 ﻿namespace Ops.Host.Core.Entity;
 
 /// <summary>
-/// SN 状态信息。
+/// SN 过站状态信息。
 /// </summary>
-/// <remarks>该表汇总 SN相关信息，此表中 SN 数据应该唯一。</remarks>
+/// <remarks>记录SN当前的过站状态，此表中 SN 数据应该唯一。</remarks>
 [SugarTable("pt_sn_transit", "SN过站状态表")]
-public sealed class PtSnTransit : EntityBaseId
+public sealed class PtSnTransit : EntityBase
 {
     /// <summary>
     /// SN
@@ -48,20 +48,22 @@ public sealed class PtSnTransit : EntityBaseId
     public string? StationCode { get; set; }
 
     /// <summary>
-    /// 过站状态
+    /// 过站阶段。
     /// </summary>
-    [DisplayName("过站状态")]
-    public TransitModeEnum TransitMode { get; set; }
+    [DisplayName("过站阶段")]
+    public TransitStageEnum TransitStage { get; set; }
 
     /// <summary>
-    /// 过站状态
+    /// 过站状态。
     /// </summary>
+    /// <remarks>SN在经过当前站加工或检验后的状态。</remarks>
     [SugarColumn(ColumnDescription = "过站状态")]
     public PassEnum? Pass { get; set; }
 
     /// <summary>
-    /// 产品状态
+    /// 当前产品状态。
     /// </summary>
+    /// <remarks>表示目前SN的状态，过站状态不等于产品状态。</remarks>
     public ProductStatusEnum ProductStatus { get; set; } = ProductStatusEnum.OK;
 
     /// <summary>
@@ -77,7 +79,7 @@ public sealed class PtSnTransit : EntityBaseId
     public DateTime? OutboundTime { get; set; }
 
     /// <summary>
-    /// NG 原因
+    /// NG 原因（若是 NG）。
     /// </summary>
     [SugarColumn(ColumnDescription = "NG 原因", Length = 255)]
     [MaxLength(255)]
@@ -117,7 +119,7 @@ public sealed class PtSnTransit : EntityBaseId
     }
 
     /// <summary>
-    /// 设置产品状态
+    /// 设置当前产品状态
     /// </summary>
     public void SetProductStatus()
     {

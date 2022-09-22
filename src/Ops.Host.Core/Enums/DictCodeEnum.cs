@@ -7,4 +7,7 @@ public enum DictCodeEnum
 {
     [Description("警报")]
     Alarm,
+
+    [Description("班次")]
+    Shift,
 }

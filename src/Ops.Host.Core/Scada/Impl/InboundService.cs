@@ -40,13 +40,14 @@ internal sealed class InboundService : ScadaDomainService, IInboundService
             {
                 LineCode = data.Schema.Line,
                 StationCode = data.Schema.Station,
-                ProductCode = "", // SN 反查产品
-                WO = "", // SN 反查工单
+                ProductCode = "", // TODO: SN 反查产品
+                WO = "", // TODO: SN 反查工单
                 SN = sn,
                 FormualNo = (int)formula!,
                 InboundItems = new(),
             };
 
+            // 附加数据
             foreach (var v in data.Values.Where(s => s.IsAdditional))
             {
                 item0.InboundItems.Add(new PtInboundItem
@@ -74,7 +75,7 @@ internal sealed class InboundService : ScadaDomainService, IInboundService
 
             snTransit.LineCode = data.Schema.Line;
             snTransit.StationCode = data.Schema.Station;
-            snTransit.TransitMode = TransitModeEnum.Inbound;
+            snTransit.TransitStage = TransitStageEnum.Inbound;
             snTransit.InboundTime = DateTime.Now;
             snTransit.OutboundTime = null;
             snTransit.Pass = null;

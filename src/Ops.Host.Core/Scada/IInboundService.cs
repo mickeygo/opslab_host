@@ -3,7 +3,7 @@
 /// <summary>
 /// 进站服务
 /// </summary>
-public interface IInboundService
+public interface IInboundService : IDomainService
 {
     /// <summary>
     /// 产品进站

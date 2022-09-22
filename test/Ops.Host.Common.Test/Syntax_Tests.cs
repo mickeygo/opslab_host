@@ -13,6 +13,14 @@ public class Syntax_Tests
         Assert.True(enum1 == TestEnum.Test1); // true
     }
 
+    [Fact]
+    public void Number_Compare_Test()
+    {
+        Assert.True(1d == 1); // true
+        Assert.True(Convert.ToDecimal(1) == 1); // true
+        Assert.True(Convert.ToDecimal("1") > 1 == false); // true
+    }
+
     public enum TestEnum
     {
         [Description("²âÊÔ1")]
