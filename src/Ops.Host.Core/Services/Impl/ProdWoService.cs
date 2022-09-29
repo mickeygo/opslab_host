@@ -3,10 +3,12 @@
 internal sealed class ProdWoService : IProdWoService
 {
     private readonly SqlSugarRepository<ProdWo> _woRep;
+    private readonly SqlSugarRepository<ProdSchedule> _scheduleRep;
 
-    public ProdWoService(SqlSugarRepository<ProdWo> woRep)
+    public ProdWoService(SqlSugarRepository<ProdWo> woRep, SqlSugarRepository<ProdSchedule> scheduleRep)
     {
         _woRep = woRep;
+        _scheduleRep = scheduleRep;
     }
 
     public async Task<ProdWo> GetWoAsync(long woId)
@@ -95,6 +97,18 @@ internal sealed class ProdWoService : IProdWoService
         return (ok, "");
     }
 
+    public async Task<(bool ok, string err)> CompleteAsync(long woId)
+    {
+        var ok = await _woRep.UpdateAsync(s => new()
+        {
+            LastStatus = s.Status,
+            Status = WoStatusEnum.Completed,
+            UpdateTime = DateTime.Now,
+        }, s => s.Id == woId);
+        await _scheduleRep.DeleteAsync(s => s.WoId == woId);
+        return (ok, "");
+    }
+
     public async Task<(bool ok, string err)> DeleteAsync(long woId)
     {
         var wo = await _woRep.GetByIdAsync(woId);
@@ -104,6 +118,7 @@ internal sealed class ProdWoService : IProdWoService
         }
 
         var ok = await _woRep.DeleteByIdAsync(woId);
+        await _scheduleRep.DeleteAsync(s => s.WoId == woId);
         return (ok, "");
     }
 }

@@ -22,9 +22,9 @@ public sealed class StationCacheManager : IManager
     }
 
     /// <summary>
-    /// 获取所有的产线。
+    /// 获取所有的产线 (去重)。
     /// </summary>
-    public List<NameValue> Lines => GetStations().Select(s => new NameValue(s.LineName, s.LineCode)).ToList();
+    public List<NameValue> Lines => GetStations().Select(s => new NameValue(s.LineName, s.LineCode)).DistinctBy(s => s.Value).ToList();
 
     /// <summary>
     /// 获取所有的工站。
@@ -39,6 +39,17 @@ public sealed class StationCacheManager : IManager
     public MdStation? GetById(long stationId)
     {
         return GetStations().FirstOrDefault(s => s.Id == stationId);
+    }
+
+    /// <summary>
+    /// 获取工站。
+    /// </summary>
+    /// <param name="lineCode">产线编码</param>
+    /// <param name="stationCode">工站编码</param>
+    /// <returns></returns>
+    public MdStation? GetStation(string lineCode, string stationCode)
+    {
+        return GetStations().FirstOrDefault(s => s.LineCode == lineCode && s.StationCode == stationCode);
     }
 
     /// <summary>

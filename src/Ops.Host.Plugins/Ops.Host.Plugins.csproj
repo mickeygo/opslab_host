@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Ateq\" />
     <Folder Include="Zebra\" />
   </ItemGroup>
 

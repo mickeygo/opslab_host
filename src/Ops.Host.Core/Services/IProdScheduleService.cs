@@ -30,6 +30,13 @@ public interface IProdScheduleService : IDomainService
     Task<List<ProdSchedule>> GetAllScheduleAsync();
 
     /// <summary>
+    /// 获取待做的工单。
+    /// </summary>
+    /// <remarks>若没有找到满足条件的工单，返回null。</remarks>
+    /// <returns></returns>
+    Task<ProdSchedule?> GetToDoWoAsync();
+
+    /// <summary>
     /// 排产
     /// </summary>
     /// <param name="input"></param>

@@ -5,7 +5,8 @@ internal sealed class ProcRouteService : IProcRouteService
     private readonly SqlSugarRepository<ProcRoute> _routeRep;
     private readonly SqlSugarRepository<ProcRouteProduct> _routeProductRep;
 
-    public ProcRouteService(SqlSugarRepository<ProcRoute> routeRep, SqlSugarRepository<ProcRouteProduct> routeProductRep)
+    public ProcRouteService(SqlSugarRepository<ProcRoute> routeRep, 
+        SqlSugarRepository<ProcRouteProduct> routeProductRep)
     {
         _routeRep = routeRep;
         _routeProductRep = routeProductRep;
@@ -33,13 +34,6 @@ internal sealed class ProcRouteService : IProcRouteService
                 .ToListAsync();
     }
 
-    public async Task<ProcRouteProduct?> GetByFormulaAsync(int formulaNo)
-    {
-        return await _routeProductRep.AsQueryable()
-            .Includes(s => s.Product)
-            .FirstAsync(s => s.FormulaNo == formulaNo);
-    }
-
     public async Task<PagedList<ProcRoute>> GetPagedListAsync(ProcRouteFilter filter, int pageIndex, int pageSize)
     {
         return await _routeRep.AsQueryable()
@@ -49,6 +43,56 @@ internal sealed class ProcRouteService : IProcRouteService
                 .WhereIF(!string.IsNullOrWhiteSpace(filter.Code), s => s.Code.Contains(filter.Code!))
                 .WhereIF(!string.IsNullOrWhiteSpace(filter.Name), s => s.Name.Contains(filter.Name!))
                 .ToPagedListAsync(pageIndex, pageSize);
+    }
+
+    public async Task<bool> IsHeadAsync(string? productCode, string lineCode, string stationCode)
+    {
+        if (string.IsNullOrWhiteSpace(productCode))
+        {
+            return false;
+        }
+
+        var route = await _routeRep.AsQueryable()
+            .Includes(s => s.Contents, it => it.Process, it2 => it2!.Station)
+            .Includes(s => s.LinkProducts, it => it.Product!.Code == productCode)
+            .FirstAsync();
+        if (route is null || !route.Contents!.Any())
+        {
+            return false;
+        }
+
+        var station = route.Contents!.First().Process?.Station;
+        if (station is null)
+        {
+            return false;
+        }
+
+        return station.LineCode == lineCode && station.StationCode == stationCode;
+    }
+
+    public async Task<bool> IsTailAsync(string? productCode, string lineCode, string stationCode)
+    {
+        if (string.IsNullOrWhiteSpace(productCode))
+        {
+            return false;
+        }
+
+        var route = await _routeRep.AsQueryable()
+            .Includes(s => s.Contents, it => it.Process, it2 => it2!.Station)
+            .Includes(s => s.LinkProducts, it => it.Product!.Code == productCode)
+            .FirstAsync();
+        if (route is null || !route.Contents!.Any())
+        {
+            return false;
+        }
+
+        var station = route.Contents!.Last().Process?.Station;
+        if (station is null)
+        {
+            return false;
+        }
+
+        return station.LineCode == lineCode && station.StationCode == stationCode;
     }
 
     public async Task<(bool ok, string err)> InsertOrUpdateAsync(ProcRoute input)

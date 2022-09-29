@@ -8,15 +8,23 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
     private readonly SqlSugarRepository<PtSnTransit> _transitRep;
     private readonly SqlSugarRepository<ProdWo> _woRep;
     private readonly SqlSugarRepository<ProcProcessParam> _paramRep;
+    private readonly SqlSugarRepository<PtSnMaterial> _materialRep;
     private readonly ISysDictDataService _sysDictDataService;
+    private readonly IProcProcessBomService _bomService;
+    private readonly IProcRouteService _routeService;
+    private readonly StationCacheManager _stationCacheManager;
     private readonly BusinessOptions _bizOptions;
     private readonly ILogger _logger;
 
-    public ArchiveService(SqlSugarRepository<PtArchive> archiveRep, 
+    public ArchiveService(SqlSugarRepository<PtArchive> archiveRep,
         SqlSugarRepository<PtSnTransit> transitRep,
         SqlSugarRepository<ProdWo> woRep,
         SqlSugarRepository<ProcProcessParam> paramRep,
+        SqlSugarRepository<PtSnMaterial> materialRep,
         ISysDictDataService sysDictDataService,
+        IProcProcessBomService bomService,
+        IProcRouteService routeService,
+        StationCacheManager stationCacheManager,
         IOptions<BusinessOptions> bizOptions,
         ILogger<ArchiveService> logger)
     {
@@ -24,7 +32,11 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
         _transitRep = transitRep;
         _woRep = woRep;
         _paramRep = paramRep;
+        _materialRep = materialRep;
         _sysDictDataService = sysDictDataService;
+        _bomService = bomService;
+        _routeService = routeService;
+        _stationCacheManager = stationCacheManager;
         _bizOptions = bizOptions.Value;
         _logger = logger;
     }
@@ -32,7 +44,7 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
     public async Task<ReplyResult> HandleAsync(ForwardData data)
     {
         var sn = data.GetString(PlcSymbolTag.PLC_Archive_SN); // SN
-        var formula = data.GetInt(PlcSymbolTag.PLC_Archive_Formula); // PLC 配方号
+        var formula = data.GetInt(PlcSymbolTag.PLC_Archive_Formula) ?? 0; // PLC 配方号
         var pass = data.GetInt(PlcSymbolTag.PLC_Archive_Pass); // 结果
         var ct = data.GetInt(PlcSymbolTag.PLC_Archive_Cycletime); // CT
         var @operator = data.GetString(PlcSymbolTag.PLC_Archive_Operator); // 操作人
@@ -43,10 +55,6 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
         {
             return Error(ErrorCodeEnum.E0404);
         }
-        if (formula == 0)
-        {
-            return Error(ErrorCodeEnum.E0403);
-        }
         if (!EnumExtensions.TryParse<PassEnum>(pass, out var pass0))
         {
             return Error(ErrorCodeEnum.E1201);
@@ -55,6 +63,12 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
         // 记录进站信息
         try
         {
+            var station = _stationCacheManager.GetStation(data.Schema.Line, data.Schema.Station);
+            if (station == null)
+            {
+                return Error(ErrorCodeEnum.E405);
+            }
+
             // 检查在该站是否有进站信息。
             var snTransit = await _transitRep.GetFirstAsync(s => s.SN == sn && s.LineCode == data.Schema.Line && s.StationCode == data.Schema.Station);
             if (snTransit == null)
@@ -62,7 +76,23 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
                 return Error(ErrorCodeEnum.E1202);
             }
 
-            // TODO：校验工艺BOM
+            // 过站前校验工艺BOM，是否所有物料已扫入。
+            if (!string.IsNullOrEmpty(snTransit.ProductCode))
+            {
+                var bom = await _bomService.GetBomAsync(snTransit.ProductCode, data.Schema.Line, data.Schema.Station);
+                if (bom != null)
+                {
+                    var snMaterials = await _materialRep.GetListAsync(s => s.SN == sn && s.Attr == MaterialAttrEnum.Critical
+                                        && s.LineCode == data.Schema.Line && s.StationCode == data.Schema.Station);
+                    foreach (var item in bom.Contents!)
+                    {
+                        if (!snMaterials.Any(s => s.ItemCode == item?.Material!.Code))
+                        {
+                            return Error(ErrorCodeEnum.E1203);
+                        }
+                    }
+                }
+            }
 
             // 从字典中查找对应的警报信息，若字典中没有设置，不会存储对应警报信息。
             var dicts = await _sysDictDataService.GetDicsByCodeAsync(DictCodeEnum.Shift.ToString());
@@ -83,7 +113,7 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
                 Pass = pass0!,
                 Cycletime = ct,
                 Operator = @operator,
-                Shift = shift0,
+                Shift = shift0 ?? shift.ToString(), // 字典没有配置，写入原始值
                 Pallet = pallet,
                 ArchiveItems = new(),
             };
@@ -177,9 +207,9 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
             snTransit.SetProductStatus();
 
             // 线上站才处理工单
-
-            // TODD: 检查是否为尾站
-            bool isTail = false;
+            // 检查是否为尾站（线上站+工艺路线）
+            bool isTail = station!.Owner == StationOwnerEnum.Inline
+                            && await _routeService.IsTailAsync(snTransit.ProductCode, snTransit.LineCode, snTransit.StationCode);
             if (isTail && snTransit.IsOK())
             {
                 snTransit.CompletedTime = DateTime.Now;
@@ -187,14 +217,14 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
 
             await _transitRep.UpdateAsync(snTransit);
 
-            // 若是 NG，添加到可返工列表中。
+            // 若是 NG，可以添加到可返工列表中。
             if (snTransit.IsNG())
             {
                 return Ok();
             }
 
             // OK 过站
-            if (isTail && snTransit.IsOK())
+            if (_bizOptions.UseWo && isTail && snTransit.IsOK())
             {
                 // 更新工单数据（如果存在工单）
                 var workOrder = await _woRep.GetFirstAsync(s => s.Code == item0.WO);

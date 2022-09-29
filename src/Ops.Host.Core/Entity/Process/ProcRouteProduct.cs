@@ -33,6 +33,7 @@ public sealed class ProcRouteProduct : EntityBase
     /// <summary>
     /// 程序配方号（PLC 程序配方）。
     /// </summary>
+    /// <remarks>产品:配方 => N:1</remarks>
     [SugarColumn(ColumnDescription = "程序配方号")]
     public int FormulaNo { get; set; }
 }

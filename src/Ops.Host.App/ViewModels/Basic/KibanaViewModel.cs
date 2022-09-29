@@ -44,48 +44,51 @@ public sealed class KibanaViewModel : ObservableObject, IViewModel, IDisposable
                 await Task.Delay(2000);
                 ChangeDeviceConnState();
             }
-                
+
         }, default, TaskCreationOptions.LongRunning, TaskScheduler.FromCurrentSynchronizationContext());
 
-        测试数据
-       _ = Task.Factory.StartNew(async () =>
-       {
-           while (!_cts.IsCancellationRequested)
-           {
-               await Task.Delay(new Random().Next(5, 15) * 1000);
+        // 测试数据
+        _ = Task.Factory.StartNew(async () =>
+        {
+            var random = new Random();
+            while (!_cts.IsCancellationRequested)
+            {
+                await Task.Delay(random.Next(5, 15) * 1000);
 
-               if (AlarmSourceList.Count >= 32)
-               {
-                   AlarmSourceList.RemoveAt(AlarmSourceList.Count - 1);
-               }
+                if (AlarmSourceList.Count >= 32)
+                {
+                    AlarmSourceList.RemoveAt(AlarmSourceList.Count - 1);
+                }
 
-               AlarmSourceList.Insert(0, new()
-               {
-                   Station = "OP10",
-                   Name = "焊接设备电压过高",
-               });
-           }
+                var r = random.Next(1, 10);
+                AlarmSourceList.Insert(0, new()
+                {
+                    Station = r >= 6 ? "OP020" : "OP010",
+                    Name = $"焊接设备{(r % 3 == 0 ? "电压" : "电流")}过高",
+                });
+            }
 
-       }, default, TaskCreationOptions.LongRunning, TaskScheduler.FromCurrentSynchronizationContext());
+        }, default, TaskCreationOptions.LongRunning, TaskScheduler.FromCurrentSynchronizationContext());
 
         _ = Task.Factory.StartNew(async () =>
         {
-            int n = 1;
+            var random = new Random();
             while (!_cts.IsCancellationRequested)
             {
-                await Task.Delay(new Random().Next(2, 8) * 1000);
+                await Task.Delay(random.Next(2, 8) * 1000);
 
                 if (ProductionSourceList.Count >= 32)
                 {
                     ProductionSourceList.RemoveAt(AlarmSourceList.Count - 1);
                 }
 
+                var r = random.Next(1, 10);
                 ProductionSourceList.Insert(0, new()
                 {
-                    Station = "OP10",
+                    Station = r >= 6 ? "OP020" : "OP010",
                     SN = $"SN{DateTime.Now:yyyyMMddHHmmss}",
                     Shift = "早班",
-                    Pass = n++ % 4 != 0,
+                    Pass = r >= 3 && r <= 8,
                     InboundTime = DateTime.Now,
                     OutboundTime = DateTime.Now,
                 });

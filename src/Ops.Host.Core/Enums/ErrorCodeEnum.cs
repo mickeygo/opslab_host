@@ -47,6 +47,12 @@ public enum ErrorCodeEnum
     E0404,
 
     /// <summary>
+    /// 没有找到工站信息
+    /// </summary>
+    [Description("没有找到工站信息")]
+    E405,
+
+    /// <summary>
     /// Pass 值不正确
     /// </summary>
     [Description("Pass 值不正确")]
@@ -57,6 +63,12 @@ public enum ErrorCodeEnum
     /// </summary>
     [Description("没有进站信息")]
     E1202,
+
+    /// <summary>
+    /// 还有关键物料未扫入
+    /// </summary>
+    [Description("还有关键物料未扫入")]
+    E1203,
 
     E1300 = 1300,
 

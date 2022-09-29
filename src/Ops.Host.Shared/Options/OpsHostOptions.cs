@@ -17,4 +17,9 @@ public sealed class OpsHostOptions
     /// </summary>
     /// <remarks>启用前端代理后，部分数据会通过 MQ Pub/Sub 模式通知代理端。代理端仅能收到消息并显示，不能反向操作。</remarks>
     public bool EnableFrontAgent { get; set; }
+
+    /// <summary>
+    /// 前端代理服务端口。
+    /// </summary>
+    public int FrontAgentHost { get; set; } = 8090;
 }

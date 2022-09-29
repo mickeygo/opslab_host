@@ -14,6 +14,24 @@ public interface IProcRouteService : IDomainService
     Task<PagedList<ProcRoute>> GetPagedListAsync(ProcRouteFilter filter, int pageIndex, int pageSize);
 
     /// <summary>
+    /// 是否为首站。
+    /// </summary>
+    /// <param name="productCode">产品编码</param>
+    /// <param name="lineCode">产线编码</param>
+    /// <param name="stationCode">工站编码</param>
+    /// <returns></returns>
+    Task<bool> IsHeadAsync(string? productCode, string stationCode, string lineCode);
+
+    /// <summary>
+    /// 是否为尾站。
+    /// </summary>
+    /// <param name="productCode">产品编码</param>
+    /// <param name="lineCode">产线编码</param>
+    /// <param name="stationCode">工站编码</param>
+    /// <returns></returns>
+    Task<bool> IsTailAsync(string? productCode, string stationCode, string lineCode);
+
+    /// <summary>
     /// 新增或更新工艺路由，其中不包含关联的产品。
     /// </summary>
     /// <param name="input"></param>

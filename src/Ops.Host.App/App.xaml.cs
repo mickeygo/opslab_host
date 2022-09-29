@@ -5,7 +5,7 @@ namespace Ops.Host.App;
 
 public partial class App : Application
 {
-    private Mutex? _mutex;
+    public Mutex? _mutex;
     private IHost? _host;
 
     static IHostBuilder CreateHostBuilder(string[]? args) =>

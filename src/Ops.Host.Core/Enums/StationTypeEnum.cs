@@ -16,4 +16,10 @@ public enum StationTypeEnum
     /// </summary>
     [Description("检验")]
     Test,
+
+    /// <summary>
+    /// 返修站。
+    /// </summary>
+    [Description("返修")]
+    Repair,
 }

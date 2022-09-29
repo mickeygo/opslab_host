@@ -39,6 +39,20 @@ internal sealed class ProdScheduleService : IProdScheduleService
             .ToListAsync();
     }
 
+    public async Task<ProdSchedule?> GetToDoWoAsync()
+    {
+        // 1.工单中状态处于生产中或已排产
+        // 2.上线数量 < 工单数量
+        // 3.按排程顺序（正序），取第一条
+        var schedule = await _scheduleRep.AsQueryable()
+            .Includes(s => (s.WorkOrder!.Status == WoStatusEnum.Scheduled || s.WorkOrder.Status == WoStatusEnum.Producing) 
+                        && s.WorkOrder.OnlineQty < s.WorkOrder.Qty)
+            .OrderBy(s => s.Seq, OrderByType.Asc)
+            .FirstAsync();
+
+        return schedule;
+    }
+
     public async Task<(bool ok, ProdSchedule? schedule, string? err)> ScheduleAsync(ProdWo input)
     {
         var wo = await _woRep.GetByIdAsync(input.Id);

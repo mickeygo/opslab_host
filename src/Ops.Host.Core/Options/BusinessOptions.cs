@@ -21,7 +21,14 @@ public class BusinessOptions
     public bool IsMatchMaterialEqualLength { get; set; } = true;
 
     /// <summary>
+    /// 是否要校验工艺路线，默认为 false。
+    /// </summary>
+    /// <remarks>进站时校验。</remarks>
+    public bool IsMatchRoute { get; set; }
+
+    /// <summary>
     /// 是否校验工艺参数，默认为 false。
     /// </summary>
-    public bool IsMatchProcessParam { get; set; } = false;
+    /// <remarks>出站/存档时校验。</remarks>
+    public bool IsMatchProcessParam { get; set; }
 }
