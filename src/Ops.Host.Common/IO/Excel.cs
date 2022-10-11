@@ -406,7 +406,7 @@ public sealed class Excel
                 }
                 else if (propInfo!.PropertyType == typeof(decimal) || propInfo!.PropertyType == typeof(decimal?)
                     || propInfo!.PropertyType == typeof(double) || propInfo!.PropertyType == typeof(double?)
-                    || propInfo!.PropertyType == typeof(float?) || propInfo!.PropertyType == typeof(float?))
+                    || propInfo!.PropertyType == typeof(float) || propInfo!.PropertyType == typeof(float?))
                 {
                     cell.Style.Numberformat.Format = settings.RealFormat;
                 }
@@ -469,7 +469,7 @@ public sealed class Excel
                 }
                 else if (dataType == typeof(decimal) || dataType == typeof(decimal?)
                     || dataType == typeof(double) || dataType == typeof(double?)
-                    || dataType == typeof(float?) || dataType == typeof(float?))
+                    || dataType == typeof(float) || dataType == typeof(float?))
                 {
                     cell.Style.Numberformat.Format = settings.RealFormat;
                 }
