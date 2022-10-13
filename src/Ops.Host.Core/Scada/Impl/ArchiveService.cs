@@ -45,7 +45,7 @@ internal sealed class ArchiveService : ScadaDomainService, IArchiveService
     {
         var sn = data.GetString(PlcSymbolTag.PLC_Archive_SN); // SN
         var formula = data.GetInt(PlcSymbolTag.PLC_Archive_Formula) ?? 0; // PLC 配方号
-        var pass = data.GetInt(PlcSymbolTag.PLC_Archive_Pass); // 结果
+        int pass = data.GetInt(PlcSymbolTag.PLC_Archive_Pass) ?? 0; // 结果
         var ct = data.GetInt(PlcSymbolTag.PLC_Archive_Cycletime); // CT
         var @operator = data.GetString(PlcSymbolTag.PLC_Archive_Operator); // 操作人
         var shift = data.GetInt(PlcSymbolTag.PLC_Archive_Shift) ?? 0; // 班次
