@@ -8,8 +8,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddHostApp(this IServiceCollection services)
     {
         // forwarders
-        services.AddTransient<INoticeForwarder, OpsLocalNoticeForwarder>();
-        services.AddTransient<IReplyForwarder, OpsLocalReplyForwarder>();
+        services.AddScoped<INoticeForwarder, OpsLocalNoticeForwarder>();
+        services.AddScoped<IReplyForwarder, OpsLocalReplyForwarder>();
 
         // 注册 Host.Core 服务。
         services.AddHostCore();
