@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
         // forwarders
         services.AddScoped<INoticeForwarder, OpsLocalNoticeForwarder>();
         services.AddScoped<IReplyForwarder, OpsLocalReplyForwarder>();
+        services.AddScoped<IUnderlyForwarder, OpsLocalUnderlyForwarder>();
 
         // 注册 Host.Core 服务。
         services.AddHostCore();
