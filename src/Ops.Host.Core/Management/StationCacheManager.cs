@@ -10,14 +10,14 @@ public sealed class StationCacheManager : IManager
 {
     const string Key = "ops.host.cache.mdstation";
 
+    private readonly IServiceProvider _serviceProvider;
     private readonly IMemoryCache _memoryCache;
-    private readonly IMdStationService _stationService;
     private readonly DeviceInfoManager _deviceInfoManager;
 
-    public StationCacheManager(IMemoryCache cache, IMdStationService stationService, DeviceInfoManager deviceInfoManager)
+    public StationCacheManager(IServiceProvider serviceProvider, IMemoryCache cache, DeviceInfoManager deviceInfoManager)
     {
+        _serviceProvider = serviceProvider;
         _memoryCache = cache;
-        _stationService = stationService;
         _deviceInfoManager = deviceInfoManager;
     }
 
@@ -74,13 +74,20 @@ public sealed class StationCacheManager : IManager
     public async Task SyncToLocalAsync()
     {
         var devInfos = await _deviceInfoManager.GetAllAsync();
-        await _stationService.SyncToLocalAsync(devInfos);
+
+        var stationService = _serviceProvider.GetRequiredService<IMdStationService>();
+        await stationService.SyncToLocalAsync(devInfos);
 
         _memoryCache.Remove(Key);
     }
 
     private List<MdStation> GetStations()
     {
-        return _memoryCache.GetOrCreate(Key, entry => _stationService.GetStationList());
+        return _memoryCache.GetOrCreate(Key, entry =>
+        {
+            // forwarders 若注册为 Scoped 生命周期，此对象又为静态实例，不能用构造函数注入。
+            var stationService = _serviceProvider.GetRequiredService<IMdStationService>();
+            return stationService.GetStationList();
+        });
     }
 }
