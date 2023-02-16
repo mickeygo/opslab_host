@@ -3,12 +3,10 @@
 internal sealed class MdStationService : IMdStationService
 {
     private readonly SqlSugarRepository<MdStation> _stationRep;
-    private readonly SqlSugarRepository<ProcProcess> _processRep;
 
-    public MdStationService(SqlSugarRepository<MdStation> stationRep, SqlSugarRepository<ProcProcess> processRep)
+    public MdStationService(SqlSugarRepository<MdStation> stationRep)
     {
         _stationRep = stationRep;
-        _processRep = processRep;
     }
 
     public List<MdStation> GetStationList()

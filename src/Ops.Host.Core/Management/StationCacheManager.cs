@@ -75,7 +75,8 @@ public sealed class StationCacheManager : IManager
     {
         var devInfos = await _deviceInfoManager.GetAllAsync();
 
-        var stationService = _serviceProvider.GetRequiredService<IMdStationService>();
+        using var scope = _serviceProvider.CreateScope();
+        var stationService = scope.ServiceProvider.GetRequiredService<IMdStationService>();
         await stationService.SyncToLocalAsync(devInfos);
 
         _memoryCache.Remove(Key);
@@ -86,7 +87,8 @@ public sealed class StationCacheManager : IManager
         return _memoryCache.GetOrCreate(Key, entry =>
         {
             // forwarders 若注册为 Scoped 生命周期，此对象又为静态实例，不能用构造函数注入。
-            var stationService = _serviceProvider.GetRequiredService<IMdStationService>();
+            using var scope = _serviceProvider.CreateScope();
+            var stationService = scope.ServiceProvider.GetRequiredService<IMdStationService>();
             return stationService.GetStationList();
         });
     }
