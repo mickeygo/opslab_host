@@ -1,11 +1,11 @@
 ﻿namespace Ops.Host.Core.Entity;
 
 /// <summary>
-/// 能耗记录
+/// 能耗信息
 /// </summary>
-[SugarTable("ee_energy_record", "能耗记录表")]
-[SugarIndex("index_ee_energy_record_createtime", nameof(CreateTime), OrderByType.Desc)]
-public sealed class EeEnergyRecord : EntityBaseId
+[SugarTable("dv_energy_consume", "能耗记录表")]
+[SugarIndex("index_dv_energy_consume_createtime", nameof(CreateTime), OrderByType.Desc)]
+public sealed class DvEnergyConsume : EntityBaseId
 {
     /// <summary>
     /// 产线编码

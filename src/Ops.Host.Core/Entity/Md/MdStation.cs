@@ -46,6 +46,11 @@ public sealed class MdStation : EntityBase
     public StationOwnerEnum Owner { get; set; } = StationOwnerEnum.Inline;
 
     /// <summary>
+    /// 工站位置。
+    /// </summary>
+    public StationFlowEnum Flow { get; set; }
+
+    /// <summary>
     /// 额外标志
     /// </summary>
     [MaxLength(255)]
