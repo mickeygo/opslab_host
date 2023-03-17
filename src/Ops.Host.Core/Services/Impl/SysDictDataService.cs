@@ -40,19 +40,9 @@ internal sealed class SysDictDataService : ISysDictDataService
         var dictData = await _dictRep.GetFirstAsync(s => s.Code == input.Code && s.Name == input.Name);
 
         // 校验字典类型和名称是否有重复
-        if (input.IsTransient())
+        if (dictData != null && (input.IsTransient() || dictData.Id != input.Id))
         {
-            if (dictData != null)
-            {
-                return (false, "字典类型中已存在此名称");
-            }
-        }
-        else
-        {
-            if (dictData.Id != input.Id)
-            {
-                return (false, "字典类型中已存在此名称");
-            }
+            return (false, "字典类型中已存在此名称");
         }
 
         var ok = await _dictRep.InsertOrUpdateAsync(input);

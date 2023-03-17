@@ -22,6 +22,13 @@ internal sealed class AlarmService : ScadaDomainService, IAlarmService
             return;
         }
 
+        var alarmValues = data.Self().GetBitArray(); // 警报数据
+        // 检查是否有真正的警报数据
+        if (alarmValues?.Any(s => s) == false)
+        {
+            return;
+        }
+
         // 从字典中查找对应的警报信息，若字典中没有设置，不会存储对应警报信息。
         var dicts = await _sysDictDataService.GetDicsByCodeAsync(DictCodeEnum.Alarm.ToString());
         if (!dicts.Any())
@@ -29,7 +36,6 @@ internal sealed class AlarmService : ScadaDomainService, IAlarmService
             return;
         }
 
-        var alarmValues = data.Values[0].GetBitArray(); // 警报数据
         try
         {
             var alarmRecords = new List<PtAlarmRecord>();
